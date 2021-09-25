@@ -1,0 +1,8 @@
+.site-logo__link{
+    transition: 0.5s;
+}
+
+.site-logo__link:hover{
+    cursor: pointer;
+    opacity: 0.6;
+}

@@ -3,11 +3,11 @@
     height: 74px;
     box-sizing: border-box;
     font-family: 'Inter', Arial, sans-serif;
-    background-color: #073042;
-    
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    background: transparent;
 }
 
 @media screen and (max-width: 1279px){
@@ -35,99 +35,3 @@
 }
 /* header styles */
 
-/* header__logo styles */
-.header__logo{
-    left: 70px;
-    object-fit: contain;
-}
-
-@media screen and (max-width: 1279px){
-    .header__logo{
-        position: relative;
-    }
-}
-
-@media screen and (max-width: 1023px){
-    .header__logo{
-        left: 5px;
-    }
-}
-
-@media screen and (max-width: 767px){
-    .header__logo{
-        left: 15px;
-    }
-}
-
-@media screen and (max-width: 424px){
-    .header__logo{
-        left: 27px;
-    }
-}
-/* header__logo styles */
-
-/* headers__links styles */
-.header__links{
-    margin-right: 70px;
-
-    
-
-    display: flex;
-    align-items: center;
-    gap: 30px;
-}
-/* headers__links styles */
-
-/* header__link styles */
-.header__link{
-    color: #FFFFFF;
-    text-decoration: none;
-    transition: 0.5s;
-
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 16px;
-    text-align: right;
-}
-
-.header__link:hover{
-    cursor: pointer;
-    opacity: 0.6;
-}
-/* headers__links styles */
-
-/* header__button styles */
-.header__button{
-    width: 76px;
-    height: 32px;
-    background-color: #3DDC84;
-    border-radius: 3px;
-    color: black;
-
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 16px;
-    text-align: right;   
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    transition: 0.5s;
-    padding: 0;
-}
-
-.header__button:hover{
-    cursor: pointer;
-}
-
-.header__button:active,
-.header__button:focus
-{
-    outline: none;
-}
-/* header__button styles */

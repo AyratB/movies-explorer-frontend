@@ -1,0 +1,43 @@
+.button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    transition: 0.5s;
+    padding: 0;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    text-align: right;    
+}
+
+.button:hover{
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.button:active,
+.button:focus
+{
+    outline: none;
+}
+
+.button_type_header-enter{
+    width: 76px;
+    height: 32px;
+    background-color: #3DDC84;
+    border-radius: 3px;
+}
+
+.button_type_header-account{
+    width: 100px;
+    height: 32px;    
+    border: 2px solid rgba(170, 170, 170, .2);
+    box-sizing: border-box;
+    border-radius: 50px;
+    gap: 7px;
+    background: transparent;
+    color: white;
+}

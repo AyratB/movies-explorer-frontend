@@ -1,58 +1,29 @@
-import { Switch, Route, Link } from "react-router-dom";
-import './Header.css';
+import React from "react";
 
-// ????
-import headerLogo from "./../../images/header_logo.svg";
+import './Header.css';
+import { SIZE_NEED_BREAD_CRUMBS } from "./../../utils/constants.js";
+import Navigation from "../Navigation/Navigation";
+import SiteLogo from "./../SiteLogo/SiteLogo";
 
 function Header(props) {
 
-    console.log(props.isLoggedIn);
+const [isNeedToShowBreadCrumbs, setIsNeedToShowBreadCrumbs] = React.useState(window.innerWidth > SIZE_NEED_BREAD_CRUMBS);
+
+React.useEffect(() => {
+    function handleResize() {
+        setIsNeedToShowBreadCrumbs(window.innerWidth > SIZE_NEED_BREAD_CRUMBS);
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isNeedToShowBreadCrumbs]);
+
   return (
-    <header className="header page__container-item">
-        <img src={headerLogo} className="header__logo" alt="Лого" />
-
-        <div>
-            <ul className = "header__links">
-
-            {                
-                !props.isLoggedIn 
-                    ? 
-                        <> 
-                            <Link to="/signup" className="header__link">
-                                Регистрация
-                            </Link> 
-
-                            <Link to="/signin" className="header__link header__button">
-                                Войти
-                            </Link>
-                        </>
-                    : 
-                        <> 
-                            <Link to="/signup" className="header__link">
-                                Фильмы
-                            </Link> 
-                
-                            <Link to="/signin" className="header__link">
-                                Сохраненные фильмы
-                            </Link>
-
-                            <Link to="/signin" className="header__link">
-                                Аккаунт
-                            </Link>
-                        </>
-            }
-
-
-                
-
-                        
-                   
-                    
-                   
-                
-            </ul>            
-        </div>
-      
+    <header className="header">        
+        <SiteLogo />          
+        <Navigation 
+            isLoggedIn={props.isLoggedIn} 
+            isNeedToShowBreadCrumbs={isNeedToShowBreadCrumbs} />
     </header>
   );
 }

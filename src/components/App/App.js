@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
 
 import Header from "./../Header/Header.js";
+import Main from "./../Main/Main.js";
 
 import './App.css';
 
@@ -10,9 +11,11 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
   return (
-    <div className="page">
-      <div className="page__container">
-        <Header className = "header" isLoggedIn={isLoggedIn}/>
+    <div className="app__page">
+      <div className="app__container">
+        <Main isLoggedIn={isLoggedIn}/>
+      
+        
 
         {/* <Switch>
 
@@ -26,8 +29,7 @@ function App() {
 
 
 
-        </Switch> */}
-
+      </Switch> */}      
       </div>
     </div>    
   );
