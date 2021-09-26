@@ -1,0 +1,19 @@
+.section__item{
+    display: flex;
+    flex-direction: column;
+
+    padding: 90px 70px 0 70px;
+}
+
+.section__item_type_about-project{
+    height: 608px;
+    background-color: #202020;
+
+    color: #FFFFFF;    
+}
+
+.section__item_type_techs{    
+    background-color: #272727;
+
+    color: #FFFFFF;
+}

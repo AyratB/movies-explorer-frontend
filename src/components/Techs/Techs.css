@@ -1,0 +1,55 @@
+.techs{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 100px;
+}
+.techs__title{
+    font-family: Inter;
+    font-weight: 400;
+    font-size: 50px;
+    line-height: 58px;
+    letter-spacing: -0.04em;
+
+    margin: 90px 0 0 0;
+}
+
+.techs__descripton{
+    margin: 0;
+    font-family: Inter;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+
+    max-width: 460px;
+    padding: 26px 0 100px 0;
+}
+
+.techs_list{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.techs_item{
+    height: 60px;
+    width: 90px;
+    background-color: #303030;
+    border-radius: 10px;
+
+    font-family: Inter;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
