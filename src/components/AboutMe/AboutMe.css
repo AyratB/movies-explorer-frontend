@@ -1,0 +1,139 @@
+.about-me{
+    padding-bottom: 125px;
+}
+
+.about-me__author-decription{
+    padding: 66px 0 100px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    padding-bottom: 100px;
+}
+
+.about-me__author-info{
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    height: 327px;
+    font-family: Inter;
+}
+
+.about-me__author-foto{
+    width: 270px;
+    height: 327px;
+    border-radius: 10px;
+}
+
+.about-me__author-info p{
+    margin: 0;
+}
+
+.about-me__author-name{
+    font-weight: 400;
+    font-size: 50px;
+    line-height: 58px;
+}
+
+.about-me__author-profession{
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 20px;
+
+    padding: 18px 0 26px 0;
+}
+
+.about-me__author-life{
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 22px;
+}
+
+.about-me__author-links{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.about-me__author-link{
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    text-decoration: none;
+    color: white;
+}
+
+.about-me__author-info :last-child {
+    margin-top: auto;
+}
+
+.about-me__portfolio-links{
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+
+    padding: 50 0 50px 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.about-me__portfolio-title{
+    color: #8B8B8B;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 20px;
+
+    margin: 0;
+    padding-bottom: 50px;
+}
+
+.about-me__portfolio{
+
+}
+
+.about-me__portfolio-logo{
+    
+}
+
+.about-me__portfolio-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+
+    border-bottom: 1px solid #424242;
+}
+
+.about-me__portfolio-item p{
+    margin: 0;
+    padding: 0;
+    color: white;
+
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 50px;
+    padding-bottom: 20px;
+}
+
+.about-me__portfolio-link{
+    text-decoration: none;
+    transition: 0.5s;
+}
+
+.about-me__portfolio-link:hover{
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.about-me__portfolio-links :last-child{
+    border-bottom: none;
+
+    
+}
