@@ -1,35 +1,50 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import headerAccountLogo from "./../../images/header_account_logo.svg";
-import Button from "./../Button/Button";
+import './BreadCrumbsPopup.css';
+import closeButton from "./../../images/popup_close_button.svg";
+import CommonLinks from "./../CommonLinks/CommonLinks";
 
-function BreadCrumbsPopup(props) {  
+function BreadCrumbsPopup(props) {
 
-  return (
-      <>
-        <li>
-            <Link to="/signup" className="header__link"  className={props.linkClass}>
-                Фильмы
-            </Link> 
-        </li>
-        <li>
-            <Link to="/signin" className="header__link" className={props.linkClass}>
-                Сохраненные фильмы
-            </Link>
-        </li>
-        <li>
-            <Link to="/signin" className="header__link" className={props.linkClass}>
-                <Button 
-                    className="button button_type_header-account">
-                        <img src={headerAccountLogo} 
-                            className="header__logo_type_account" 
-                            className={props.logoClass} 
-                            alt="Лого аккаунта" />
-                        Аккаунт
-                </Button>
-            </Link>
-        </li>
-      </>
+    React.useEffect(() => {
+        if (!props.isOpened) return;
+
+        const handleEscapeClose = (event) => {
+            if (event.key === "Escape") {
+                props.onClose();
+            }
+        };
+
+        document.addEventListener("keydown", handleEscapeClose);
+
+        return () => {
+            document.removeEventListener("keydown", handleEscapeClose);
+        };
+    }, [props.isOpened, props.onClose]);
+    
+    const handleOverlayClose = (event) => {
+        if (event.target === event.currentTarget && props.isOpen) {
+            props.onClose();
+        }
+    };
+
+    return (
+        
+        <article className={`popup ${props.isOpened ? "popup_opened" : ""}`}>
+            <div className="popup__overlay" onMouseDown={handleOverlayClose}></div>
+            <div className="popup__container">
+                <h3 className="popup__title">Главная</h3>
+                <img 
+                    className="popup__close-button" 
+                    src={closeButton} 
+                    alt="Кнопка закрытия попапа"
+                    onClick={props.onClose}/>
+
+                <CommonLinks 
+                    linksClass="common-links_type_popup"
+                    linkClass="common-link_type_popup">
+                </CommonLinks>
+            </div>
+        </article>
   );
 }
 

@@ -30,15 +30,15 @@ function Navigation(props) {
         : props.isNeedToShowBreadCrumbs
             ?   (
                     <CommonLinks 
-                        linksClass="navigation__links"
-                        linkClass="navigation__link"
-                        logoClass="navigation__logo_type_account">
+                        linksClass="common-links_type_navigation"
+                        linkClass="common-link_type_navigation">
                     </CommonLinks>
                 )
             :   (
                     <img src={breadCrumbsLogo} 
                         className="navigation__logo_type_bread-crumbs" 
-                        alt="Лого хлебных крошок" />
+                        alt="Лого хлебных крошок" 
+                        onClick={props.onBreadClick}/>
                 )    
 }
 

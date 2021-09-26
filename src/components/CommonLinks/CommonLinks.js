@@ -1,26 +1,26 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import headerAccountLogo from "./../../images/header_account_logo.svg";
 import './CommonLinks.css';
 import Button from "./../Button/Button";
 
 function CommonLinks(props) {  
 
-    return (
-        <nav>
-            <ul className={props.linksClass}>
+    return (        
+        <nav> 
+            <ul className={`common-links ${props.linksClass}`}>
                 <li>
-                    <Link to="/signup" className={props.linkClass}>
+                    <NavLink to="/signup" className={props.linkClass} activeClassName="active_common-link">
                          Фильмы
-                    </Link> 
+                    </NavLink> 
                 </li>
                 <li>
-                    <Link to="/signin" className={props.linkClass}>
+                    <NavLink to="/signin" className={props.linkClass} activeClassName="active_common-link">
                         Сохраненные фильмы
-                    </Link>
+                    </NavLink>
                 </li>
-                <li>
-                    <Link to="/signin" className={props.linkClass}>
+                <li className="common-link__logo">
+                    <NavLink to="/signin" className={props.linkClass}>
                         <Button 
                             className="button button_type_header-account">
                                 <img src={headerAccountLogo}
@@ -28,7 +28,7 @@ function CommonLinks(props) {
                                     alt="Лого аккаунта" />
                             Аккаунт
                         </Button>
-                    </Link>
+                    </NavLink>
                 </li>
             </ul>
         </nav>

@@ -10,8 +10,8 @@ function Header(props) {
 const [isNeedToShowBreadCrumbs, setIsNeedToShowBreadCrumbs] = React.useState(window.innerWidth > SIZE_NEED_BREAD_CRUMBS);
 
 React.useEffect(() => {
-    function handleResize() {
-        setIsNeedToShowBreadCrumbs(window.innerWidth > SIZE_NEED_BREAD_CRUMBS);
+    function handleResize() {      
+      setIsNeedToShowBreadCrumbs(window.innerWidth > SIZE_NEED_BREAD_CRUMBS);
     }
 
     window.addEventListener('resize', handleResize);
@@ -19,11 +19,12 @@ React.useEffect(() => {
   }, [isNeedToShowBreadCrumbs]);
 
   return (
-    <header className="header">        
-        <SiteLogo />          
+    <header className="header">
+        <SiteLogo />
         <Navigation 
             isLoggedIn={props.isLoggedIn} 
-            isNeedToShowBreadCrumbs={isNeedToShowBreadCrumbs} />
+            isNeedToShowBreadCrumbs={isNeedToShowBreadCrumbs} 
+            onBreadClick={props.onBreadClick}/>
     </header>
   );
 }

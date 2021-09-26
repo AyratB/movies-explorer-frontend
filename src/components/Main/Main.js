@@ -9,9 +9,13 @@ import AboutMe from "./../AboutMe/AboutMe";
 import Footer from "./../Footer/Footer";
 
 function Main(props) {
+
+    
     return (
         <main className="main">
-            <Promo isLoggedIn={props.isLoggedIn}/>
+            <Promo 
+                isLoggedIn={props.isLoggedIn}
+                onBreadClick={props.onBreadClick}/>
 
             <SectionItem 
                 sectionTitle="О проекте"
