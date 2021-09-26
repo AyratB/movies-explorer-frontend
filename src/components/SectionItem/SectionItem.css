@@ -1,7 +1,6 @@
 .section__item{
     display: flex;
     flex-direction: column;
-
     padding: 90px 70px 0 70px;
 }
 

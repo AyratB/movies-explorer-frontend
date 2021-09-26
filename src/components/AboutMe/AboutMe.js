@@ -1,14 +1,13 @@
 import React from "react";
 import './AboutMe.css';
 import authorFoto from "./../../images/diploma_author_foto.jpg";
-import { Link } from "react-router-dom";
 import { ExternalLink } from 'react-external-link';
 import portfolioLink from "./../../images/portfolio_link_logo.svg";
 
-function AboutMe(props) {  
+function AboutMe(props) {
 
     return (
-        <div className="about-me">        
+        <div className="about-me">
             <article className="about-me__author-decription">
                 <div className="about-me__author-info">
                     <p className="about-me__author-name">Айрат</p>
@@ -20,7 +19,7 @@ function AboutMe(props) {
                         После того, как прошёл курс по веб-разработке, не начал заниматься фриланс-заказами 
                         и неушёл с постоянной работы.
                     </p>
-                    <ul className="about-me__author-links">                    
+                    <ul className="about-me__author-links">
                         <li>
                             <ExternalLink href="https://vk.com/id45105727" className="about-me__author-link">
                                 Vkontakte
@@ -45,14 +44,12 @@ function AboutMe(props) {
                             <img src={portfolioLink} alt="Лого ссылки на работу"/>
                         </ExternalLink>
                     </li>
-
                     <li className="about-me__portfolio-item">
                         <p>Адаптивный сайт</p>
                         <ExternalLink className="about-me__portfolio-link" href="https://ayratb.github.io/russian-travel/">
                             <img src={portfolioLink} alt="Лого ссылки на работу"/>
                         </ExternalLink>
                     </li>
-
                     <li className="about-me__portfolio-item">
                         <p>Одностраничное приложение</p>
                         <ExternalLink className="about-me__portfolio-link" href="http://mestopracticum.students.nomoredomains.club/signin">
@@ -61,7 +58,6 @@ function AboutMe(props) {
                     </li>
                 </ul> 
             </div>
-            
         </div>
     );
 }
