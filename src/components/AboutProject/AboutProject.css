@@ -27,6 +27,11 @@
     margin: 0;
 }
 
+.about-project__timeline div:first-child{
+    background-color:#3DDC84;
+    color: black;
+}
+
 .about-project__timeline{
     display: grid;
     grid-template-columns: 1fr 4fr;

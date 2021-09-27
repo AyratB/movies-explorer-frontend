@@ -38,4 +38,8 @@
     .section__item_type_about-project{
         background-color: #272727;
     }
+
+    .section__item_type_techs{
+        background-color: #202020;        
+    }
 }
