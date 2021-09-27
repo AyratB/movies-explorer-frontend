@@ -1,9 +1,10 @@
 import React from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
 
-import Header from "./../Header/Header.js";
 import Main from "./../Main/Main.js";
 import BreadCrumbsPopup from "./../BreadCrumbsPopup/BreadCrumbsPopup.js";
+import ProtectedRoute from "./../ProtectedRoute/ProtectedRoute.js";
+import Movies from "./../Movies/Movies.js";
 
 import './App.css';
 
@@ -22,29 +23,34 @@ function App() {
   return (
     <div className="app__page">
       <div className="app__container">
-        
-        
-        <Main 
+
+        <Switch>
+
+        <Route exact path="/">
+          <Main isLoggedIn={isLoggedIn} onBreadClick={handleBreadCrumbsPopupClick}/>
+        </Route>
+
+        <Route expract path="/movies">
+          <Movies isLoggedIn={isLoggedIn} onBreadClick={handleBreadCrumbsPopupClick}/>
+        </Route>
+
+        <Route path="/profile">
+        </Route>  
+
+        <Route path="/signin">
+        </Route>
+  
+        <Route path="/signup">
+        </Route>
+
+        {/* <ProtectedRoute
+          expract path="/movies"
           isLoggedIn={isLoggedIn}
-          onBreadClick={handleBreadCrumbsPopupClick}/>
-      
-        
+          onBreadClick={handleBreadCrumbsPopupClick}
+          component={Main}
+        /> */}        
 
-        {/* <Switch>
-
-          <Route path="/signin">
-            <Login autorize={autorize} />
-          </Route>
-
-          <Route path="/signup">
-            <Register register={register} />
-          </Route>
-
-
-
-
-
-      </Switch> */}     
+        </Switch>  
 
       <BreadCrumbsPopup 
           isOpened={isBreadCrumbsPopupOpened}

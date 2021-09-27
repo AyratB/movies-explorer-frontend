@@ -4,6 +4,8 @@ import authorFoto from "./../../images/diploma_author_foto.jpg";
 import { ExternalLink } from 'react-external-link';
 import portfolioLink from "./../../images/portfolio_link_logo.svg";
 
+import Portfolio from "./../Portfolio/Portfolio.js";
+
 function AboutMe(props) {
 
     return (
@@ -35,29 +37,7 @@ function AboutMe(props) {
                 <img className="about-me__author-foto" src={authorFoto} alt="Лого автора"/>
             </article>
 
-            <div className="about-me__portfolio">
-                <h5 className="about-me__portfolio-title">Портфолио</h5>
-                <ul className="about-me__portfolio-links">
-                    <li className="about-me__portfolio-item">
-                        <p>Статичный сайт</p>
-                        <ExternalLink className="about-me__portfolio-link" href="https://ayratb.github.io/how-to-learn/">
-                            <img src={portfolioLink} alt="Лого ссылки на работу"/>
-                        </ExternalLink>
-                    </li>
-                    <li className="about-me__portfolio-item">
-                        <p>Адаптивный сайт</p>
-                        <ExternalLink className="about-me__portfolio-link" href="https://ayratb.github.io/russian-travel/">
-                            <img src={portfolioLink} alt="Лого ссылки на работу"/>
-                        </ExternalLink>
-                    </li>
-                    <li className="about-me__portfolio-item">
-                        <p>Одностраничное приложение</p>
-                        <ExternalLink className="about-me__portfolio-link" href="http://mestopracticum.students.nomoredomains.club/signin">
-                            <img src={portfolioLink} alt="Лого ссылки на работу"/>
-                        </ExternalLink>
-                    </li>
-                </ul> 
-            </div>
+            <Portfolio/>
         </div>
     );
 }

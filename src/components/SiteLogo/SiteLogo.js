@@ -6,7 +6,7 @@ import './SiteLogo.css';
 function SiteLogo(props) {  
 
   return (
-    <Link to="/signup" className="site-logo__link">
+    <Link to="/" className="site-logo__link">
       <img src={headerAccountLogo} alt="Лого аккаунта"/>
     </Link>       
   );

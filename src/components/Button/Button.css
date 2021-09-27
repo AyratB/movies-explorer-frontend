@@ -41,3 +41,11 @@
     background: transparent;
     color: white;
 }
+
+.button_inactive{
+    background-color: white;
+    color: black;
+    opacity: 0.2;
+    border: 1px solid #000000;
+}
+

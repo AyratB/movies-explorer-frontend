@@ -1,0 +1,36 @@
+.form__input{
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    padding: 0;
+    padding-bottom: 13px;
+    color: black;
+}
+
+.form__input_type_error{
+    border-bottom-color: red;
+}
+
+.form__section{
+    position: relative;
+    width: 100%;
+}
+
+.form__span-error{
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    color: #FF0000;
+    position: absolute;
+    opacity: 0;
+    top: calc(100% + 5px);
+    left: 0;
+    transition: opacity 0.3s;
+}
+
+.form__span-error_active{
+    opacity: 1;
+}

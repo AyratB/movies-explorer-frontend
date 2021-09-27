@@ -1,0 +1,10 @@
+.movies{
+    padding: 0 70px 0 70px;
+    background-color: #202020;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    height: 100vh;
+}

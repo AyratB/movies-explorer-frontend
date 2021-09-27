@@ -10,17 +10,17 @@ function CommonLinks(props) {
         <nav> 
             <ul className={`common-links ${props.linksClass}`}>
                 <li>
-                    <NavLink to="/signup" className={props.linkClass} activeClassName="active_common-link">
+                    <NavLink to="/movies" className={props.linkClass} activeClassName="active_common-link">
                          Фильмы
                     </NavLink> 
                 </li>
                 <li>
-                    <NavLink to="/signin" className={props.linkClass} activeClassName="active_common-link">
+                    <NavLink to="/saved-movies" className={props.linkClass} activeClassName="active_common-link">
                         Сохраненные фильмы
                     </NavLink>
                 </li>
                 <li className="common-link__logo">
-                    <NavLink to="/signin" className={props.linkClass}>
+                    <NavLink to="/profile" className={props.linkClass}>
                         <Button 
                             className="button button_type_header-account">
                                 <img src={headerAccountLogo}
