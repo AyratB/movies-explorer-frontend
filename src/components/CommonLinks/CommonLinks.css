@@ -30,7 +30,7 @@
     text-decoration: none;
     transition: 0.5s;
 
-    font-family: Inter;
+    font-family: 'Inter', Arial, sans-serif;
     font-style: normal;
     font-weight: 500;
     font-size: 18px;
@@ -42,7 +42,7 @@
     text-decoration: none;
     transition: 0.5s;
 
-    font-family: Inter;
+    font-family: 'Inter', Arial, sans-serif;
     font-style: normal;
     font-weight: 500;
     font-size: 12px;

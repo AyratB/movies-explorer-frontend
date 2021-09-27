@@ -1,16 +1,16 @@
 import React from "react";
 import './AboutProject.css';
 
-function AboutProject(props) {  
+function AboutProject(props) {
 
     return (
-        <>        
+        <>
             <ul className="about-project__descriptions">
-                <li className="about-project__description">
+                <li>
                     <h4 className="about-project__description-title">Дипломный проект включал 5 этапов</h4>
                     <p className="about-project__description-text">Составление плана, работу над бэкендом, вёрстку, добавление функциональности и финальные доработки.</p>
                 </li>
-                <li className="about-project__description">
+                <li>
                     <h4 className="about-project__description-title">На выполнение диплома ушло 5 недель</h4>
                     <p className="about-project__description-text">У каждого этапа был мягкий и жёсткий дедлайн, которые нужно было соблюдать, чтобы успешно защититься.</p>
                 </li>
