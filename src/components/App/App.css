@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  background-color: #000000;
+  background-color: #202020;
   font-family: 'Inter', Arial, sans-serif;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -15,5 +15,5 @@
 }
 
 .app__container{  
-  min-width: 320px;
+  min-width: 320px; 
 }

@@ -13,6 +13,8 @@ const SearchForm = (props) => {
     function handleSubmit(e) {
         alert("!");
 
+        props.onSubmit();
+
         // if (formValidator) {
         //     formValidator.clearAllFormErrors();
         //     formValidator.makeButtonDisable();
