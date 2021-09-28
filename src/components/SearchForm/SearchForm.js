@@ -20,20 +20,20 @@ const SearchForm = (props) => {
 
         //   clearInputValues();
     }
-
+    
     return (
         <section className="search-form">
             <Form formName="search-form"onSubmit={handleSubmit}>
 
                 <div className="search-form__wrapper">
-
                     <section className="form__section">
                         <input
                             type="text"
                             className="form__input search-form__input"
                             name="search-form-name"
                             id="search-form-name"
-                            placeholder="Фильм"                    
+                            placeholder="Фильм" 
+                            required                 
                             minLength="2"
                             maxLength="40"
                             onChange={handleChange}/>

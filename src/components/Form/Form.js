@@ -20,6 +20,7 @@ const Form = (props) => {
     
     // настройка валидации
     const [formValidator, setValidator] = React.useState({});
+    
     React.useEffect(() => {
         const searchFilmFormValidator = new FormValidator(
             validationConfig,
@@ -29,6 +30,10 @@ const Form = (props) => {
         setValidator(Object.assign(formValidator, searchFilmFormValidator));
     
         searchFilmFormValidator.enableValidation();
+
+        if (formValidator) {
+            formValidator.makeButtonDisable();
+        } 
     }, []);
     // настройка валидации
 
