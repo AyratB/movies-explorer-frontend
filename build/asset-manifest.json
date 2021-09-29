@@ -1,0 +1,32 @@
+{
+  "files": {
+    "main.css": "/static/css/main.8467932f.chunk.css",
+    "main.js": "/static/js/main.24e55df9.chunk.js",
+    "main.js.map": "/static/js/main.24e55df9.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.b1fa6df3.js",
+    "runtime-main.js.map": "/static/js/runtime-main.b1fa6df3.js.map",
+    "static/js/2.dd0ded78.chunk.js": "/static/js/2.dd0ded78.chunk.js",
+    "static/js/2.dd0ded78.chunk.js.map": "/static/js/2.dd0ded78.chunk.js.map",
+    "static/js/3.a5b854c6.chunk.js": "/static/js/3.a5b854c6.chunk.js",
+    "static/js/3.a5b854c6.chunk.js.map": "/static/js/3.a5b854c6.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.8467932f.chunk.css.map": "/static/css/main.8467932f.chunk.css.map",
+    "static/js/2.dd0ded78.chunk.js.LICENSE.txt": "/static/js/2.dd0ded78.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/static/media/Inter-Regular.e148c4a1.woff",
+    "static/media/checkbox-circle.95999c11.svg": "/static/media/checkbox-circle.95999c11.svg",
+    "static/media/Button.css": "/static/media/saved-movie.05d8e33c.svg",
+    "static/media/diploma_author_foto.05eb4ed6.jpg": "/static/media/diploma_author_foto.05eb4ed6.jpg",
+    "static/media/header_account_logo.4a8d88d0.svg": "/static/media/header_account_logo.4a8d88d0.svg",
+    "static/media/header_logo.95abe6ea.svg": "/static/media/header_logo.95abe6ea.svg",
+    "static/media/header_logo_bread-crumbs.111cfc3a.svg": "/static/media/header_logo_bread-crumbs.111cfc3a.svg",
+    "static/media/popup_close_button.128b4b07.svg": "/static/media/popup_close_button.128b4b07.svg",
+    "static/media/portfolio_link_logo.1c63a7f5.svg": "/static/media/portfolio_link_logo.1c63a7f5.svg",
+    "static/media/promo_decor.aca87362.svg": "/static/media/promo_decor.aca87362.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b1fa6df3.js",
+    "static/js/2.dd0ded78.chunk.js",
+    "static/css/main.8467932f.chunk.css",
+    "static/js/main.24e55df9.chunk.js"
+  ]
+}
