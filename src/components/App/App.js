@@ -6,6 +6,7 @@ import BreadCrumbsPopup from "./../BreadCrumbsPopup/BreadCrumbsPopup.js";
 import ProtectedRoute from "./../ProtectedRoute/ProtectedRoute.js";
 import Movies from "./../Movies/Movies.js";
 import Login from "./../Login/Login.js";
+import Register from "./../Register/Register.js";
 
 import { fakeMovieData, savedFakeMovieData } from "./../../utils/constants.js";
 
@@ -76,6 +77,22 @@ function App() {
     //   });
   }
 
+  function register(userEmail, userPassword) {
+    // auth
+    //   .register(userEmail, userPassword)
+    //   .then((res) => {
+    //     handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
+    //     history.push("/signin");
+    //   })
+    //   .catch((err) => {
+    //     handleTooltipPopup(
+    //       true,
+    //       "Что-то пошло не так! Попробуйте ещё раз.",
+    //       true
+    //     );
+    //   });
+  }
+
   const extrenalMoviesSearchHandler = (searchParam, isShort) => {
     setExternalFilteredMovieData(externalFullMovieData.filter(movie => movie.nameRU.includes(searchParam)));
   }
@@ -89,40 +106,40 @@ function App() {
       <div className="app__container">
 
         <Switch>
+          <Route exact path="/">
+            <Main isLoggedIn={isLoggedIn} onBreadClick={handleBreadCrumbsPopupClick}/>
+          </Route>
 
-        <Route exact path="/">
-          <Main isLoggedIn={isLoggedIn} onBreadClick={handleBreadCrumbsPopupClick}/>
-        </Route>
+          <Route expract path="/movies">
+            <Movies 
+              isLoggedIn={isLoggedIn} 
+              onBreadClick={handleBreadCrumbsPopupClick} 
+              // movieCardsData={externalFilteredMovieData}
+              movieCardsData={fakeMovieData}
+              isSavedMovies={false}
+              handleSearchRequest={extrenalMoviesSearchHandler}/>
+          </Route>
 
-        <Route expract path="/movies">
-          <Movies 
-            isLoggedIn={isLoggedIn} 
-            onBreadClick={handleBreadCrumbsPopupClick} 
-            // movieCardsData={externalFilteredMovieData}
-            movieCardsData={fakeMovieData}
-            isSavedMovies={false}
-            handleSearchRequest={extrenalMoviesSearchHandler}/>
-        </Route>
-
-        <Route expract path="/saved-movies">
-          <Movies 
-            isLoggedIn={isLoggedIn} 
-            onBreadClick={handleBreadCrumbsPopupClick} 
-            // movieCardsData={savedFilteredMovieData}
-            movieCardsData={savedFakeMovieData}
-            isSavedMovies={true}
-            handleSearchRequest={savedMoviesSearchHandler}/>
-        </Route>
+          <Route expract path="/saved-movies">
+            <Movies 
+              isLoggedIn={isLoggedIn} 
+              onBreadClick={handleBreadCrumbsPopupClick} 
+              // movieCardsData={savedFilteredMovieData}
+              movieCardsData={savedFakeMovieData}
+              isSavedMovies={true}
+              handleSearchRequest={savedMoviesSearchHandler}/>
+          </Route>
 
         <Route path="/profile">
         </Route>  
 
-        <Route path="/signin">
-          <Login autorize={autorize} />
-        </Route>
+          <Route path="/signin">
+            <Login autorize={autorize} />
+          </Route>
   
-        <Route path="/signup">
-        </Route>
+          <Route path="/signup">
+           <Register autorize={register} />
+          </Route>
 
         {/* <ProtectedRoute
           expract path="/movies"

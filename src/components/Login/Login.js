@@ -22,7 +22,7 @@ function Login(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    props.autorize(userEmail, userPassword);    
+    // props.autorize(userEmail, userPassword);    
   };
 
   return (
@@ -32,11 +32,11 @@ function Login(props) {
 
       <form onSubmit={handleSubmit} className="login__form" name="login">
         <section className="login__section">
-          <label className="login__label" htmlFor="username">Email</label>
+          <label className="login__label" htmlFor="userEmail">Email</label>
           <input
             className="login__input"
-            id="username"
-            name="username"
+            id="userEmail"
+            name="userEmail"
             value={userEmail}
             onChange={handleChange}
           />
