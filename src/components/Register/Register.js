@@ -7,14 +7,14 @@ import { NavLink } from "react-router-dom";
 import SiteLogo from "./../SiteLogo/SiteLogo";
 
 function Register(props) {
-  const [userName, setUserName] = React.useState("");
+  const [userName, setuserName] = React.useState("");
   const [userEmail, setUserEmail] = React.useState("");
   const [userPassword, setUserPassword] = React.useState("");
 
   const handleChange = (e) => {
     const input = e.target;
-    if (input.name === "username") {
-      setUserName(input.value);
+    if (input.name === "userName") {
+      setuserName(input.value);
     } else if (input.name === "userEmail") {
       setUserEmail(input.value);
     } else if (input.name === "password") {
@@ -35,11 +35,11 @@ function Register(props) {
 
       <form onSubmit={handleSubmit} className="register__form" name="register">
         <section className="register__section">
-          <label className="register__label" htmlFor="username">Имя</label>
+          <label className="register__label" htmlFor="userName">Имя</label>
           <input
             className="register__input"
-            id="username"
-            name="username"
+            id="userName"
+            name="userName"
             value={userEmail}
             onChange={handleChange}
           />

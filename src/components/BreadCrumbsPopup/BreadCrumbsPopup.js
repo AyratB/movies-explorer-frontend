@@ -26,7 +26,7 @@ function BreadCrumbsPopup(props) {
             props.onClose();
         }
     };
-
+    
     return (
         
         <article className={`popup ${props.isOpened ? "popup_opened" : ""}`}>
@@ -41,7 +41,8 @@ function BreadCrumbsPopup(props) {
 
                 <CommonLinks 
                     linksClass="common-links_type_popup"
-                    linkClass="common-link_type_popup">
+                    linkClass="common-link_type_popup"
+                    onClick={props.onClose}>
                 </CommonLinks>
             </div>
         </article>

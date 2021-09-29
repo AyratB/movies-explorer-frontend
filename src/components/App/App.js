@@ -8,6 +8,8 @@ import Movies from "./../Movies/Movies.js";
 import Login from "./../Login/Login.js";
 import Register from "./../Register/Register.js";
 
+import Profile from "./../Profile/Profile.js";
+
 import { fakeMovieData, savedFakeMovieData } from "./../../utils/constants.js";
 
 import './App.css';
@@ -93,6 +95,38 @@ function App() {
     //   });
   }
 
+  function logout(userEmail, userPassword) {
+    // auth
+    //   .register(userEmail, userPassword)
+    //   .then((res) => {
+    //     handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
+    //     history.push("/signin");
+    //   })
+    //   .catch((err) => {
+    //     handleTooltipPopup(
+    //       true,
+    //       "Что-то пошло не так! Попробуйте ещё раз.",
+    //       true
+    //     );
+    //   });
+  }
+
+  function editUser(userEmail, userPassword) {
+    // auth
+    //   .register(userEmail, userPassword)
+    //   .then((res) => {
+    //     handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
+    //     history.push("/signin");
+    //   })
+    //   .catch((err) => {
+    //     handleTooltipPopup(
+    //       true,
+    //       "Что-то пошло не так! Попробуйте ещё раз.",
+    //       true
+    //     );
+    //   });
+  }
+
   const extrenalMoviesSearchHandler = (searchParam, isShort) => {
     setExternalFilteredMovieData(externalFullMovieData.filter(movie => movie.nameRU.includes(searchParam)));
   }
@@ -131,7 +165,9 @@ function App() {
           </Route>
 
         <Route path="/profile">
-        </Route>  
+          <Profile logout={logout} editUser={editUser} isLoggedIn={isLoggedIn} 
+            onBreadClick={handleBreadCrumbsPopupClick}/>
+          </Route>  
 
           <Route path="/signin">
             <Login autorize={autorize} />

@@ -154,4 +154,28 @@
     }
 }
 
+.button_type_edit-profile{
+    width: 396px;
+    height: 45px;
+    background-color: transparent;
+    border-radius: 3px;
+    color: white;
+
+    margin-top: 180px;
+}
+
+@media screen and (max-width: 1023px){
+    .button_type_edit-profile{
+        margin-top: 70px;
+    }
+}
+
+@media screen and (max-width: 424px){
+    .button_type_edit-profile{
+        margin-top: 300px;
+        width: 260px;
+    }
+}
+
+
 

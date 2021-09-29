@@ -43,7 +43,7 @@ function MoviesCard(props) {
 
                     {props.isSavedMovies
                         ?   <Button type="button" className="button button_type_card__delete-movie" ariaLabel="Иконка удаления фильма из сохраненных"
-                                onClick={handleDeleteMovie} />
+                                onClick={handleDeleteMovie} style={{visibility: isSaveButtonVisible ? "visible" : "hidden"}}/>
                         
                         : isSaved
                 
