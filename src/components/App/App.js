@@ -53,12 +53,12 @@ function App() {
     }    
   }, [isLoggedIn]); 
 
-  const extrenalFilmsSearchHandler = (searchParam, isShort) => {
-    setExternalFilteredMovieData(externalFullMovieData.filter(film => film.nameRU.includes(searchParam)));
+  const extrenalMoviesSearchHandler = (searchParam, isShort) => {
+    setExternalFilteredMovieData(externalFullMovieData.filter(movie => movie.nameRU.includes(searchParam)));
   }
 
-  const savedFilmsSearchHandler = (searchParam, isShort) => {   
-    setSavedFilteredMovieData(savedFullMovieData.filter(film => film.nameRU.includes(searchParam))); 
+  const savedMoviesSearchHandler = (searchParam, isShort) => {   
+    setSavedFilteredMovieData(savedFullMovieData.filter(movie => movie.nameRU.includes(searchParam))); 
   }
 
   return (
@@ -77,8 +77,8 @@ function App() {
             onBreadClick={handleBreadCrumbsPopupClick} 
             // movieCardsData={externalFilteredMovieData}
             movieCardsData={fakeMovieData}
-            isSavedFilms={false}
-            handleSearchRequest={extrenalFilmsSearchHandler}/>
+            isSavedMovies={false}
+            handleSearchRequest={extrenalMoviesSearchHandler}/>
         </Route>
 
         <Route expract path="/saved-movies">
@@ -87,8 +87,8 @@ function App() {
             onBreadClick={handleBreadCrumbsPopupClick} 
             // movieCardsData={savedFilteredMovieData}
             movieCardsData={savedFakeMovieData}
-            isSavedFilms={true}
-            handleSearchRequest={savedFilmsSearchHandler}/>
+            isSavedMovies={true}
+            handleSearchRequest={savedMoviesSearchHandler}/>
         </Route>
 
         <Route path="/profile">

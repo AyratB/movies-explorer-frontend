@@ -27,7 +27,7 @@
     outline: none;
 }
 
-.button_type_saved-film{
+.button_type_saved-movie{
     width: 72px;
     height: 21px;
     background-color: #313131;
@@ -44,7 +44,7 @@
 }
 
 .button_type_card__saved-icon{
-    background-image: url("./../../images/liked-film.svg");
+    background-image: url("./../../images/saved-movie.svg");
     background-size: contain;
     width: 21px;
     height: 21px;
@@ -82,7 +82,7 @@
     border: 1px solid #000000;
 }
 
-.button_type_add-films{
+.button_type_add-movies{
     align-self: center;
     width: 320px;
     height: 36px;
@@ -99,8 +99,8 @@
     margin-bottom: 80px;
 }
 
-.button_type_card__delete-film{
-    background-image: url("./../../images/delete-film.svg");
+.button_type_card__delete-movie{
+    background-image: url("./../../images/delete-movie.svg");
     background-size: contain;
     width: 21px;
     height: 21px;

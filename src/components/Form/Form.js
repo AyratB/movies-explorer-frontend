@@ -22,14 +22,14 @@ const Form = (props) => {
     const [formValidator, setValidator] = React.useState({});
     
     React.useEffect(() => {
-        const searchFilmFormValidator = new FormValidator(
+        const searchMovieFormValidator = new FormValidator(
             validationConfig,
             document.forms[props.formName]
         );
     
-        setValidator(Object.assign(formValidator, searchFilmFormValidator));
+        setValidator(Object.assign(formValidator, searchMovieFormValidator));
     
-        searchFilmFormValidator.enableValidation();
+        searchMovieFormValidator.enableValidation();
 
         if (formValidator) {
             formValidator.makeButtonDisable();

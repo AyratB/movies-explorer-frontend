@@ -7,14 +7,14 @@ function MoviesCard(props) {
     
     const [isSaved, setIsSaved] = React.useState(false); //имитация
 
-    const handleSaveFilm = () => {
+    const handleSaveMovie = () => {
         
         setIsSaved(true);
-        //   props.onFilmSave(props.cardData);
+        //   props.onMovieSave(props.cardData);
     }
-    const handleDeleteFilm = () => {
+    const handleDeleteMovie = () => {
         setIsSaved(false);
-        // props.onFilmDelete(props.cardData); 
+        // props.onMovieDelete(props.cardData); 
     }
 
     const [isSaveButtonVisible, setIsSaveButtonVisible] = React.useState(false);
@@ -41,17 +41,17 @@ function MoviesCard(props) {
 
                 <div className="card__saving-choice">
 
-                    {props.isSavedFilms
-                        ?   <Button type="button" className="button button_type_card__delete-film" ariaLabel="Иконка удаления фильма из сохраненных"
-                                onClick={handleDeleteFilm} />
+                    {props.isSavedMovies
+                        ?   <Button type="button" className="button button_type_card__delete-movie" ariaLabel="Иконка удаления фильма из сохраненных"
+                                onClick={handleDeleteMovie} />
                         
                         : isSaved
                 
                             ?   <Button type="button" className="button button_type_card__saved-icon" ariaLabel="Иконка сохраненного фильма"
-                                onClick={handleDeleteFilm} />
+                                onClick={handleDeleteMovie} />
     
-                            :   <Button type="button" className="button button_type_saved-film" ariaLabel="Иконка сохранения"
-                                onClick={handleSaveFilm} style={{visibility: isSaveButtonVisible ? "visible" : "hidden"}}>Сохранить</Button>          
+                            :   <Button type="button" className="button button_type_saved-movie" ariaLabel="Иконка сохранения"
+                                onClick={handleSaveMovie} style={{visibility: isSaveButtonVisible ? "visible" : "hidden"}}>Сохранить</Button>          
                     }
                 </div>
             </div>        

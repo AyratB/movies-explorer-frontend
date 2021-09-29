@@ -30,10 +30,7 @@ const Movies = (props) => {
                     ? <Preloader/>
                     : <MoviesCardList 
                         cards={props.movieCardsData}
-                        isSavedFilms={props.isSavedFilms}
-                        
-                        
-                        /> 
+                        isSavedMovies={props.isSavedMovies}/> 
                 }
                       
             </section>

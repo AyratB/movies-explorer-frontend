@@ -15,17 +15,17 @@ const MoviesCardList = (props) => {
                         <MoviesCard
                             key={card._id}
                             cardData={card}
-                            onFilmSave={props.onFilmSave}
-                            onFilmDelete={props.onFilmDelete}                           
-                            isSavedFilms={props.isSavedFilms}
+                            onMovieSave={props.onMovieSave}
+                            onMovieDelete={props.onMovieDelete}                           
+                            isSavedMovies={props.isSavedMovies}
                         />
                     );
                 })}
             </ul>
             
-            {props.isSavedFilms
+            {props.isSavedMovies
                 ? <></>
-                : <Button className="button button_type_add-films">Еще</Button>
+                : <Button className="button button_type_add-movies">Еще</Button>
             }
             
             
