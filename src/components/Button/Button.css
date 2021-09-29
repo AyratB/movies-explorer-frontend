@@ -99,6 +99,15 @@
     margin-bottom: 80px;
 }
 
+.button_type_card__delete-film{
+    background-image: url("./../../images/delete-film.svg");
+    background-size: contain;
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    outline: none;
+    transition: 0.01s;
+}
 
 
 

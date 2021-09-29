@@ -4,9 +4,6 @@ import SearchForm from "./../SearchForm/SearchForm.js";
 import MoviesCardList from "./../MoviesCardList/MoviesCardList.js";
 import Footer from "./../Footer/Footer.js";
 import Preloader from "./../Preloader/Preloader";
-
-import { fakeMovieData } from "./../../utils/constants.js";
-
 import './Movies.css';
 
 const Movies = (props) => {
@@ -15,6 +12,12 @@ const Movies = (props) => {
 
     const handleSearchRequest = (searchParam) => {
         setIsSearchGoing(true);
+
+        //поиск
+        //props.handleSearchRequest();
+
+        //setIsSearchGoing(false);
+        setTimeout(() => setIsSearchGoing(false), 3_000);
     }
 
     return (
@@ -25,7 +28,12 @@ const Movies = (props) => {
 
                 {isSearchGoing
                     ? <Preloader/>
-                    : <MoviesCardList cards={fakeMovieData}/> 
+                    : <MoviesCardList 
+                        cards={props.movieCardsData}
+                        isSavedFilms={props.isSavedFilms}
+                        
+                        
+                        /> 
                 }
                       
             </section>

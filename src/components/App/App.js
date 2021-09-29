@@ -6,6 +6,8 @@ import BreadCrumbsPopup from "./../BreadCrumbsPopup/BreadCrumbsPopup.js";
 import ProtectedRoute from "./../ProtectedRoute/ProtectedRoute.js";
 import Movies from "./../Movies/Movies.js";
 
+import { fakeMovieData, savedFakeMovieData } from "./../../utils/constants.js";
+
 import './App.css';
 
 function App() {
@@ -19,6 +21,45 @@ function App() {
     if (isBreadCrumbsPopupOpened) setIsBreadCrumbsPopupOpened(false);    
   };
 
+  const [externalFullMovieData, setExternalFullMovieData] = React.useState([]); //исходные данные из внешнего источника
+  const [externalFilteredMovieData, setExternalFilteredMovieData] = React.useState([]); //исходные данные из внешнего источника
+
+  //сортированные
+  const [savedFullMovieData, setSavedFullMovieData] = React.useState([]); //исходные данные по сохраненным фильмам
+  const [savedFilteredMovieData, setSavedFilteredMovieData] = React.useState([]); //исходные данные по сохраненным фильмам
+
+  //инициализация данных вначале
+  React.useEffect(() => {
+    // if (isLoggedIn){
+    if (true){
+
+      setExternalFullMovieData(fakeMovieData.slice(0, fakeMovieData.length));
+      setSavedFullMovieData(savedFakeMovieData.slice(0, savedFakeMovieData.length));
+
+      //при первом обращении скачиваем все фильмы один раз
+
+      // Promise.all([api.getUserInfo(), api.getInitialCards()])
+      // .then(([user, cardsData]) => {
+      //   setCurrentState({
+      //     name: user.name,
+      //     about: user.about,
+      //     avatar: user.avatar,
+      //     currentUserId: user._id,
+      //   });
+
+      //   setCards(cardsData);
+      // })
+      // .catch((err) => console.log(err));
+    }    
+  }, [isLoggedIn]); 
+
+  const extrenalFilmsSearchHandler = (searchParam, isShort) => {
+    setExternalFilteredMovieData(externalFullMovieData.filter(film => film.nameRU.includes(searchParam)));
+  }
+
+  const savedFilmsSearchHandler = (searchParam, isShort) => {   
+    setSavedFilteredMovieData(savedFullMovieData.filter(film => film.nameRU.includes(searchParam))); 
+  }
 
   return (
     <div className="app__page">
@@ -31,7 +72,23 @@ function App() {
         </Route>
 
         <Route expract path="/movies">
-          <Movies isLoggedIn={isLoggedIn} onBreadClick={handleBreadCrumbsPopupClick}/>
+          <Movies 
+            isLoggedIn={isLoggedIn} 
+            onBreadClick={handleBreadCrumbsPopupClick} 
+            // movieCardsData={externalFilteredMovieData}
+            movieCardsData={fakeMovieData}
+            isSavedFilms={false}
+            handleSearchRequest={extrenalFilmsSearchHandler}/>
+        </Route>
+
+        <Route expract path="/saved-movies">
+          <Movies 
+            isLoggedIn={isLoggedIn} 
+            onBreadClick={handleBreadCrumbsPopupClick} 
+            // movieCardsData={savedFilteredMovieData}
+            movieCardsData={savedFakeMovieData}
+            isSavedFilms={true}
+            handleSearchRequest={savedFilmsSearchHandler}/>
         </Route>
 
         <Route path="/profile">

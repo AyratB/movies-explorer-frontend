@@ -15,14 +15,20 @@ const MoviesCardList = (props) => {
                         <MoviesCard
                             key={card._id}
                             cardData={card}
-                            onCardLike={props.onCardLike}
-                            onCardDislike={props.onDislike}
+                            onFilmSave={props.onFilmSave}
+                            onFilmDelete={props.onFilmDelete}                           
+                            isSavedFilms={props.isSavedFilms}
                         />
                     );
                 })}
             </ul>
-
-            <Button className="button button_type_add-films">Еще</Button>
+            
+            {props.isSavedFilms
+                ? <></>
+                : <Button className="button button_type_add-films">Еще</Button>
+            }
+            
+            
         </section>
     );
 };

@@ -38,8 +38,8 @@ export class FormValidator {
   };
 
   _showInputError = (input) => {
-    const errorElement = this._form.querySelector(`#${input.id}-error`);
-    errorElement.textContent = input.validationMessage;
+    const errorElement = this._form.querySelector(`#${input.id}-error`);       
+    errorElement.textContent = input.validity.valueMissing ? "Нужно ввести ключевое слово" : input.validationMessage;
     errorElement.classList.add(this._validationConfig.errorClass);
 
     input.classList.add(this._validationConfig.inputErrorClass);
