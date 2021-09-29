@@ -7,7 +7,7 @@ import ProtectedRoute from "./../ProtectedRoute/ProtectedRoute.js";
 import Movies from "./../Movies/Movies.js";
 import Login from "./../Login/Login.js";
 import Register from "./../Register/Register.js";
-
+import PageNotFound from "./../PageNotFound/PageNotFound.js";
 import Profile from "./../Profile/Profile.js";
 
 import { fakeMovieData, savedFakeMovieData } from "./../../utils/constants.js";
@@ -175,6 +175,10 @@ function App() {
   
           <Route path="/signup">
            <Register autorize={register} />
+          </Route>
+
+          <Route path="*">
+           <PageNotFound/>
           </Route>
 
         {/* <ProtectedRoute

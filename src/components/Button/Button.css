@@ -177,5 +177,23 @@
     }
 }
 
+.button_type_to-main{
+    margin-top: 184px;
+    text-decoration: none;
+    color: #4285F4;
+}
+
+@media screen and (max-width: 1023px){
+    .button_type_to-main{
+        margin-top: 220px;
+    }
+}
+
+@media screen and (max-width: 424px){
+    .button_type_to-main{
+        margin-top: 300px;
+    }
+}
+
 
 
