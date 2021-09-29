@@ -5,6 +5,7 @@ import Main from "./../Main/Main.js";
 import BreadCrumbsPopup from "./../BreadCrumbsPopup/BreadCrumbsPopup.js";
 import ProtectedRoute from "./../ProtectedRoute/ProtectedRoute.js";
 import Movies from "./../Movies/Movies.js";
+import Login from "./../Login/Login.js";
 
 import { fakeMovieData, savedFakeMovieData } from "./../../utils/constants.js";
 
@@ -53,6 +54,28 @@ function App() {
     }    
   }, [isLoggedIn]); 
 
+  function autorize(userEmail, userPassword) {
+    // auth
+    //   .authorize(userEmail, userPassword)
+    //   .then((data) => {        
+    //     if (data.token) {
+    //       handleLogin(data.token, userEmail);
+    //       history.push("/");
+    //     }
+    //   })
+    //   .catch((errorStatus) => {
+    //     handleTooltipPopup(
+    //       true,
+    //       errorStatus === 401
+    //         ? "Пользователь с email не найден! Пройдите регистрацию"
+    //         : errorStatus === 400
+    //         ? "Не передано одно из полей. Заполните оба поля"
+    //         : "Что-то пошло не так",
+    //       true
+    //     );
+    //   });
+  }
+
   const extrenalMoviesSearchHandler = (searchParam, isShort) => {
     setExternalFilteredMovieData(externalFullMovieData.filter(movie => movie.nameRU.includes(searchParam)));
   }
@@ -95,6 +118,7 @@ function App() {
         </Route>  
 
         <Route path="/signin">
+          <Login autorize={autorize} />
         </Route>
   
         <Route path="/signup">
