@@ -1,0 +1,37 @@
+/* header styles */
+.header{
+    height: 74px;
+    box-sizing: border-box;
+    font-family: 'Inter', Arial, sans-serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: transparent;
+}
+
+@media screen and (max-width: 1279px){
+    .header{
+        /* height: 70px; */
+    }
+}
+
+@media screen and (max-width: 1023px){
+    .header{
+        /* height: 66px; */
+    }
+}
+
+@media screen and (max-width: 767px){
+    .header{
+        /* height: 60px; */
+    }
+}
+
+@media screen and (max-width: 424px){
+    .header{
+        /* height: 56px; */
+    }
+}
+/* header styles */
+

@@ -1,0 +1,199 @@
+.button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    transition: 0.5s;
+    padding: 0;
+    font-family: 'Inter', Arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    text-align: right;
+    outline: none;
+    border: 0;
+}
+
+.button:hover{
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.button:active,
+.button:focus
+{
+    outline: none;
+}
+
+.button_type_saved-movie{
+    width: 72px;
+    height: 21px;
+    background-color: #313131;
+    border-radius: 30px;
+    font-family: 'Inter', Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 9px;
+    text-align: center;
+    color: white;
+    border: none;
+    transition: 0.01s;
+}
+
+.button_type_card__saved-icon{
+    background-image: url("./../../images/saved-movie.svg");
+    background-size: contain;
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    outline: none;
+    transition: 0.01s;
+}
+
+.button_type_card__saved-icon :hover{
+    cursor: pointer;
+}
+
+.button_type_header-enter{
+    width: 76px;
+    height: 32px;
+    background-color: #3DDC84;
+    border-radius: 3px;
+}
+
+.button_type_header-account{
+    width: 100px;
+    height: 32px;    
+    border: 2px solid rgba(170, 170, 170, .2);
+    box-sizing: border-box;
+    border-radius: 50px;
+    gap: 7px;
+    background: transparent;
+    color: white;
+}
+
+.button_inactive{
+    background-color: white;
+    color: black;
+    opacity: 0.2;
+    border: 1px solid #000000;
+}
+
+.button_type_add-movies{
+    align-self: center;
+    width: 320px;
+    height: 36px;
+    border-radius: 6px;
+    background-color: #2F2F2F;
+    color: white;
+
+    font-family: 'Inter', Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 9px;
+
+    margin-bottom: 80px;
+}
+
+.button_type_card__delete-movie{
+    background-image: url("./../../images/delete-movie.svg");
+    background-size: contain;
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    outline: none;
+    transition: 0.01s;
+}
+
+.button_type_login{
+    width: 396px;
+    height: 45px;
+    background-color: #4285F4;
+    border-radius: 3px;
+    color: white;
+
+    margin-top: 180px;
+}
+
+@media screen and (max-width: 1023px){
+    .button_type_login{
+        margin-top: 70px;
+    }
+}
+
+@media screen and (max-width: 424px){
+    .button_type_login{
+        margin-top: 300px;
+        width: 260px;
+    }
+}
+
+.button_type_register{
+    width: 396px;
+    height: 45px;
+    background-color: #4285F4;
+    border-radius: 3px;
+    color: white;
+
+    margin-top: 180px;
+}
+
+@media screen and (max-width: 1023px){
+    .button_type_register{
+        margin-top: 70px;
+    }
+}
+
+@media screen and (max-width: 424px){
+    .button_type_register{
+        margin-top: 300px;
+        width: 260px;
+    }
+}
+
+.button_type_edit-profile{
+    width: 396px;
+    height: 45px;
+    background-color: transparent;
+    border-radius: 3px;
+    color: white;
+
+    margin-top: 180px;
+}
+
+@media screen and (max-width: 1023px){
+    .button_type_edit-profile{
+        margin-top: 70px;
+    }
+}
+
+@media screen and (max-width: 424px){
+    .button_type_edit-profile{
+        margin-top: 300px;
+        width: 260px;
+    }
+}
+
+.button_type_to-main{
+    margin-top: 184px;
+    text-decoration: none;
+    color: #4285F4;
+}
+
+@media screen and (max-width: 1023px){
+    .button_type_to-main{
+        margin-top: 220px;
+    }
+}
+
+@media screen and (max-width: 424px){
+    .button_type_to-main{
+        margin-top: 300px;
+    }
+}
+
+
+

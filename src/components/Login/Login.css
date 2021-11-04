@@ -1,0 +1,140 @@
+.login{    
+    margin-top: 70px;
+
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    align-self: center;
+}
+
+.login__welcome{
+    font-family: Inter;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 29px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #FFFFFF;
+    margin: 40px 0 40px 0;
+}
+
+.login__signin{
+    display: flex;
+    justify-content: center;    
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+    color: #FFFFFF;
+    gap: 5px;
+}
+
+.login__link{
+    text-decoration: none;
+    transition: 0.5s;
+    color: white;
+}
+
+.login__link:hover{
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.login__input{
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #8B8B8B;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    padding: 0;
+    padding-bottom: 13px;
+    color: #CCCCCC;
+    background-color: transparent;    
+}
+
+.login__form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;    
+}
+
+.login__section{
+    width: 100%;
+}
+
+.login__label{
+    font-family: 'Inter', Arial, sans-serif;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 12px;
+    color: #8B8B8B;
+}
+
+.login__register{
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+}
+
+.login__link-paragraph{
+    margin: 0;
+}
+
+.login__link{
+    text-decoration: none;
+    color: #4285F4;
+    font-family: 'Inter', Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+}
+
+.login__not-register{
+    margin: 0;
+    color: #8B8B8B;
+    font-family: 'Inter', Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+}
+
+@media screen and (max-width: 1023px){
+    .login{    
+        margin-top: 232px;
+    }
+}
+
+@media screen and (max-width: 767px){
+    .login{    
+        margin-top: 150px;
+    }
+}
+
+
+@media screen and (max-width: 424px){
+    .login{    
+        margin-top: 56px;
+        align-items: center
+    }
+
+    .login__welcome{        
+        letter-spacing: 0em;
+        text-align: center;
+        
+        margin: 50px 0 80px 0;
+    }
+
+    .login__link{        
+        font-size: 12px;
+        line-height: 16px;
+    }
+    
+    .login__not-register{
+        font-size: 12px;
+        line-height: 16px;
+    }
+}

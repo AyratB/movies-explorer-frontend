@@ -1,0 +1,8 @@
+.navigation__logo_type_bread-crumbs{
+    transition: 0.5s;
+}
+
+.navigation__logo_type_bread-crumbs:hover{
+    cursor: pointer;
+    opacity: 0.6;
+}

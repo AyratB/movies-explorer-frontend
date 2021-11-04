@@ -1,0 +1,11 @@
+.section-header__title{
+    font-family: 'Inter', Arial, sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 100px;
+    letter-spacing: -4%;
+    margin: 0;
+    color: #FFFFFF;
+
+    border-bottom: 1px solid #DADADA;
+}
