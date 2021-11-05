@@ -16,7 +16,8 @@ import './App.css';
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(true);
+  // const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isBreadCrumbsPopupOpened, setIsBreadCrumbsPopupOpened] = React.useState(false);
 
   const handleBreadCrumbsPopupClick = () => setIsBreadCrumbsPopupOpened(true);
@@ -144,31 +145,6 @@ function App() {
             <Main isLoggedIn={isLoggedIn} onBreadClick={handleBreadCrumbsPopupClick}/>
           </Route>
 
-          <Route expract path="/movies">
-            <Movies 
-              isLoggedIn={isLoggedIn} 
-              onBreadClick={handleBreadCrumbsPopupClick} 
-              // movieCardsData={externalFilteredMovieData}
-              movieCardsData={fakeMovieData}
-              isSavedMovies={false}
-              handleSearchRequest={extrenalMoviesSearchHandler}/>
-          </Route>
-
-          <Route expract path="/saved-movies">
-            <Movies 
-              isLoggedIn={isLoggedIn} 
-              onBreadClick={handleBreadCrumbsPopupClick} 
-              // movieCardsData={savedFilteredMovieData}
-              movieCardsData={savedFakeMovieData}
-              isSavedMovies={true}
-              handleSearchRequest={savedMoviesSearchHandler}/>
-          </Route>
-
-        <Route path="/profile">
-          <Profile logout={logout} editUser={editUser} isLoggedIn={isLoggedIn} 
-            onBreadClick={handleBreadCrumbsPopupClick}/>
-          </Route>  
-
           <Route path="/signin">
             <Login autorize={autorize} />
           </Route>
@@ -176,6 +152,48 @@ function App() {
           <Route path="/signup">
            <Register autorize={register} />
           </Route>
+
+          {/* защищенные авторизацие маршруты */}
+
+          <ProtectedRoute
+            expract path="/movies"
+            isLoggedIn={isLoggedIn}
+            
+            // movieCardsData={externalFilteredMovieData}            
+            onBreadClick={handleBreadCrumbsPopupClick}
+            movieCardsData={fakeMovieData}
+            isSavedMovies={false}
+            handleSearchRequest={extrenalMoviesSearchHandler}
+            
+            component={Movies}
+          /> 
+
+          {/* <Route path="/movies">
+            <Movies 
+              isLoggedIn={isLoggedIn} 
+              onBreadClick={handleBreadCrumbsPopupClick} 
+              // movieCardsData={externalFilteredMovieData}
+              movieCardsData={fakeMovieData}
+              isSavedMovies={false}
+              handleSearchRequest={extrenalMoviesSearchHandler}/>
+          </Route> */}
+
+          <Route path="/saved-movies">
+            <Movies 
+              isLoggedIn={true} 
+              onBreadClick={handleBreadCrumbsPopupClick} 
+              // movieCardsData={savedFilteredMovieData}
+              movieCardsData={savedFakeMovieData}
+              isSavedMovies={true}
+              handleSearchRequest={savedMoviesSearchHandler}/>
+          </Route>
+
+          <Route path="/profile">
+            <Profile logout={logout} editUser={editUser} isLoggedIn={isLoggedIn} 
+              onBreadClick={handleBreadCrumbsPopupClick}/>
+          </Route>  
+
+          
 
           <Route path="*">
            <PageNotFound/>
