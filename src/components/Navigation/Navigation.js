@@ -12,7 +12,7 @@ function Navigation(props) {
                 <nav> 
                     <ul className = "navigation__links">
                         <li>
-                            <Link to="/signup" className="navigation__link">
+                            <Link to="/signup" className="navigation__link_type_register">
                                 Регистрация
                             </Link>
                         </li>

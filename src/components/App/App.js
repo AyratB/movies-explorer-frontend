@@ -12,11 +12,13 @@ import Profile from "./../Profile/Profile.js";
 
 import { fakeMovieData, savedFakeMovieData } from "./../../utils/constants.js";
 
+import { CurrentUserContext } from "./../../contexts/CurrentUserContext";
+
 import './App.css';
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = React.useState(true);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   // const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [isBreadCrumbsPopupOpened, setIsBreadCrumbsPopupOpened] = React.useState(false);
 
@@ -136,8 +138,16 @@ function App() {
     setSavedFilteredMovieData(savedFullMovieData.filter(movie => movie.nameRU.includes(searchParam))); 
   }
 
+  const [currentUser, setCurrentState] = React.useState({
+    name: "Загрузка...",
+    about: "Загрузка...",
+    avatar: "",
+    currentUserId: "",
+  });
+
   return (
-    <div className="app__page">
+    <CurrentUserContext.Provider value={currentUser}>
+      <div className="app__page">
       <div className="app__container">
 
         <Switch>
@@ -157,8 +167,7 @@ function App() {
 
           <ProtectedRoute
             expract path="/movies"
-            isLoggedIn={isLoggedIn}
-            
+            isLoggedIn={isLoggedIn}            
             // movieCardsData={externalFilteredMovieData}            
             onBreadClick={handleBreadCrumbsPopupClick}
             movieCardsData={fakeMovieData}
@@ -166,45 +175,31 @@ function App() {
             handleSearchRequest={extrenalMoviesSearchHandler}
             
             component={Movies}
-          /> 
+          />
 
-          {/* <Route path="/movies">
-            <Movies 
+          <ProtectedRoute
+            expract path="/saved-movies"
+            isLoggedIn={isLoggedIn}            
+            // movieCardsData={externalFilteredMovieData}            
+            onBreadClick={handleBreadCrumbsPopupClick}
+            movieCardsData={savedFakeMovieData}
+            isSavedMovies={true}
+            handleSearchRequest={savedMoviesSearchHandler}            
+            component={Movies}
+          />
+
+          <ProtectedRoute>
+            expract path="/profile"
+            <Profile 
+              logout={logout} 
+              editUser={editUser} 
               isLoggedIn={isLoggedIn} 
-              onBreadClick={handleBreadCrumbsPopupClick} 
-              // movieCardsData={externalFilteredMovieData}
-              movieCardsData={fakeMovieData}
-              isSavedMovies={false}
-              handleSearchRequest={extrenalMoviesSearchHandler}/>
-          </Route> */}
-
-          <Route path="/saved-movies">
-            <Movies 
-              isLoggedIn={true} 
-              onBreadClick={handleBreadCrumbsPopupClick} 
-              // movieCardsData={savedFilteredMovieData}
-              movieCardsData={savedFakeMovieData}
-              isSavedMovies={true}
-              handleSearchRequest={savedMoviesSearchHandler}/>
-          </Route>
-
-          <Route path="/profile">
-            <Profile logout={logout} editUser={editUser} isLoggedIn={isLoggedIn} 
               onBreadClick={handleBreadCrumbsPopupClick}/>
-          </Route>  
-
-          
+          </ProtectedRoute>          
 
           <Route path="*">
            <PageNotFound/>
-          </Route>
-
-        {/* <ProtectedRoute
-          expract path="/movies"
-          isLoggedIn={isLoggedIn}
-          onBreadClick={handleBreadCrumbsPopupClick}
-          component={Main}
-        /> */}        
+          </Route>   
 
         </Switch>  
 
@@ -213,7 +208,8 @@ function App() {
           onClose={closeAllPopups}
           className="common-links_type_popup"/>
       </div>
-    </div>    
+    </div>
+    </CurrentUserContext.Provider>    
   );
 }
 
