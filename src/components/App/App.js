@@ -16,17 +16,60 @@ import { CurrentUserContext } from "./../../contexts/CurrentUserContext";
 
 import './App.css';
 
+import * as mainApi from "./../../utils/MainApi";
+
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  // const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [isBreadCrumbsPopupOpened, setIsBreadCrumbsPopupOpened] = React.useState(false);
+  const history = useHistory();
 
+  const [isBreadCrumbsPopupOpened, setIsBreadCrumbsPopupOpened] = React.useState(false);
+  const [isTooltipPopupOpen, setIsTooltipPopupOpen] = React.useState(false);  
+
+  // открытие попапов
   const handleBreadCrumbsPopupClick = () => setIsBreadCrumbsPopupOpened(true);
+  const handleTooltipPopup = (setOpen, message, isMistake) => {
+    setPopupMessage(message);
+    setIsTooltipPopupOpen(setOpen);
+    setIsTooltipMistake(isMistake);
+  };
+  // открытие попапов
   
   const closeAllPopups = () => {
-    if (isBreadCrumbsPopupOpened) setIsBreadCrumbsPopupOpened(false);    
+    if (isBreadCrumbsPopupOpened) setIsBreadCrumbsPopupOpened(false);
+    if (isTooltipPopupOpen) {
+      setIsTooltipPopupOpen(false);
+      setIsTooltipMistake(false);
+    }   
   };
+
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  
+  function register(userEmail, userPassword, userName) {
+    mainApi
+      .register(userEmail, userPassword, userName)
+      .then((res) => {
+        handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
+        history.push("/signin");
+      })
+      .catch((err) => {
+        handleTooltipPopup(
+          true,
+          "Что-то пошло не так! Попробуйте ещё раз!",
+          true
+        );
+      });
+  }
+  
+
+  // Данные для информационного попапа
+  const [popupMessage, setPopupMessage] = React.useState("");
+  const [isTooltipMistake, setIsTooltipMistake] = React.useState(false);
+  
+  // Данные для информационного попапа
+
+
+  
+  
 
   const [externalFullMovieData, setExternalFullMovieData] = React.useState([]); //исходные данные из внешнего источника
   const [externalFilteredMovieData, setExternalFilteredMovieData] = React.useState([]); //исходные данные из внешнего источника
@@ -58,7 +101,10 @@ function App() {
       // })
       // .catch((err) => console.log(err));
     }    
-  }, [isLoggedIn]); 
+  }, [isLoggedIn]);
+
+  
+
 
   function autorize(userEmail, userPassword) {
     // auth
@@ -82,21 +128,7 @@ function App() {
     //   });
   }
 
-  function register(userEmail, userPassword) {
-    // auth
-    //   .register(userEmail, userPassword)
-    //   .then((res) => {
-    //     handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
-    //     history.push("/signin");
-    //   })
-    //   .catch((err) => {
-    //     handleTooltipPopup(
-    //       true,
-    //       "Что-то пошло не так! Попробуйте ещё раз.",
-    //       true
-    //     );
-    //   });
-  }
+  
 
   function logout(userEmail, userPassword) {
     // auth
@@ -160,7 +192,7 @@ function App() {
           </Route>
   
           <Route path="/signup">
-           <Register autorize={register} />
+            <Register autorize={register} />
           </Route>
 
           {/* защищенные авторизацие маршруты */}

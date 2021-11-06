@@ -7,7 +7,7 @@ export const BASE_URL = "https://api.aburnashev-movies.nomoredomains.club";
 
 // ====================== AUTH ================================
 
-function request({ endPoint, method, body, requestHeaders, credentials }) {
+async function request({ endPoint, method, body, requestHeaders, credentials }) {
     const fetchInit = {
       method: method,
       headers: Object.assign(
@@ -19,10 +19,11 @@ function request({ endPoint, method, body, requestHeaders, credentials }) {
       credentials: credentials
     };
   
-    return fetch(
-      `${BASE_URL}/${endPoint}`,
-      body ? { ...fetchInit, body } : fetchInit
-    ).then((res) => getResponseData(res));
+    const res = await fetch(
+        `${BASE_URL}/${endPoint}`,
+        body ? { ...fetchInit, body } : fetchInit
+    );
+    return getResponseData(res);
 }
 
 function getResponseData(res) {
@@ -30,14 +31,14 @@ function getResponseData(res) {
 }
 
 // регистрация - email, password и name
-export const register = (identifier, password, name) => {
-    return request({
+export const register = async (userEmail, userPassword, userName) => {
+    return await request({
       endPoint: "signup",
       method: "POST",
       body: JSON.stringify({
-        email: identifier,
-        password: password,
-        name: name,
+        email: userEmail,
+        password: userPassword,
+        name: userName,
       }),
       requestHeaders: {
         Accept: "application/json",
