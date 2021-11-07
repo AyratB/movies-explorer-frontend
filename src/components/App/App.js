@@ -3,6 +3,7 @@ import { Route, Switch, useHistory } from "react-router-dom";
 
 import Main from "./../Main/Main.js";
 import BreadCrumbsPopup from "./../BreadCrumbsPopup/BreadCrumbsPopup.js";
+import InfoTooltip from "./../InfoTooltip/InfoTooltip.js";
 import ProtectedRoute from "./../ProtectedRoute/ProtectedRoute.js";
 import Movies from "./../Movies/Movies.js";
 import Login from "./../Login/Login.js";
@@ -36,6 +37,7 @@ function App() {
   
   const closeAllPopups = () => {
     if (isBreadCrumbsPopupOpened) setIsBreadCrumbsPopupOpened(false);
+    debugger;
     if (isTooltipPopupOpen) {
       setIsTooltipPopupOpen(false);
       setIsTooltipMistake(false);
@@ -49,6 +51,7 @@ function App() {
       .register(userEmail, userPassword, userName)
       .then((res) => {
         handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
+        debugger;
         history.push("/signin");
       })
       .catch((err) => {
@@ -60,16 +63,11 @@ function App() {
       });
   }
   
-
   // Данные для информационного попапа
   const [popupMessage, setPopupMessage] = React.useState("");
   const [isTooltipMistake, setIsTooltipMistake] = React.useState(false);
   
-  // Данные для информационного попапа
-
-
-  
-  
+  // Данные для информационного попапа 
 
   const [externalFullMovieData, setExternalFullMovieData] = React.useState([]); //исходные данные из внешнего источника
   const [externalFilteredMovieData, setExternalFilteredMovieData] = React.useState([]); //исходные данные из внешнего источника
@@ -166,7 +164,7 @@ function App() {
     setExternalFilteredMovieData(externalFullMovieData.filter(movie => movie.nameRU.includes(searchParam)));
   }
 
-  const savedMoviesSearchHandler = (searchParam, isShort) => {   
+  const savedMoviesSearchHandler = (searchParam, isShort) => {
     setSavedFilteredMovieData(savedFullMovieData.filter(movie => movie.nameRU.includes(searchParam))); 
   }
 
@@ -180,67 +178,64 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="app__page">
-      <div className="app__container">
+        <div className="app__container">
 
-        <Switch>
-          <Route exact path="/">
-            <Main isLoggedIn={isLoggedIn} onBreadClick={handleBreadCrumbsPopupClick}/>
-          </Route>
+          <Switch>
+            <Route exact path="/">
+              <Main isLoggedIn={isLoggedIn} onBreadClick={handleBreadCrumbsPopupClick}/>
+            </Route>
 
-          <Route path="/signin">
-            <Login autorize={autorize} />
-          </Route>
+            <Route path="/signin">
+              <Login autorize={autorize} />
+            </Route>
   
-          <Route path="/signup">
-            <Register autorize={register} />
-          </Route>
+            <Route path="/signup">
+              <Register register={register} />
+            </Route>
 
-          {/* защищенные авторизацие маршруты */}
+            <ProtectedRoute
+              expract path="/movies"
+              isLoggedIn={isLoggedIn}
+              // movieCardsData={externalFilteredMovieData}
+              onBreadClick={handleBreadCrumbsPopupClick}
+              movieCardsData={fakeMovieData}
+              isSavedMovies={false}
+              handleSearchRequest={extrenalMoviesSearchHandler}
+              component={Movies}
+            />
 
-          <ProtectedRoute
-            expract path="/movies"
-            isLoggedIn={isLoggedIn}            
-            // movieCardsData={externalFilteredMovieData}            
-            onBreadClick={handleBreadCrumbsPopupClick}
-            movieCardsData={fakeMovieData}
-            isSavedMovies={false}
-            handleSearchRequest={extrenalMoviesSearchHandler}
-            
-            component={Movies}
-          />
+            <ProtectedRoute
+              expract path="/saved-movies"
+              isLoggedIn={isLoggedIn}
+              // movieCardsData={externalFilteredMovieData}
+              onBreadClick={handleBreadCrumbsPopupClick}
+              movieCardsData={savedFakeMovieData}
+              isSavedMovies={true}
+              handleSearchRequest={savedMoviesSearchHandler}
+              component={Movies}
+            />
 
-          <ProtectedRoute
-            expract path="/saved-movies"
-            isLoggedIn={isLoggedIn}            
-            // movieCardsData={externalFilteredMovieData}            
-            onBreadClick={handleBreadCrumbsPopupClick}
-            movieCardsData={savedFakeMovieData}
-            isSavedMovies={true}
-            handleSearchRequest={savedMoviesSearchHandler}            
-            component={Movies}
-          />
+            <ProtectedRoute
+              expract path="/profile"
+              logout={logout}
+              editUser={editUser}
+              isLoggedIn={isLoggedIn}
+              onBreadClick={handleBreadCrumbsPopupClick}
+              component={Profile} 
+            />
 
-          <ProtectedRoute>
-            expract path="/profile"
-            <Profile 
-              logout={logout} 
-              editUser={editUser} 
-              isLoggedIn={isLoggedIn} 
-              onBreadClick={handleBreadCrumbsPopupClick}/>
-          </ProtectedRoute>          
+            <Route path="*">
+              <PageNotFound/>
+            </Route>
 
-          <Route path="*">
-           <PageNotFound/>
-          </Route>   
+          </Switch>
 
-        </Switch>  
+          <BreadCrumbsPopup isOpened={isBreadCrumbsPopupOpened} onClose={closeAllPopups} className="common-links_type_popup"/>
 
-      <BreadCrumbsPopup 
-          isOpened={isBreadCrumbsPopupOpened}
-          onClose={closeAllPopups}
-          className="common-links_type_popup"/>
+          <InfoTooltip isOpen={isTooltipPopupOpen} message={popupMessage} onClose={closeAllPopups} isTooltipMistake={isTooltipMistake}/>
+        
+        </div>
       </div>
-    </div>
     </CurrentUserContext.Provider>    
   );
 }
