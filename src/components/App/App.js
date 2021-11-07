@@ -26,6 +26,10 @@ function App() {
   const [isBreadCrumbsPopupOpened, setIsBreadCrumbsPopupOpened] = React.useState(false);
   const [isTooltipPopupOpen, setIsTooltipPopupOpen] = React.useState(false);  
 
+  // Данные для информационного попапа
+  const [popupMessage, setPopupMessage] = React.useState("");
+  const [isTooltipMistake, setIsTooltipMistake] = React.useState(false);
+
   // открытие попапов
   const handleBreadCrumbsPopupClick = () => setIsBreadCrumbsPopupOpened(true);
   const handleTooltipPopup = (setOpen, message, isMistake) => {
@@ -36,8 +40,7 @@ function App() {
   // открытие попапов
   
   const closeAllPopups = () => {
-    if (isBreadCrumbsPopupOpened) setIsBreadCrumbsPopupOpened(false);
-    debugger;
+    if (isBreadCrumbsPopupOpened) setIsBreadCrumbsPopupOpened(false);    
     if (isTooltipPopupOpen) {
       setIsTooltipPopupOpen(false);
       setIsTooltipMistake(false);
@@ -46,12 +49,11 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   
-  function register(userEmail, userPassword, userName) {
+  const register = (userEmail, userPassword, userName) => {
     mainApi
       .register(userEmail, userPassword, userName)
       .then((res) => {
-        handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
-        debugger;
+        handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);        
         history.push("/signin");
       })
       .catch((err) => {
@@ -62,10 +64,51 @@ function App() {
         );
       });
   }
+
+  const handleSuccessLogin = (token, userEmail) => {    
+    setIsLoggedIn(true);
+    localStorage.setItem("token", token);
+
+    //заполнение каких-то данных
+    //setUserEmail(userEmail);
+  }
+
+  const autorize = (userEmail, userPassword) => {
+    mainApi
+      .authorize(userEmail, userPassword)
+      .then((data) => {
+        if (data.token) {
+          handleSuccessLogin(data.token, userEmail);
+          history.push("/");
+        }
+      })
+      .catch((errorStatus) => {
+        handleTooltipPopup(
+          true,
+          errorStatus === 401
+            ? "Пользователь с email не найден! Пройдите регистрацию"
+            : errorStatus === 400
+              ? "Не передано одно из полей. Заполните оба поля"
+              : "Что-то пошло не так",
+          true
+        );
+      });
+  }
+
+  const logout = () => {
+    localStorage.removeItem("token");
+
+    setIsLoggedIn(false);
+
+    // setUserEmail("");
+
+    history.push("/signin");
+  }
   
-  // Данные для информационного попапа
-  const [popupMessage, setPopupMessage] = React.useState("");
-  const [isTooltipMistake, setIsTooltipMistake] = React.useState(false);
+
+  
+  
+  
   
   // Данные для информационного попапа 
 
@@ -104,45 +147,11 @@ function App() {
   
 
 
-  function autorize(userEmail, userPassword) {
-    // auth
-    //   .authorize(userEmail, userPassword)
-    //   .then((data) => {        
-    //     if (data.token) {
-    //       handleLogin(data.token, userEmail);
-    //       history.push("/");
-    //     }
-    //   })
-    //   .catch((errorStatus) => {
-    //     handleTooltipPopup(
-    //       true,
-    //       errorStatus === 401
-    //         ? "Пользователь с email не найден! Пройдите регистрацию"
-    //         : errorStatus === 400
-    //         ? "Не передано одно из полей. Заполните оба поля"
-    //         : "Что-то пошло не так",
-    //       true
-    //     );
-    //   });
-  }
+  
 
   
 
-  function logout(userEmail, userPassword) {
-    // auth
-    //   .register(userEmail, userPassword)
-    //   .then((res) => {
-    //     handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
-    //     history.push("/signin");
-    //   })
-    //   .catch((err) => {
-    //     handleTooltipPopup(
-    //       true,
-    //       "Что-то пошло не так! Попробуйте ещё раз.",
-    //       true
-    //     );
-    //   });
-  }
+  
 
   function editUser(userEmail, userPassword) {
     // auth
@@ -185,12 +194,12 @@ function App() {
               <Main isLoggedIn={isLoggedIn} onBreadClick={handleBreadCrumbsPopupClick}/>
             </Route>
 
-            <Route path="/signin">
-              <Login autorize={autorize} />
-            </Route>
-  
             <Route path="/signup">
               <Register register={register} />
+            </Route>
+
+            <Route path="/signin">
+              <Login autorize={autorize} />
             </Route>
 
             <ProtectedRoute

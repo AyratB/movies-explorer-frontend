@@ -1,12 +1,9 @@
-// обращение к нашему api
-
 export const BASE_URL = "https://api.aburnashev-movies.nomoredomains.club";
 
 // обращение к нашему api на локальной машине
-// export const BASE_URL = "https://api.aburnashev-movies.nomoredomains.club";
+// export const BASE_URL = "http://localhost:3006";
 
 // ====================== AUTH ================================
-
 async function request({ endPoint, method, body, requestHeaders, credentials }) {
     const fetchInit = {
       method: method,
@@ -23,6 +20,7 @@ async function request({ endPoint, method, body, requestHeaders, credentials }) 
         `${BASE_URL}/${endPoint}`,
         body ? { ...fetchInit, body } : fetchInit
     );
+
     return getResponseData(res);
 }
 
@@ -30,7 +28,6 @@ function getResponseData(res) {
     return res.ok ? res.json() : Promise.reject(res.status);
 }
 
-// регистрация - email, password и name
 export const register = async (userEmail, userPassword, userName) => {
     return await request({
       endPoint: "signup",
@@ -46,12 +43,9 @@ export const register = async (userEmail, userPassword, userName) => {
     });
 };
 
-// ====================== AUTH ================================
-
-
-// вход - email, password
-export const authorize = (identifier, password) => {   
-    return request({
+export const authorize = async (identifier, password) => {
+    debugger;
+    return await request({
       endPoint: "signin",
       method: "POST",
       body: JSON.stringify({
@@ -61,11 +55,10 @@ export const authorize = (identifier, password) => {
       credentials: 'include',
     });
 };
-  
+// ====================== AUTH ================================
 
-  
-export const getContent = (token) => {  
-    return request({
+export const getContent = async (token) => {  
+    return await request({
       endPoint: "users/me",
       method: "GET",
       requestHeaders: {

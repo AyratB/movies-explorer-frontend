@@ -7,22 +7,21 @@ import { NavLink } from "react-router-dom";
 import SiteLogo from "./../SiteLogo/SiteLogo";
 
 function Login(props) {
-  const [userEmail, setuserName] = React.useState("");
+  const [userEmail, setUserEmai] = React.useState("");
   const [userPassword, setUserPassword] = React.useState("");
 
-  const handleChange = (e) => {
+  const handleChange = (e) => {    
     const input = e.target;
-    if (input.name === "userName") {
-      setuserName(input.value);
-    } else if (input.name === "password") {
+    if (input.name === "userEmail") {
+      setUserEmai(input.value);
+    } else if (input.name === "userPassword") {
       setUserPassword(input.value);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // props.autorize(userEmail, userPassword);    
+    props.autorize(userEmail, userPassword);    
   };
 
   return (
@@ -46,8 +45,8 @@ function Login(props) {
           <label className="login__label" htmlFor="password">Password</label>
           <input
             className="login__input"
-            id="password"
-            name="password"
+            id="userPassword"
+            name="userPassword"
             value={userPassword}
             onChange={handleChange}
             type="password"
