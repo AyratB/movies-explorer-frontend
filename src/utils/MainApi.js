@@ -44,7 +44,6 @@ export const register = async (userEmail, userPassword, userName) => {
 };
 
 export const authorize = async (identifier, password) => {
-    debugger;
     return await request({
       endPoint: "signin",
       method: "POST",
@@ -55,17 +54,46 @@ export const authorize = async (identifier, password) => {
       credentials: 'include',
     });
 };
-// ====================== AUTH ================================
 
-export const getContent = async (token) => {  
+export const getUserInfo = async (token) => {
     return await request({
       endPoint: "users/me",
       method: "GET",
       requestHeaders: {
         Accept: "application/json",
-        Authorization: `Bearer ${token}`,      
+        Authorization: `Bearer ${token}`,
       },
       credentials: 'include',
     });
 };
+// ====================== AUTH ================================
+
+// ====================== Работа с данными пользователя ================================
+export const updateUserData = async (userEmail, userName) => {
+    return await request({
+      endPoint: "users/me",
+      method: "PATCH",
+      body: JSON.stringify({
+        email: userEmail,
+        name: userName,
+      }),
+      credentials: 'include',
+    });
+};
+
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

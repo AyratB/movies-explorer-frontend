@@ -65,12 +65,15 @@ function App() {
       });
   }
 
-  const handleSuccessLogin = (token, userEmail) => {    
+  const [currentUser, setCurrentState] = React.useState({
+    name: "",
+    email: "",    
+    currentUserId: "",
+  });
+
+  const handleSuccessLogin = (token) => {    
     setIsLoggedIn(true);
     localStorage.setItem("token", token);
-
-    //заполнение каких-то данных
-    //setUserEmail(userEmail);
   }
 
   const autorize = (userEmail, userPassword) => {
@@ -97,14 +100,107 @@ function App() {
 
   const logout = () => {
     localStorage.removeItem("token");
-
     setIsLoggedIn(false);
-
-    // setUserEmail("");
-
     history.push("/signin");
   }
   
+  // проверка на наличие токена и пройденный логин
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      mainApi
+        .getUserInfo(token)
+        .then((res) => {
+
+          setCurrentState({
+            name: res.data.name,
+            email: res.data.email,
+            currentUserId: res.data._id,
+          });
+
+          setIsLoggedIn(true);
+          history.push("/");
+        })
+        .catch((err) => {
+          handleTooltipPopup(true, "Недействительный токен JWT", true);
+
+          localStorage.removeItem("token");
+          setIsLoggedIn(false);
+
+          history.push("/signin");
+        });
+    }
+  }, []);
+
+  //инициализация данных
+  React.useEffect(() => {
+
+    if (isLoggedIn){
+
+      const token = localStorage.getItem("token");
+      if(token){
+        // setExternalFullMovieData(fakeMovieData.slice(0, fakeMovieData.length));
+        // setSavedFullMovieData(savedFakeMovieData.slice(0, savedFakeMovieData.length));
+
+        //при первом обращении скачиваем все фильмы один раз
+
+        // Promise.all([api.getUserInfo(), api.getInitialCards()])
+        Promise.all([mainApi.getUserInfo()])
+        // .then(([user, cardsData]) => {
+        .then(([user]) => {
+
+        setCurrentState({
+          name: user.data.name,
+          email: user.data.email,
+          currentUserId: user.data._id,
+        });
+
+        // setCards(cardsData);
+      })
+      .catch((err) => console.log(err));
+      }
+      else{
+        setIsLoggedIn(false);
+        history.push("/signin");
+      }
+    }    
+  }, [isLoggedIn]);
+
+  function editUser(userEmail, userName) {
+    if(userEmail === "" || userName === ""){
+      handleTooltipPopup(
+        true,
+        "Имя или email не могут быть пустыми",
+        true
+      );
+    } else if(currentUser.email === userEmail && currentUser.name === userName){
+      handleTooltipPopup(
+        true,
+        "Имя и email остались без изменений!",
+        true
+      );
+    } else {
+      mainApi
+        .updateUserData(userEmail, userName)
+        .then((res) => {
+
+          setCurrentState({
+            ...currentUser,
+            name: res.data.name,
+            email: res.data.email,
+          });
+        })
+        .catch((err) => {
+          handleTooltipPopup(
+            true,
+            "Что-то пошло не так! Попробуйте ещё раз!",
+            true
+          );
+        });
+    }
+  }
+
 
   
   
@@ -119,33 +215,6 @@ function App() {
   const [savedFullMovieData, setSavedFullMovieData] = React.useState([]); //исходные данные по сохраненным фильмам
   const [savedFilteredMovieData, setSavedFilteredMovieData] = React.useState([]); //исходные данные по сохраненным фильмам
 
-  //инициализация данных вначале
-  React.useEffect(() => {
-    // if (isLoggedIn){
-    if (true){
-
-      setExternalFullMovieData(fakeMovieData.slice(0, fakeMovieData.length));
-      setSavedFullMovieData(savedFakeMovieData.slice(0, savedFakeMovieData.length));
-
-      //при первом обращении скачиваем все фильмы один раз
-
-      // Promise.all([api.getUserInfo(), api.getInitialCards()])
-      // .then(([user, cardsData]) => {
-      //   setCurrentState({
-      //     name: user.name,
-      //     about: user.about,
-      //     avatar: user.avatar,
-      //     currentUserId: user._id,
-      //   });
-
-      //   setCards(cardsData);
-      // })
-      // .catch((err) => console.log(err));
-    }    
-  }, [isLoggedIn]);
-
-  
-
 
   
 
@@ -153,21 +222,11 @@ function App() {
 
   
 
-  function editUser(userEmail, userPassword) {
-    // auth
-    //   .register(userEmail, userPassword)
-    //   .then((res) => {
-    //     handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
-    //     history.push("/signin");
-    //   })
-    //   .catch((err) => {
-    //     handleTooltipPopup(
-    //       true,
-    //       "Что-то пошло не так! Попробуйте ещё раз.",
-    //       true
-    //     );
-    //   });
-  }
+  
+
+  
+
+  
 
   const extrenalMoviesSearchHandler = (searchParam, isShort) => {
     setExternalFilteredMovieData(externalFullMovieData.filter(movie => movie.nameRU.includes(searchParam)));
@@ -176,13 +235,6 @@ function App() {
   const savedMoviesSearchHandler = (searchParam, isShort) => {
     setSavedFilteredMovieData(savedFullMovieData.filter(movie => movie.nameRU.includes(searchParam))); 
   }
-
-  const [currentUser, setCurrentState] = React.useState({
-    name: "Загрузка...",
-    about: "Загрузка...",
-    avatar: "",
-    currentUserId: "",
-  });
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
