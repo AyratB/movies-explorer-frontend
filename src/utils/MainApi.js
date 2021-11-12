@@ -1,35 +1,10 @@
-export const BASE_URL = "https://api.aburnashev-movies.nomoredomains.club";
-
-// обращение к нашему api на локальной машине
-// export const BASE_URL = "http://localhost:3006";
+import { BASE_MAIN_URL } from "./constants";
+import { request } from "./../utils/commonApi";
 
 // ====================== AUTH ================================
-async function request({ endPoint, method, body, requestHeaders, credentials }) {
-    const fetchInit = {
-      method: method,
-      headers: Object.assign(
-        {
-          "Content-Type": "application/json",
-        },
-        requestHeaders
-      ),
-      credentials: credentials
-    };
-  
-    const res = await fetch(
-        `${BASE_URL}/${endPoint}`,
-        body ? { ...fetchInit, body } : fetchInit
-    );
-
-    return getResponseData(res);
-}
-
-function getResponseData(res) {
-    return res.ok ? res.json() : Promise.reject(res.status);
-}
-
 export const register = async (userEmail, userPassword, userName) => {
     return await request({
+      url: BASE_MAIN_URL,
       endPoint: "signup",
       method: "POST",
       body: JSON.stringify({
@@ -45,6 +20,7 @@ export const register = async (userEmail, userPassword, userName) => {
 
 export const authorize = async (identifier, password) => {
     return await request({
+      url: BASE_MAIN_URL,
       endPoint: "signin",
       method: "POST",
       body: JSON.stringify({
@@ -57,6 +33,7 @@ export const authorize = async (identifier, password) => {
 
 export const getUserInfo = async (token) => {
     return await request({
+      url: BASE_MAIN_URL,
       endPoint: "users/me",
       method: "GET",
       requestHeaders: {
@@ -68,9 +45,10 @@ export const getUserInfo = async (token) => {
 };
 // ====================== AUTH ================================
 
-// ====================== Работа с данными пользователя ================================
+// ====================== Работа с данными пользователя =======
 export const updateUserData = async (userEmail, userName) => {
     return await request({
+      url: BASE_MAIN_URL,
       endPoint: "users/me",
       method: "PATCH",
       body: JSON.stringify({
@@ -80,20 +58,3 @@ export const updateUserData = async (userEmail, userName) => {
       credentials: 'include',
     });
 };
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

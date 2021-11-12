@@ -1,5 +1,11 @@
 export const SIZE_NEED_BREAD_CRUMBS = 768;
 
+export const BASE_MAIN_URL = "https://api.aburnashev-movies.nomoredomains.club";
+// обращение к нашему api на локальной машине
+// export const BASE_URL = "http://localhost:3006";
+
+export const BASE_MOVIES_URL = "https://api.nomoreparties.co/beatfilm-movies";
+
 export const fakeMovieData = [
     {
         "_id": "1",

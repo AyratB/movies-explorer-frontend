@@ -8,17 +8,8 @@ import './Movies.css';
 
 const Movies = (props) => {
 
-    const [isSearchGoing, setIsSearchGoing] = React.useState(false);
-
-    const handleSearchRequest = (searchParam) => {
-        debugger;
-        setIsSearchGoing(true);
-
-        //поиск
-        //props.handleSearchRequest();
-
-        //setIsSearchGoing(false);
-        setTimeout(() => setIsSearchGoing(false), 3_000);
+    const handleSearchRequest = ({searchValue, formCleaner, isChecked}) => {       
+        props.handleSearchRequest(searchValue, formCleaner, isChecked);
     }
 
     return (
@@ -27,13 +18,13 @@ const Movies = (props) => {
                 <Header isLoggedIn={props.isLoggedIn} onBreadClick={props.onBreadClick}/>
                 <SearchForm onSubmit={handleSearchRequest} isSavedFilms={props.isSavedMovies}/>
 
-                {isSearchGoing
+                {props.isMoviesSearchGoing
                     ? <Preloader/>
                     : <MoviesCardList 
                         cards={props.movieCardsData}
                         isSavedMovies={props.isSavedMovies}/> 
                 }
-                      
+
             </section>
             <Footer />
         </>

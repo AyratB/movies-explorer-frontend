@@ -6,33 +6,33 @@ import './Form.css';
 const Form = (props) => {
 
     function handleSubmit(e) {
-        e.preventDefault();    
+        e.preventDefault();
         props.onSubmit();
-    }    
-    
+    }
+
     // настройка валидации
-    const [formValidator, setValidator] = React.useState({});    
+    const [formValidator, setValidator] = React.useState({});
 
     React.useEffect(() => {
-        return () => {            
+        return () => {
             formValidator.clearAllFormErrors();
             formValidator.makeButtonDisable();
-          };    
+          };
       }, []);
-    
+
     React.useEffect(() => {
         const searchMovieFormValidator = new FormValidator(
             validationConfig,
             document.forms[props.formName]
         );
-    
+
         setValidator(Object.assign(formValidator, searchMovieFormValidator));
-    
+
         searchMovieFormValidator.enableValidation();
 
         if (formValidator) {
             formValidator.makeButtonDisable();
-        } 
+        }
     }, []);
     // настройка валидации
 

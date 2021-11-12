@@ -18,13 +18,14 @@ import { CurrentUserContext } from "./../../contexts/CurrentUserContext";
 import './App.css';
 
 import * as mainApi from "./../../utils/MainApi";
+import * as moviesApi from "./../../utils/MoviesApi";
 
 function App() {
 
   const history = useHistory();
 
   const [isBreadCrumbsPopupOpened, setIsBreadCrumbsPopupOpened] = React.useState(false);
-  const [isTooltipPopupOpen, setIsTooltipPopupOpen] = React.useState(false);  
+  const [isTooltipPopupOpen, setIsTooltipPopupOpen] = React.useState(false);
 
   // Данные для информационного попапа
   const [popupMessage, setPopupMessage] = React.useState("");
@@ -201,7 +202,7 @@ function App() {
     }
   }
 
-
+  const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false);
   
   
   
@@ -228,8 +229,19 @@ function App() {
 
   
 
-  const extrenalMoviesSearchHandler = (searchParam, isShort) => {
-    setExternalFilteredMovieData(externalFullMovieData.filter(movie => movie.nameRU.includes(searchParam)));
+  const externalMoviesSearchHandler = (searchValue, formCleaner, isChecked) => {
+    debugger;
+
+    moviesApi
+      .getFilms()
+      .then((res) => {
+        debugger;
+      })
+      .catch((err) => {
+        debugger;
+      });
+
+    // setExternalFilteredMovieData(externalFullMovieData.filter(movie => movie.nameRU.includes(searchParam)));
   }
 
   const savedMoviesSearchHandler = (searchParam, isShort) => {
@@ -261,8 +273,9 @@ function App() {
               onBreadClick={handleBreadCrumbsPopupClick}
               movieCardsData={fakeMovieData}
               isSavedMovies={false}
-              handleSearchRequest={extrenalMoviesSearchHandler}
+              handleSearchRequest={externalMoviesSearchHandler}
               component={Movies}
+              isMoviesSearchGoing={isMoviesSearchGoing}
             />
 
             <ProtectedRoute

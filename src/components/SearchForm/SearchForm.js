@@ -10,14 +10,15 @@ const SearchForm = (props) => {
 
     const { values, handleChange, setValues, clearInputValues } = useForm();
     
-    function handleSubmit(e) {
-        e.preventDefault();
-
+    function handleSubmit() {
         props.onSubmit({
             searchValue: values["search-form-name"],
-            formCleaner: clearInputValues
+            formCleaner: clearInputValues,
+            isChecked: isChecked
         });
     }
+
+    const [isChecked, setIsChecked] = React.useState(false);
 
     React.useEffect(() => {
         setValues({
@@ -25,7 +26,10 @@ const SearchForm = (props) => {
           });
     }, [props.isSavedFilms]);
 
-    
+    const checked = (e) => {
+        setIsChecked(e);
+    }
+
     return (
         <section className="search-form">
             <Form formName="search-form"onSubmit={handleSubmit}>
@@ -38,7 +42,7 @@ const SearchForm = (props) => {
                             name="search-form-name"
                             id="search-form-name"
                             placeholder="Фильм" 
-                            required                 
+                            required
                             minLength="2"
                             maxLength="40"
                             onChange={handleChange}
@@ -47,10 +51,10 @@ const SearchForm = (props) => {
                     </section>
 
                     <Button type="submit" className="button button_type_save-form search-form_save-form">Поиск</Button>
-                </div>            
+                </div>
             </Form>
-            <FilterCheckbox/>
-        </section>               
+            <FilterCheckbox checked={checked}/>
+        </section>
     );
 };
 
