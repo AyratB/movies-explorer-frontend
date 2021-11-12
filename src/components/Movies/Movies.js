@@ -11,6 +11,7 @@ const Movies = (props) => {
     const [isSearchGoing, setIsSearchGoing] = React.useState(false);
 
     const handleSearchRequest = (searchParam) => {
+        debugger;
         setIsSearchGoing(true);
 
         //поиск
@@ -24,7 +25,7 @@ const Movies = (props) => {
         <>
             <section className="movies">
                 <Header isLoggedIn={props.isLoggedIn} onBreadClick={props.onBreadClick}/>
-                <SearchForm onSubmit={handleSearchRequest}/>
+                <SearchForm onSubmit={handleSearchRequest} isSavedFilms={props.isSavedMovies}/>
 
                 {isSearchGoing
                     ? <Preloader/>

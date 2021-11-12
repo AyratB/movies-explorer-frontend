@@ -6,20 +6,19 @@ import './Form.css';
 const Form = (props) => {
 
     function handleSubmit(e) {
-        e.preventDefault();
-    
+        e.preventDefault();    
         props.onSubmit();
-
-        // if (formValidator) {
-        //     formValidator.clearAllFormErrors();
-        //     formValidator.makeButtonDisable();
-        //   }
-
-        //   clearInputValues();
-    }
+    }    
     
     // настройка валидации
-    const [formValidator, setValidator] = React.useState({});
+    const [formValidator, setValidator] = React.useState({});    
+
+    React.useEffect(() => {
+        return () => {            
+            formValidator.clearAllFormErrors();
+            formValidator.makeButtonDisable();
+          };    
+      }, []);
     
     React.useEffect(() => {
         const searchMovieFormValidator = new FormValidator(
@@ -38,7 +37,8 @@ const Form = (props) => {
     // настройка валидации
 
     return (
-        <form className="form" name={props.formName} onSubmit={handleSubmit}>
+        <form className="form" name={props.formName} onSubmit={handleSubmit}
+        onClose={props.onClose}>
             {props.children}
         </form>
     );

@@ -6,22 +6,25 @@ import './SearchForm.css';
 
 import { useForm } from "./../../hooks/useForm";
 
-const SearchForm = (props) => { 
+const SearchForm = (props) => {
+
+    const { values, handleChange, setValues, clearInputValues } = useForm();
     
-    const { values, handleChange, setValues } = useForm();
-
     function handleSubmit(e) {
-        alert("!");
+        e.preventDefault();
 
-        props.onSubmit();
-
-        // if (formValidator) {
-        //     formValidator.clearAllFormErrors();
-        //     formValidator.makeButtonDisable();
-        //   }
-
-        //   clearInputValues();
+        props.onSubmit({
+            searchValue: values["search-form-name"],
+            formCleaner: clearInputValues
+        });
     }
+
+    React.useEffect(() => {
+        setValues({
+            "search-form-name": "",
+          });
+    }, [props.isSavedFilms]);
+
     
     return (
         <section className="search-form">
@@ -38,7 +41,8 @@ const SearchForm = (props) => {
                             required                 
                             minLength="2"
                             maxLength="40"
-                            onChange={handleChange}/>
+                            onChange={handleChange}
+                            value={values["search-form-name"] || ""}/>
                         <span className="form__span-error" id="search-form-name-error"></span>
                     </section>
 
