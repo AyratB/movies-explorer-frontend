@@ -22,7 +22,9 @@ const Movies = (props) => {
                     ? <Preloader/>
                     : <MoviesCardList 
                         cards={props.movieCardsData}
-                        isSavedMovies={props.isSavedMovies}/> 
+                        isSavedMovies={props.isSavedMovies}
+                        totalMoviesCount={props.totalMoviesCount}
+                        addCardsToShow={props.addCardsToShow}/>
                 }
 
             </section>

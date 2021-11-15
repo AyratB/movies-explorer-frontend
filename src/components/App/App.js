@@ -11,8 +11,7 @@ import Register from "./../Register/Register.js";
 import PageNotFound from "./../PageNotFound/PageNotFound.js";
 import Profile from "./../Profile/Profile.js";
 
-import { fakeMovieData, savedFakeMovieData } from "./../../utils/constants.js";
-
+import { savedFakeMovieData } from "./../../utils/constants.js";
 import { CurrentUserContext } from "./../../contexts/CurrentUserContext";
 
 import './App.css';
@@ -111,11 +110,10 @@ function App() {
   }
 
   //-----------работа с фильмами------------------------
-  const [fullMovies, setFullMovies] = React.useState([]);
+  const [fullMovies, setFullMovies] = React.useState([]); // общее количество фильмов
+  const [filteredMovies, setFilteredMovies] = React.useState([]); // фильмы по фильтру
 
 
-
-  const [filteredMovies, setFilteredMovies] = React.useState([]);
   const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false);
 
   const [previousSearchValue, setPreviousSearchValue] = React.useState("");
@@ -139,7 +137,7 @@ function App() {
           setIsLoggedIn(true);
           history.push("/");
         })
-        .catch((err) => {
+        .catch(() => {
           handleTooltipPopup(true, "Недействительный токен JWT", true);
           logout();
         });
@@ -153,7 +151,7 @@ function App() {
       let filteredMovies = JSON.parse(localStorage.getItem("filteredMovies"));
 
       if(filteredMovies && filteredMovies.length > 0){
-        setFilteredMovies(filteredMovies);         
+        setFilteredMovies(filteredMovies);        
       }
     }
   }, []);
@@ -179,12 +177,6 @@ function App() {
         });
     }
   }
- 
-
-  //сортированные
-  const [savedFullMovieData, setSavedFullMovieData] = React.useState([{}]); //исходные данные по сохраненным фильмам
-  const [savedFilteredMovieData, setSavedFilteredMovieData] = React.useState([]); //исходные данные по сохраненным фильмам
-
 
   const moviesSearch = (searchValue, isShortFilm, movies) => {
 
@@ -205,10 +197,17 @@ function App() {
       localStorage.setItem("searchValue", searchValue);
       localStorage.setItem("filteredMovies", JSON.stringify(result));
     }
+    else{
+      setFilteredMoviesByWidth([]);
+      setPreviousSearchValue(searchValue);
+
+      localStorage.setItem("searchValue", searchValue);
+      localStorage.removeItem("filteredMovies");
+    }
   }
 
   const externalMoviesSearchHandler = (searchValue, formCleaner, isShortFilm) => {
-    
+
     if(searchValue === "") {
       handleTooltipPopup(true, "Поле для поиска не может быть пустым!", true);
       return;
@@ -223,7 +222,8 @@ function App() {
     if(fullMovies.length === 0){
       moviesApi
         .getFilms()
-        .then((movies) => {          
+        .then((movies) => {
+          setFullMovies(movies);
           moviesSearch(searchValue, isShortFilm, movies);
         })
         .catch((err) => console.log(err));
@@ -233,13 +233,50 @@ function App() {
     }
   }
 
-
-
-
+  const [filteredMoviesByWidth, setFilteredMoviesByWidth] = React.useState([]);
 
   const savedMoviesSearchHandler = (searchParam, isShort) => {
-    setSavedFilteredMovieData(savedFullMovieData.filter(movie => movie.nameRU.includes(searchParam))); 
+
   }
+
+  React.useEffect(() => {
+    if(filteredMovies.length > 0){
+      recalculateCardsNumber();
+    }
+  }, [filteredMovies]);
+
+  React.useEffect(() => {
+
+    window.addEventListener('resize', recalculateCardsNumber);
+     
+    return () => {
+        window.removeEventListener("resize", recalculateCardsNumber);
+    };
+  }, []);
+
+  const recalculateCardsNumber = () => {
+
+    let totalCardsNumberToShow = window.innerWidth >= 1280
+      ? 12
+      : window.innerWidth < 1280 && window.innerWidth > 760
+        ? 8
+        : 5;
+
+    setFilteredMoviesByWidth(filteredMovies.slice(0, totalCardsNumberToShow));
+  }
+
+  const addCardsToShow = () => {    
+
+    let addCardsNumberToShow = window.innerWidth >= 1280
+      ? 3
+      : window.innerWidth < 1280 && window.innerWidth > 760
+        ? 2
+        : 1;
+
+    setFilteredMoviesByWidth(filteredMovies.slice(0, filteredMoviesByWidth.length + addCardsNumberToShow));
+  }
+
+
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -262,13 +299,19 @@ function App() {
             <ProtectedRoute
               expract path="/movies"
               isLoggedIn={isLoggedIn}
-              movieCardsData={filteredMovies}
+              
+              movieCardsData={filteredMoviesByWidth}
+
               onBreadClick={handleBreadCrumbsPopupClick}
               isSavedMovies={false}
               handleSearchRequest={externalMoviesSearchHandler}
               component={Movies}
               isMoviesSearchGoing={isMoviesSearchGoing}
               previousSearchValue={previousSearchValue ?? ""}
+              recalculateCardsNumber={recalculateCardsNumber}
+
+              totalMoviesCount={filteredMovies.length}
+              addCardsToShow={addCardsToShow}
             />
 
             <ProtectedRoute

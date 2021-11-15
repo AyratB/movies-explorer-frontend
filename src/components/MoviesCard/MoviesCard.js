@@ -33,7 +33,7 @@ function MoviesCard(props) {
                 onMouseEnter={setButtonVisible}
                 onMouseLeave={setButtonUnVisible}>
                 <div
-                    style={ { 
+                    style={ {
                         backgroundImage: `url(${BASE_MOVIES_IMAGE_URL}${props.cardData.image.url})`, 
                         backgroundSize: 'contain', 
                         backgroundRepeat: 'no-repeat',
@@ -55,12 +55,12 @@ function MoviesCard(props) {
                                 onClick={handleSaveMovie} style={{visibility: isSaveButtonVisible ? "visible" : "hidden"}}>Сохранить</Button>          
                     }
                 </div>
-            </div>        
+            </div>
 
             <div className="card__sign">
                 <h3 className="card__description">{props.cardData.nameRU}</h3>
-                <div className="card__timing">{props.cardData.duration}</div>        
-            </div>        
+                <div className="card__timing">{props.cardData.duration}</div>
+            </div>
         </li>
     );
 }

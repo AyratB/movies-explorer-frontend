@@ -10,15 +10,7 @@ const Form = (props) => {
         props.onSubmit();
     }
 
-    // настройка валидации
     const [formValidator, setValidator] = React.useState({});
-
-    React.useEffect(() => {
-        return () => {
-            formValidator.clearAllFormErrors();
-            formValidator.makeButtonDisable();
-          };
-      }, []);
 
     React.useEffect(() => {
         const searchMovieFormValidator = new FormValidator(
@@ -30,15 +22,21 @@ const Form = (props) => {
 
         searchMovieFormValidator.enableValidation();
 
-        if (formValidator) {
+        let previousSearch = props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue;
+
+        if (formValidator && !previousSearch) {
+            debugger;
             formValidator.makeButtonDisable();
         }
+
+        return () => {
+            formValidator.clearAllFormErrors();
+            formValidator.makeButtonDisable();
+        };
     }, []);
-    // настройка валидации
 
     return (
-        <form className="form" name={props.formName} onSubmit={handleSubmit}
-        onClose={props.onClose}>
+        <form className="form" name={props.formName} onSubmit={handleSubmit} onClose={props.onClose}>
             {props.children}
         </form>
     );

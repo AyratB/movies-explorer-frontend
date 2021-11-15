@@ -9,10 +9,11 @@ import { useForm } from "./../../hooks/useForm";
 const SearchForm = (props) => {
 
     const { values, handleChange, setValues, clearInputValues } = useForm();
-    
+
     function handleSubmit() {
+        
         props.onSubmit({
-            searchValue: values["search-form-name"],
+            searchValue: values["search-form-name"] || (props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue),
             formCleaner: clearInputValues,
             isChecked: isChecked
         });
@@ -32,7 +33,7 @@ const SearchForm = (props) => {
 
     return (
         <section className="search-form">
-            <Form formName="search-form"onSubmit={handleSubmit}>
+            <Form formName="search-form" onSubmit={handleSubmit} previousSearchValue={props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue} isSavedFilms={props.isSavedFilms}>
 
                 <div className="search-form__wrapper">
                     <section className="form__section">
@@ -46,7 +47,7 @@ const SearchForm = (props) => {
                             minLength="2"
                             maxLength="40"
                             onChange={handleChange}
-                            value={values["search-form-name"] || props.previousSearchValue || ""}/>
+                            value={values["search-form-name"] || props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue || ""}/>
                         <span className="form__span-error" id="search-form-name-error"></span>
                     </section>
 

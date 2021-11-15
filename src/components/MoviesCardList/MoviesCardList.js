@@ -6,10 +6,6 @@ import './MoviesCardList.css';
 
 const MoviesCardList = (props) => {
 
-    // TODO: c кнопкой еще
-
-    // debugger;
-
     return (
         <section className="movies-cards">
             <ul className="movies-cards__list">
@@ -27,9 +23,9 @@ const MoviesCardList = (props) => {
                 })}
             </ul>
 
-            {props.isSavedMovies
-                ? <></>
-                : <Button className="button button_type_add-movies">Еще</Button>
+            {props.cards.length !== props.totalMoviesCount
+                ? <Button className="button button_type_add-movies" onClick={props.addCardsToShow}>Еще</Button>
+                : <></>
             }
         </section>
     );
