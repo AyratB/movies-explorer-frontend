@@ -2,8 +2,8 @@ import { BASE_MAIN_URL } from "./constants";
 import { request } from "./../utils/commonApi";
 
 // ====================== AUTH ================================
-export const register = async (userEmail, userPassword, userName) => {
-    return await request({
+export const register = (userEmail, userPassword, userName) => {
+    return request({
       url: BASE_MAIN_URL,
       endPoint: "signup",
       method: "POST",
@@ -18,8 +18,8 @@ export const register = async (userEmail, userPassword, userName) => {
     });
 };
 
-export const authorize = async (identifier, password) => {
-    return await request({
+export const authorize = (identifier, password) => {
+    return request({
       url: BASE_MAIN_URL,
       endPoint: "signin",
       method: "POST",
@@ -31,8 +31,8 @@ export const authorize = async (identifier, password) => {
     });
 };
 
-export const getUserInfo = async (token) => {
-    return await request({
+export const getUserInfo = (token) => {
+    return request({
       url: BASE_MAIN_URL,
       endPoint: "users/me",
       method: "GET",
@@ -46,8 +46,8 @@ export const getUserInfo = async (token) => {
 // ====================== AUTH ================================
 
 // ====================== Работа с данными пользователя =======
-export const updateUserData = async (userEmail, userName) => {
-    return await request({
+export const updateUserData = (userEmail, userName) => {
+    return request({
       url: BASE_MAIN_URL,
       endPoint: "users/me",
       method: "PATCH",

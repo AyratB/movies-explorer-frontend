@@ -6,6 +6,10 @@ import './MoviesCardList.css';
 
 const MoviesCardList = (props) => {
 
+    // TODO: c кнопкой еще
+
+    // debugger;
+
     return (
         <section className="movies-cards">
             <ul className="movies-cards__list">
@@ -13,22 +17,20 @@ const MoviesCardList = (props) => {
               
                     return (
                         <MoviesCard
-                            key={card._id}
+                            key={card.id}
                             cardData={card}
                             onMovieSave={props.onMovieSave}
-                            onMovieDelete={props.onMovieDelete}                           
+                            onMovieDelete={props.onMovieDelete}
                             isSavedMovies={props.isSavedMovies}
                         />
                     );
                 })}
             </ul>
-            
+
             {props.isSavedMovies
                 ? <></>
                 : <Button className="button button_type_add-movies">Еще</Button>
             }
-            
-            
         </section>
     );
 };

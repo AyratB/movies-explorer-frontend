@@ -1,10 +1,11 @@
 import React from "react";
 import Button from "./../Button/Button";
+import { BASE_MOVIES_IMAGE_URL } from "./../../utils/constants";
 
 import './MoviesCard.css';
 
 function MoviesCard(props) {
-    
+
     const [isSaved, setIsSaved] = React.useState(false); //имитация
 
     const handleSaveMovie = () => {
@@ -33,7 +34,7 @@ function MoviesCard(props) {
                 onMouseLeave={setButtonUnVisible}>
                 <div
                     style={ { 
-                        backgroundImage: `url(${props.cardData.url})`, 
+                        backgroundImage: `url(${BASE_MOVIES_IMAGE_URL}${props.cardData.image.url})`, 
                         backgroundSize: 'contain', 
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center' }}

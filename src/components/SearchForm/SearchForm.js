@@ -46,7 +46,7 @@ const SearchForm = (props) => {
                             minLength="2"
                             maxLength="40"
                             onChange={handleChange}
-                            value={values["search-form-name"] || ""}/>
+                            value={values["search-form-name"] || props.previousSearchValue || ""}/>
                         <span className="form__span-error" id="search-form-name-error"></span>
                     </section>
 

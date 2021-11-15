@@ -16,7 +16,7 @@ const Movies = (props) => {
         <>
             <section className="movies">
                 <Header isLoggedIn={props.isLoggedIn} onBreadClick={props.onBreadClick}/>
-                <SearchForm onSubmit={handleSearchRequest} isSavedFilms={props.isSavedMovies}/>
+                <SearchForm previousSearchValue={props.previousSearchValue} onSubmit={handleSearchRequest} isSavedFilms={props.isSavedMovies}/>
 
                 {props.isMoviesSearchGoing
                     ? <Preloader/>

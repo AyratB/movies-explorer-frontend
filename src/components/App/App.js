@@ -50,7 +50,7 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   
-  const register = (userEmail, userPassword, userName) => {
+  const register = (userEmail, userPassword, userName) => {    
     mainApi
       .register(userEmail, userPassword, userName)
       .then((res) => {
@@ -100,11 +100,27 @@ function App() {
   }
 
   const logout = () => {
+
     localStorage.removeItem("token");
+    localStorage.removeItem("searchValue");
+    localStorage.removeItem("filteredMovies");
+
     setIsLoggedIn(false);
+
     history.push("/signin");
   }
-  
+
+  //-----------работа с фильмами------------------------
+  const [fullMovies, setFullMovies] = React.useState([]);
+
+
+
+  const [filteredMovies, setFilteredMovies] = React.useState([]);
+  const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false);
+
+  const [previousSearchValue, setPreviousSearchValue] = React.useState("");
+
+
   // проверка на наличие токена и пройденный логин
   React.useEffect(() => {
     const token = localStorage.getItem("token");
@@ -125,62 +141,28 @@ function App() {
         })
         .catch((err) => {
           handleTooltipPopup(true, "Недействительный токен JWT", true);
-
-          localStorage.removeItem("token");
-          setIsLoggedIn(false);
-
-          history.push("/signin");
+          logout();
         });
+
+      const searchValue = localStorage.getItem("searchValue");
+
+      if(searchValue){
+        setPreviousSearchValue(searchValue);
+      }
+
+      let filteredMovies = JSON.parse(localStorage.getItem("filteredMovies"));
+
+      if(filteredMovies && filteredMovies.length > 0){
+        setFilteredMovies(filteredMovies);         
+      }
     }
   }, []);
 
-  //инициализация данных
-  React.useEffect(() => {
-
-    if (isLoggedIn){
-
-      const token = localStorage.getItem("token");
-      if(token){
-        // setExternalFullMovieData(fakeMovieData.slice(0, fakeMovieData.length));
-        // setSavedFullMovieData(savedFakeMovieData.slice(0, savedFakeMovieData.length));
-
-        //при первом обращении скачиваем все фильмы один раз
-
-        // Promise.all([api.getUserInfo(), api.getInitialCards()])
-        Promise.all([mainApi.getUserInfo()])
-        // .then(([user, cardsData]) => {
-        .then(([user]) => {
-
-        setCurrentState({
-          name: user.data.name,
-          email: user.data.email,
-          currentUserId: user.data._id,
-        });
-
-        // setCards(cardsData);
-      })
-      .catch((err) => console.log(err));
-      }
-      else{
-        setIsLoggedIn(false);
-        history.push("/signin");
-      }
-    }    
-  }, [isLoggedIn]);
-
   function editUser(userEmail, userName) {
     if(userEmail === "" || userName === ""){
-      handleTooltipPopup(
-        true,
-        "Имя или email не могут быть пустыми",
-        true
-      );
+      handleTooltipPopup(true, "Имя или email не могут быть пустыми", true);
     } else if(currentUser.email === userEmail && currentUser.name === userName){
-      handleTooltipPopup(
-        true,
-        "Имя и email остались без изменений!",
-        true
-      );
+      handleTooltipPopup(true, "Имя и email остались без изменений!", true);
     } else {
       mainApi
         .updateUserData(userEmail, userName)
@@ -192,57 +174,68 @@ function App() {
             email: res.data.email,
           });
         })
-        .catch((err) => {
-          handleTooltipPopup(
-            true,
-            "Что-то пошло не так! Попробуйте ещё раз!",
-            true
-          );
+        .catch(() => {
+          handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true);
         });
     }
   }
-
-  const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false);
-  
-  
-  
-  
-  // Данные для информационного попапа 
-
-  const [externalFullMovieData, setExternalFullMovieData] = React.useState([]); //исходные данные из внешнего источника
-  const [externalFilteredMovieData, setExternalFilteredMovieData] = React.useState([]); //исходные данные из внешнего источника
+ 
 
   //сортированные
-  const [savedFullMovieData, setSavedFullMovieData] = React.useState([]); //исходные данные по сохраненным фильмам
+  const [savedFullMovieData, setSavedFullMovieData] = React.useState([{}]); //исходные данные по сохраненным фильмам
   const [savedFilteredMovieData, setSavedFilteredMovieData] = React.useState([]); //исходные данные по сохраненным фильмам
 
 
-  
+  const moviesSearch = (searchValue, isShortFilm, movies) => {
 
-  
+    let result = movies.filter(film =>
+      ((film.nameRU ?? "").toLowerCase().includes(searchValue.toLowerCase())
+      || 
+      (film.nameEN ?? "").toLowerCase().includes(searchValue.toLowerCase())));
 
-  
+    if(isShortFilm){
+      result = result.filter(selectedFilm => selectedFilm.duration <= 40);
+    }
 
-  
+    if(result.length > 0){
 
-  
+      setFilteredMovies(result);
+      setPreviousSearchValue(searchValue);
 
-  
-
-  const externalMoviesSearchHandler = (searchValue, formCleaner, isChecked) => {
-    debugger;
-
-    moviesApi
-      .getFilms()
-      .then((res) => {
-        debugger;
-      })
-      .catch((err) => {
-        debugger;
-      });
-
-    // setExternalFilteredMovieData(externalFullMovieData.filter(movie => movie.nameRU.includes(searchParam)));
+      localStorage.setItem("searchValue", searchValue);
+      localStorage.setItem("filteredMovies", JSON.stringify(result));
+    }
   }
+
+  const externalMoviesSearchHandler = (searchValue, formCleaner, isShortFilm) => {
+    
+    if(searchValue === "") {
+      handleTooltipPopup(true, "Поле для поиска не может быть пустым!", true);
+      return;
+    };
+    
+    let previuosSearch = localStorage.getItem("searchValue");
+    if(previuosSearch && previuosSearch === searchValue){
+      handleTooltipPopup(true, "Поменяйте значение поиска", true);
+      return;
+    }
+
+    if(fullMovies.length === 0){
+      moviesApi
+        .getFilms()
+        .then((movies) => {          
+          moviesSearch(searchValue, isShortFilm, movies);
+        })
+        .catch((err) => console.log(err));
+    }
+    else{
+      moviesSearch(searchValue, isShortFilm, fullMovies);
+    }
+  }
+
+
+
+
 
   const savedMoviesSearchHandler = (searchParam, isShort) => {
     setSavedFilteredMovieData(savedFullMovieData.filter(movie => movie.nameRU.includes(searchParam))); 
@@ -269,13 +262,13 @@ function App() {
             <ProtectedRoute
               expract path="/movies"
               isLoggedIn={isLoggedIn}
-              // movieCardsData={externalFilteredMovieData}
+              movieCardsData={filteredMovies}
               onBreadClick={handleBreadCrumbsPopupClick}
-              movieCardsData={fakeMovieData}
               isSavedMovies={false}
               handleSearchRequest={externalMoviesSearchHandler}
               component={Movies}
               isMoviesSearchGoing={isMoviesSearchGoing}
+              previousSearchValue={previousSearchValue ?? ""}
             />
 
             <ProtectedRoute
