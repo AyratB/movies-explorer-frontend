@@ -117,7 +117,7 @@ function App() {
   const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false);
 
   const [previousSearchValue, setPreviousSearchValue] = React.useState("");
-
+  const [connectionErrorMessage, setConnectionErrorMessage] = React.useState("");
 
   // проверка на наличие токена и пройденный логин
   React.useEffect(() => {
@@ -220,13 +220,18 @@ function App() {
     }
 
     if(fullMovies.length === 0){
+
+      setConnectionErrorMessage("");
+
       moviesApi
         .getFilms()
         .then((movies) => {
           setFullMovies(movies);
           moviesSearch(searchValue, isShortFilm, movies);
         })
-        .catch((err) => console.log(err));
+        .catch(() => {
+          setConnectionErrorMessage("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз");
+        });
     }
     else{
       moviesSearch(searchValue, isShortFilm, fullMovies);
@@ -248,7 +253,7 @@ function App() {
   React.useEffect(() => {
 
     window.addEventListener('resize', recalculateCardsNumber);
-     
+
     return () => {
         window.removeEventListener("resize", recalculateCardsNumber);
     };
@@ -312,6 +317,7 @@ function App() {
 
               totalMoviesCount={filteredMovies.length}
               addCardsToShow={addCardsToShow}
+              connectionErrorMessage={connectionErrorMessage}
             />
 
             <ProtectedRoute

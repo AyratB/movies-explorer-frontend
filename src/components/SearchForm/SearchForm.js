@@ -9,11 +9,13 @@ import { useForm } from "./../../hooks/useForm";
 const SearchForm = (props) => {
 
     const { values, handleChange, setValues, clearInputValues } = useForm();
+    
+    const [firstSearchValue, setFirstSearchValue] = React.useState(props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue);
 
     function handleSubmit() {
         
         props.onSubmit({
-            searchValue: values["search-form-name"] || (props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue),
+            searchValue: values["search-form-name"],
             formCleaner: clearInputValues,
             isChecked: isChecked
         });
@@ -24,11 +26,17 @@ const SearchForm = (props) => {
     React.useEffect(() => {
         setValues({
             "search-form-name": "",
-          });
+        });
     }, [props.isSavedFilms]);
 
     const checked = (e) => {
         setIsChecked(e);
+    }
+
+    const handleFormChange = (e) => {
+        props.deleteEmptySearchResult();
+        setFirstSearchValue("");
+        handleChange(e);
     }
 
     return (
@@ -46,8 +54,8 @@ const SearchForm = (props) => {
                             required
                             minLength="2"
                             maxLength="40"
-                            onChange={handleChange}
-                            value={values["search-form-name"] || props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue || ""}/>
+                            onChange={handleFormChange}
+                            value={values["search-form-name"] || firstSearchValue || ""}/>
                         <span className="form__span-error" id="search-form-name-error"></span>
                     </section>
 

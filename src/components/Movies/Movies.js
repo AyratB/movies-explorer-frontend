@@ -8,26 +8,41 @@ import './Movies.css';
 
 const Movies = (props) => {
 
-    const handleSearchRequest = ({searchValue, formCleaner, isChecked}) => {       
+    const [emptySearchWords, setEmptySearchWords] = React.useState("");
+
+    const handleSearchRequest = ({searchValue, formCleaner, isChecked}) => {
+        setEmptySearchWords("Ничего не найдено");     
         props.handleSearchRequest(searchValue, formCleaner, isChecked);
+    }
+
+    const deleteEmptySearchResult = () => {
+        setEmptySearchWords("");
     }
 
     return (
         <>
             <section className="movies">
                 <Header isLoggedIn={props.isLoggedIn} onBreadClick={props.onBreadClick}/>
-                <SearchForm previousSearchValue={props.previousSearchValue} onSubmit={handleSearchRequest} isSavedFilms={props.isSavedMovies}/>
+                <SearchForm previousSearchValue={props.previousSearchValue} onSubmit={handleSearchRequest} isSavedFilms={props.isSavedMovies} deleteEmptySearchResult={deleteEmptySearchResult}/>
 
                 {props.isMoviesSearchGoing
                     ? <Preloader/>
-                    : <MoviesCardList 
-                        cards={props.movieCardsData}
-                        isSavedMovies={props.isSavedMovies}
-                        totalMoviesCount={props.totalMoviesCount}
-                        addCardsToShow={props.addCardsToShow}/>
+                    : props.totalMoviesCount === 0 
+                        ? <div style={ {
+                            'font-size': '18px',
+                            'font-family': 'Inter',
+                            'color': '#FFFFFF',
+                            'text-align': 'center',
+                        }}>{props.connectionErrorMessage ?? emptySearchWords}</div>
+                        : <MoviesCardList 
+                                cards={props.movieCardsData}
+                                isSavedMovies={props.isSavedMovies}
+                                totalMoviesCount={props.totalMoviesCount}
+                                addCardsToShow={props.addCardsToShow}
+                                />
                 }
 
-            </section>
+            </section>    
             <Footer />
         </>
     );
