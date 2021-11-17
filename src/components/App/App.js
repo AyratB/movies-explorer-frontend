@@ -208,13 +208,18 @@ function App() {
 
   const externalMoviesSearchHandler = (searchValue, formCleaner, isShortFilm) => {
 
+    setIsMoviesSearchGoing(true);
+
     if(searchValue === "") {
+      setIsMoviesSearchGoing(false);
       handleTooltipPopup(true, "Поле для поиска не может быть пустым!", true);
       return;
     };
     
     let previuosSearch = localStorage.getItem("searchValue");
     if(previuosSearch && previuosSearch === searchValue){
+      setIsMoviesSearchGoing(false);
+      setConnectionErrorMessage("Поменяйте значение поиска. Поисковый запрос равен предыдущему");
       handleTooltipPopup(true, "Поменяйте значение поиска", true);
       return;
     }
@@ -231,10 +236,14 @@ function App() {
         })
         .catch(() => {
           setConnectionErrorMessage("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз");
+        })
+        .finally(() => {
+          setTimeout(setIsMoviesSearchGoing, 1000, false)
         });
     }
     else{
       moviesSearch(searchValue, isShortFilm, fullMovies);
+      setTimeout(setIsMoviesSearchGoing, 1000, false)
     }
   }
 
@@ -274,9 +283,7 @@ function App() {
 
     let addCardsNumberToShow = window.innerWidth >= 1280
       ? 3
-      : window.innerWidth < 1280 && window.innerWidth > 760
-        ? 2
-        : 1;
+      : 2;
 
     setFilteredMoviesByWidth(filteredMovies.slice(0, filteredMoviesByWidth.length + addCardsNumberToShow));
   }

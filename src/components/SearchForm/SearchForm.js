@@ -9,13 +9,15 @@ import { useForm } from "./../../hooks/useForm";
 const SearchForm = (props) => {
 
     const { values, handleChange, setValues, clearInputValues } = useForm();
+
+    let prevSearchValue = props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue;
     
-    const [firstSearchValue, setFirstSearchValue] = React.useState(props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue);
+    const [firstSearchValue, setFirstSearchValue] = React.useState(prevSearchValue);
 
     function handleSubmit() {
         
         props.onSubmit({
-            searchValue: values["search-form-name"],
+            searchValue: values["search-form-name"] || prevSearchValue,
             formCleaner: clearInputValues,
             isChecked: isChecked
         });

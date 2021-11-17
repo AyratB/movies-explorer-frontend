@@ -7,7 +7,7 @@ import Preloader from "./../Preloader/Preloader";
 import './Movies.css';
 
 const Movies = (props) => {
-
+    
     const [emptySearchWords, setEmptySearchWords] = React.useState("");
 
     const handleSearchRequest = ({searchValue, formCleaner, isChecked}) => {
@@ -29,11 +29,11 @@ const Movies = (props) => {
                     ? <Preloader/>
                     : props.totalMoviesCount === 0 
                         ? <div style={ {
-                            'font-size': '18px',
-                            'font-family': 'Inter',
+                            'fontSize': '18px',
+                            'fontFamily': 'Inter',
                             'color': '#FFFFFF',
-                            'text-align': 'center',
-                        }}>{props.connectionErrorMessage ?? emptySearchWords}</div>
+                            'textAlign': 'center',
+                        }}>{props.connectionErrorMessage || emptySearchWords}</div>
                         : <MoviesCardList 
                                 cards={props.movieCardsData}
                                 isSavedMovies={props.isSavedMovies}
@@ -42,7 +42,7 @@ const Movies = (props) => {
                                 />
                 }
 
-            </section>    
+            </section>
             <Footer />
         </>
     );
