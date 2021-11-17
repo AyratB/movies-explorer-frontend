@@ -25,7 +25,6 @@ const Form = (props) => {
         let previousSearch = props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue;
 
         if (formValidator && !previousSearch) {
-            debugger;
             formValidator.makeButtonDisable();
         }
 

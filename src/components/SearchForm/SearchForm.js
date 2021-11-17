@@ -14,7 +14,7 @@ const SearchForm = (props) => {
     
     const [firstSearchValue, setFirstSearchValue] = React.useState(prevSearchValue);
 
-    function handleSubmit() {
+    function searchFormHandleSubmit() {
         
         props.onSubmit({
             searchValue: values["search-form-name"] || prevSearchValue,
@@ -43,7 +43,7 @@ const SearchForm = (props) => {
 
     return (
         <section className="search-form">
-            <Form formName="search-form" onSubmit={handleSubmit} previousSearchValue={props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue} isSavedFilms={props.isSavedFilms}>
+            <Form formName="search-form" onSubmit={searchFormHandleSubmit} previousSearchValue={props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue} isSavedFilms={props.isSavedFilms}>
 
                 <div className="search-form__wrapper">
                     <section className="form__section">
