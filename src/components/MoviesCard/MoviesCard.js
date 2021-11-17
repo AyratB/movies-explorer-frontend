@@ -6,12 +6,17 @@ import './MoviesCard.css';
 
 function MoviesCard(props) {
 
-    const [isSaved, setIsSaved] = React.useState(false); //имитация
+    debugger;
+
+    // TODO необходимо проверять карточка кликнута или нет
+    //   const isLiked = props.cardData.likes.some(
+    //     (liker) => liker._id === currentUserId
+    //   );
+
+    const [isSaved, setIsSaved] = React.useState(false); //TODO имитация удалить
 
     const handleSaveMovie = () => {
-        
-        setIsSaved(true);
-        //   props.onMovieSave(props.cardData);
+        props.onMovieSave(props.cardData);
     }
     const handleDeleteMovie = () => {
         setIsSaved(false);
@@ -20,9 +25,7 @@ function MoviesCard(props) {
 
     const [isSaveButtonVisible, setIsSaveButtonVisible] = React.useState(false);
   
-    //   const isLiked = props.cardData.likes.some(
-    //     (liker) => liker._id === currentUserId
-    //   );
+    
 
     const setButtonVisible = () => setIsSaveButtonVisible(true);
     const setButtonUnVisible = () => setIsSaveButtonVisible(false);    

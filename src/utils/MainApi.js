@@ -1,4 +1,4 @@
-import { BASE_MAIN_URL } from "./constants";
+import { BASE_MAIN_URL, BASE_MOVIES_IMAGE_URL } from "./constants";
 import { request } from "./../utils/commonApi";
 
 // ====================== AUTH ================================
@@ -45,6 +45,7 @@ export const getUserInfo = (token) => {
 };
 // ====================== AUTH ================================
 
+
 // ====================== Работа с данными пользователя =======
 export const updateUserData = (userEmail, userName) => {
     return request({
@@ -58,3 +59,29 @@ export const updateUserData = (userEmail, userName) => {
       credentials: 'include',
     });
 };
+// ====================== Работа с данными пользователя =======
+
+
+// ====================== Работа с фильмами ===================
+export const saveMovie = (movieData) => {
+  return request({
+    url: BASE_MAIN_URL,
+    endPoint: "movies",
+    method: "POST",
+    body: JSON.stringify({
+      country: movieData.country,
+      director: movieData.director,
+      duration: movieData.duration,
+      year: movieData.year,
+      description: movieData.description,
+      image: `${BASE_MOVIES_IMAGE_URL}${movieData.image.url}`,
+      trailer: movieData.trailerLink,
+      nameRU: movieData.nameRU,
+      nameEN: movieData.nameEN,
+      thumbnail:`${BASE_MOVIES_IMAGE_URL}${movieData.image.formats.thumbnail.url}`,
+      movieId: movieData.id
+    }),
+    credentials: 'include',
+  });
+};
+// ====================== Работа с фильмами ===================

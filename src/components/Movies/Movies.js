@@ -39,6 +39,8 @@ const Movies = (props) => {
                                 isSavedMovies={props.isSavedMovies}
                                 totalMoviesCount={props.totalMoviesCount}
                                 addCardsToShow={props.addCardsToShow}
+                                onMovieSave={props.onMovieSave}
+                                savedMovies={props.savedMovies}
                                 />
                 }
 

@@ -112,10 +112,7 @@ function App() {
   //-----------работа с фильмами------------------------
   const [fullMovies, setFullMovies] = React.useState([]); // общее количество фильмов
   const [filteredMovies, setFilteredMovies] = React.useState([]); // фильмы по фильтру
-
-
-  const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false);
-
+  const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false); // признак поиска
   const [previousSearchValue, setPreviousSearchValue] = React.useState("");
   const [connectionErrorMessage, setConnectionErrorMessage] = React.useState("");
 
@@ -249,9 +246,7 @@ function App() {
 
   const [filteredMoviesByWidth, setFilteredMoviesByWidth] = React.useState([]);
 
-  const savedMoviesSearchHandler = (searchParam, isShort) => {
-
-  }
+  const savedMoviesSearchHandler = (searchParam) => {}
 
   React.useEffect(() => {
     if(filteredMovies.length > 0){
@@ -276,7 +271,8 @@ function App() {
         ? 8
         : 5;
 
-    setFilteredMoviesByWidth(filteredMovies.slice(0, totalCardsNumberToShow));
+    if(filteredMovies.length > 0) // условие нужно, чтобы Реакт успевал прочитать данные при перерендере
+      setFilteredMoviesByWidth(filteredMovies.slice(0, totalCardsNumberToShow));
   }
 
   const addCardsToShow = () => {    
@@ -287,6 +283,21 @@ function App() {
 
     setFilteredMoviesByWidth(filteredMovies.slice(0, filteredMoviesByWidth.length + addCardsNumberToShow));
   }
+
+  const [savedMovies, setSaveddMovies] = React.useState([]); // сохраненные фильмы
+
+  const saveMovieHandler = (cardData) => {    
+    debugger;
+    mainApi
+      .saveMovie(cardData)
+      .then((savedMovie) => {
+        setSaveddMovies([savedMovie, ...savedMovies])
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
 
 
 
@@ -311,9 +322,7 @@ function App() {
             <ProtectedRoute
               expract path="/movies"
               isLoggedIn={isLoggedIn}
-              
               movieCardsData={filteredMoviesByWidth}
-
               onBreadClick={handleBreadCrumbsPopupClick}
               isSavedMovies={false}
               handleSearchRequest={externalMoviesSearchHandler}
@@ -321,10 +330,12 @@ function App() {
               isMoviesSearchGoing={isMoviesSearchGoing}
               previousSearchValue={previousSearchValue ?? ""}
               recalculateCardsNumber={recalculateCardsNumber}
-
               totalMoviesCount={filteredMovies.length}
               addCardsToShow={addCardsToShow}
               connectionErrorMessage={connectionErrorMessage}
+              onMovieSave={saveMovieHandler}
+
+              savedMovies={savedMovies}
             />
 
             <ProtectedRoute

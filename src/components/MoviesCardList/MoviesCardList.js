@@ -18,6 +18,7 @@ const MoviesCardList = (props) => {
                             onMovieSave={props.onMovieSave}
                             onMovieDelete={props.onMovieDelete}
                             isSavedMovies={props.isSavedMovies}
+                            savedMovies={props.savedMovies}
                         />
                     );
                 })}
