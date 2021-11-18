@@ -24,9 +24,9 @@ const MoviesCardList = (props) => {
                 })}
             </ul>
 
-            {props.cards.length !== props.totalMoviesCount
-                ? <Button className="button button_type_add-movies" onClick={props.addCardsToShow}>Еще</Button>
-                : <></>
+            { typeof props.totalMoviesCount === 'undefined' || props.cards.length === props.totalMoviesCount
+                ? <></>
+                : <Button className="button button_type_add-movies" onClick={props.addCardsToShow}>Еще</Button>
             }
         </section>
     );

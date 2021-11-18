@@ -35,7 +35,7 @@
     opacity: 0.6;
 }
 
-.profile__input{    
+.profile__input{
     border: none;
     font-family: 'Inter', Arial, sans-serif;
     font-weight: 400;
@@ -43,7 +43,7 @@
     line-height: 13px;
     text-align: right;
     color: #CCCCCC;
-    background-color: transparent;    
+    background-color: transparent;
     display: flex;
     flex-direction: row;
 }
@@ -52,7 +52,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;    
+    gap: 20px;
 }
 
 .profile__section{
@@ -99,35 +99,41 @@
     line-height: 17px;
 }
 
+@media screen and (max-width: 1280px){
+    .profile{
+        margin-top: 50px;
+    }
+}
+
 @media screen and (max-width: 1023px){
-    .profile{    
-        margin-top: 232px;
+    .profile{
+        margin-top: 75px;
     }
 }
 
 @media screen and (max-width: 767px){
-    .profile{    
+    .profile{
         margin-top: 150px;
     }
 }
 
 
 @media screen and (max-width: 424px){
-    .profile{    
+    .profile{
         margin-top: 56px;
         align-items: center
     }
 
-    .profile__welcome{        
+    .profile__welcome{
         letter-spacing: 0em;
         text-align: center;
         
         margin: 50px 0 80px 0;
     }
 
-    .profile__link{        
+    .profile__link{
         font-size: 12px;
-        line-height: 16px;        
+        line-height: 16px;
     }
     
     .profile__not-register{
@@ -142,19 +148,19 @@
 }
 
 @media screen and (max-width: 1023px){
-    .profile__wrapper{        
+    .profile__wrapper{
         padding: 0 30px 0 30px;
     }
 }
 
 @media screen and (max-width: 767px){
-    .profile__wrapper{        
+    .profile__wrapper{
         padding: 0 20px 0 20px;
     }
 }
 
 @media screen and (max-width: 424px){
-    .profile__wrapper{        
+    .profile__wrapper{
         padding: 0 10px 0 10px;
     }
 }

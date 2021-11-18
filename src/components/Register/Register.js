@@ -5,7 +5,7 @@ import SiteLogo from "./../SiteLogo/SiteLogo";
 import Button from "./../Button/Button";
 import './Register.css';
 
-import { useFormWithValidation } from "./../../hooks/useForm";
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
 function Register(props) {
 
@@ -43,8 +43,9 @@ function Register(props) {
             required
             minLength="2"
             maxLength="30"
+            type="text"
           />
-          <span className={`form__span-error ${errors["register-form-user-name"] ? "form__span-error_active" : ""}`}>{errors["user-name"]}</span>
+          <span className={`form__span-error ${errors["register-form-user-name"] ? "form__span-error_active" : ""}`}>{errors["register-form-user-name"]}</span>
         </section>
         
         <section className="form__section">
@@ -58,7 +59,7 @@ function Register(props) {
             required
             minLength="2"            
           />
-          <span className={`form__span-error ${errors["register-form-user-email"] ? "form__span-error_active" : ""}`}>{errors["user-email"]}</span>
+          <span className={`form__span-error ${errors["register-form-user-email"] ? "form__span-error_active" : ""}`}>{errors["register-form-user-email"]}</span>
         </section>
 
         <section className="form__section">
@@ -73,7 +74,7 @@ function Register(props) {
             required
             minLength="2"
           />
-          <span className={`form__span-error ${errors["register-form-user-password"] ? "form__span-error_active" : ""}`}>{errors["user-password"]}</span>
+          <span className={`form__span-error ${errors["register-form-user-password"] ? "form__span-error_active" : ""}`}>{errors["register-form-user-password"]}</span>
         </section>
 
         <Button

@@ -13,8 +13,8 @@ const FilterCheckbox = (props) => {
     }
 
     return (
-        <div className="checkbox__wrapper" onClick={handleClick}>
-            <div className={`checkbox__body ${isChecked ? "" : "checkbox__body_type_reverse"}`}>
+        <div className="checkbox__wrapper">
+            <div className={`checkbox__body ${isChecked ? "" : "checkbox__body_type_reverse"}`} onClick={handleClick}>
                 <img className="checkbox__checker" alt="Переключатель" src={checkboxCircle}/>
             </div>
             <p className="checkbox__text">Короткометражки</p>

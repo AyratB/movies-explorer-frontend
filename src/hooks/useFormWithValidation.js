@@ -1,22 +1,5 @@
 import React, { useCallback } from "react";
 
-//хук управления формой
-export function useForm() {
-  const [values, setValues] = React.useState({});
-
-  const handleChange = (evt) => {
-    const input = evt.target;
-    const value = input.value;
-    const name = input.name;
-    setValues({ ...values, [name]: value });
-  };
-
-  const clearInputValues = () => setValues({});
-
-  return { values, handleChange, setValues, clearInputValues };
-}
-
-//хук управления формой и валидации формы
 export function useFormWithValidation() {
   const [values, setValues] = React.useState({});
   const [errors, setErrors] = React.useState({});

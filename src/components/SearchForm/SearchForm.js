@@ -1,35 +1,45 @@
 import React from "react";
 import Button from "./../Button/Button";
-import Form from "./../Form/Form";
 import FilterCheckbox from "./../FilterCheckbox/FilterCheckbox";
 import './SearchForm.css';
 
-import { useForm } from "./../../hooks/useForm";
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
 const SearchForm = (props) => {
 
-    const { values, handleChange, setValues, clearInputValues } = useForm();
+    const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation();
 
     let prevSearchValue = props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue;
-    
-    const [firstSearchValue, setFirstSearchValue] = React.useState(prevSearchValue);
 
-    function searchFormHandleSubmit() {
-        
+    const [firstSearchValue, setFirstSearchValue] = React.useState("");
+
+    function searchFormHandleSubmit(e) {
+
+        debugger;
+
+        // TODO поиск по всем фильмам или по сохраненным
+
+        e.preventDefault();
         props.onSubmit({
-            searchValue: values["search-form-name"] || prevSearchValue,
-            formCleaner: clearInputValues,
+            searchValue: values["search-form-search-value"] || firstSearchValue,            
             isChecked: isChecked
         });
-    }
-
-    const [isChecked, setIsChecked] = React.useState(false);
+    }    
 
     React.useEffect(() => {
-        setValues({
-            "search-form-name": "",
-        });
+     
+     setFirstSearchValue();
+     return () => {
+            resetForm();
+        }
+    }, []);
+
+    React.useEffect(() => {
+        setFirstSearchValue(typeof prevSearchValue !== "undefined" ? prevSearchValue : "");
+        resetForm();        
     }, [props.isSavedFilms]);
+
+    const [isChecked, setIsChecked] = React.useState(false);
 
     const checked = (e) => {
         setIsChecked(e);
@@ -43,27 +53,32 @@ const SearchForm = (props) => {
 
     return (
         <section className="search-form">
-            <Form formName="search-form" onSubmit={searchFormHandleSubmit} previousSearchValue={props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue} isSavedFilms={props.isSavedFilms}>
-
+            <form name="search-form" onSubmit={searchFormHandleSubmit}>
                 <div className="search-form__wrapper">
-                    <section className="form__section">
+                    <section className="search-form__section">
                         <input
                             type="text"
-                            className="form__input search-form__input"
-                            name="search-form-name"
-                            id="search-form-name"
+                            className={`search-form__input ${errors["search-form-search-value"] ? "search-form__input_type_error" : ""}`}
+                            name="search-form-search-value"
+                            id="search-form-search-value"
                             placeholder="Фильм" 
                             required
                             minLength="2"
                             maxLength="40"
                             onChange={handleFormChange}
-                            value={values["search-form-name"] || firstSearchValue || ""}/>
-                        <span className="form__span-error" id="search-form-name-error"></span>
+                            value={values["search-form-search-value"] || firstSearchValue || ""}/>
+                        <span className={`search-form__span-error ${errors["search-form-search-value"] ? "search-form__span-error_active" : ""}`}>
+                            {errors["search-form-search-value"]}
+                        </span>
                     </section>
-
-                    <Button type="submit" className="button button_type_save-form search-form_save-form">Поиск</Button>
+                    <Button 
+                        type="submit" 
+                        className={`button button_type_search-movie ${(isValid || firstSearchValue !=="") ? "" : "button_inactive"}`}
+                        disabled={!(isValid || firstSearchValue !=="")}>
+                            Поиск
+                    </Button>
                 </div>
-            </Form>
+            </form>
             <FilterCheckbox checked={checked}/>
         </section>
     );

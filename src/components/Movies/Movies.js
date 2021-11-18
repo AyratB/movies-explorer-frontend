@@ -27,7 +27,7 @@ const Movies = (props) => {
 
                 {props.isMoviesSearchGoing
                     ? <Preloader/>
-                    : props.totalMoviesCount === 0 
+                    : props.totalMoviesCount === 0 || typeof props.totalMoviesCount === "undefined"
                         ? <div style={ {
                             'fontSize': '18px',
                             'fontFamily': 'Inter',

@@ -206,12 +206,6 @@ function App() {
   const externalMoviesSearchHandler = (searchValue, formCleaner, isShortFilm) => {
 
     setIsMoviesSearchGoing(true);
-
-    if(searchValue === "") {
-      setIsMoviesSearchGoing(false);
-      handleTooltipPopup(true, "Поле для поиска не может быть пустым!", true);
-      return;
-    };
     
     let previuosSearch = localStorage.getItem("searchValue");
     if(previuosSearch && previuosSearch === searchValue){
@@ -343,7 +337,7 @@ function App() {
               isLoggedIn={isLoggedIn}
               // movieCardsData={externalFilteredMovieData}
               onBreadClick={handleBreadCrumbsPopupClick}
-              movieCardsData={savedFakeMovieData}
+              movieCardsData={filteredMoviesByWidth}
               isSavedMovies={true}
               handleSearchRequest={savedMoviesSearchHandler}
               component={Movies}

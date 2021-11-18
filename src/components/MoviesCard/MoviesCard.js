@@ -6,8 +6,6 @@ import './MoviesCard.css';
 
 function MoviesCard(props) {
 
-    debugger;
-
     // TODO необходимо проверять карточка кликнута или нет
     //   const isLiked = props.cardData.likes.some(
     //     (liker) => liker._id === currentUserId
