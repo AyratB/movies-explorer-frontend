@@ -20,7 +20,18 @@ export function useFormWithValidation() {
     if(target.name === "register-form-user-email"){
       additionalRegisterFormEmailValidity(target);
     }
+
+    // if(target.name === "search-form-search-value"){
+    //   additionalSearchFormValidity(target);
+    // }
   };
+
+  const additionalSearchFormValidity = (target) => {
+    if(target.validity.tooShort){
+      setErrors({...errors, [target.name]: "Нужно ввести ключевое слово" });
+      setIsValid(false);
+    }
+  }
 
   const additionalRegisterFormNameValidity = (target) => {
     if(!(/[а-яa-z\sё -]/gi.test(target.value) && !(/\d/gi.test(target.value)))){
@@ -45,5 +56,5 @@ export function useFormWithValidation() {
     [setValues, setErrors, setIsValid]
   );
 
-  return { values, handleChange, errors, isValid, resetForm };
+  return { values, handleChange, errors, isValid, resetForm, setErrors };
 }
