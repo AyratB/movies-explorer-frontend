@@ -11,7 +11,6 @@ import Register from "./../Register/Register.js";
 import PageNotFound from "./../PageNotFound/PageNotFound.js";
 import Profile from "./../Profile/Profile.js";
 
-import { savedFakeMovieData } from "./../../utils/constants.js";
 import { CurrentUserContext } from "./../../contexts/CurrentUserContext";
 
 import './App.css';
@@ -40,7 +39,7 @@ function App() {
   // открытие попапов
   
   const closeAllPopups = () => {
-    if (isBreadCrumbsPopupOpened) setIsBreadCrumbsPopupOpened(false);    
+    if (isBreadCrumbsPopupOpened) setIsBreadCrumbsPopupOpened(false);
     if (isTooltipPopupOpen) {
       setIsTooltipPopupOpen(false);
       setIsTooltipMistake(false);
@@ -49,11 +48,11 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   
-  const register = (userEmail, userPassword, userName) => {    
+  const register = (userEmail, userPassword, userName) => {
     mainApi
       .register(userEmail, userPassword, userName)
       .then((res) => {
-        handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);        
+        handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
         history.push("/signin");
       })
       .catch((err) => {
@@ -71,7 +70,7 @@ function App() {
     currentUserId: "",
   });
 
-  const handleSuccessLogin = (token) => {    
+  const handleSuccessLogin = (token) => {
     setIsLoggedIn(true);
     localStorage.setItem("token", token);
   }
@@ -364,7 +363,7 @@ function App() {
         
         </div>
       </div>
-    </CurrentUserContext.Provider>    
+    </CurrentUserContext.Provider>
   );
 }
 

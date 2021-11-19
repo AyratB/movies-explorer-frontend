@@ -9,21 +9,12 @@ import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
 function Register(props) {
 
-  const { values, handleChange, errors, isValid, resetForm } = useFormWithValidation();
+  const { values, handleChange, errors, isValid } = useFormWithValidation();
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.register(values["user-email"], values["user-password"], values["user-name"]);
-    resetForm();
+    props.register(values["register-form-user-email"], values["register-form-user-password"], values["register-form-user-name"]);
   };
-
-  const handleChangeRegisterForm = (e) => {
-
-    //если name - содержит только латиницу, кириллицу, пробел или дефис
-    //если email - соответствует шаблону электронной почты, сторонняя библиотека
-
-    handleChange(e);
-  }
 
   return (
     <div className="register">
@@ -39,7 +30,7 @@ function Register(props) {
             id="register-form-user-name"
             name="register-form-user-name"
             value={values["register-form-user-name"] || ""}
-            onChange={handleChangeRegisterForm}
+            onChange={handleChange}
             required
             minLength="2"
             maxLength="30"
@@ -55,7 +46,7 @@ function Register(props) {
             id="register-form-user-email"
             name="register-form-user-email"
             value={values["register-form-user-email"] || ""}
-            onChange={handleChangeRegisterForm}
+            onChange={handleChange}
             required
             minLength="2"            
           />
