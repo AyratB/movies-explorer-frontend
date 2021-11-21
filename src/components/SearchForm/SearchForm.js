@@ -24,12 +24,17 @@ const SearchForm = (props) => {
             return;
         }
 
+        // проверка на ограничения
+        if(searchValue.length < 2){
+            return;
+        }
+
 
         // TODO поиск по всем фильмам или по сохраненным
 
         
         props.onSubmit({
-            searchValue: searchValue,            
+            searchValue: searchValue,
             isChecked: isChecked
         });
     }    
@@ -61,7 +66,7 @@ const SearchForm = (props) => {
 
     return (
         <section className="search-form">
-            <form name="search-form" onSubmit={searchFormHandleSubmit}>
+            <form name="search-form" onSubmit={searchFormHandleSubmit} noValidate>
                 <div className="search-form__wrapper">
                     <section className="search-form__section">
                         <input
@@ -70,6 +75,8 @@ const SearchForm = (props) => {
                             name="search-form-search-value"
                             id="search-form-search-value"
                             placeholder="Фильм"
+                            minLength="2"
+                            maxLength="40"
                             onChange={handleFormChange}
                             value={values["search-form-search-value"] || firstSearchValue || ""}/>
                         <span className={`search-form__span-error ${errors["search-form-search-value"] ? "search-form__span-error_active" : ""}`}>

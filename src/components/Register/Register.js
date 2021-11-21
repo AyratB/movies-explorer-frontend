@@ -16,6 +16,10 @@ function Register(props) {
     props.register(values["register-form-user-email"], values["register-form-user-password"], values["register-form-user-name"]);
   };
 
+  const handleChangeForm = (e) => {    
+    handleChange(e);
+  }
+
   return (
     <div className="register">
       <SiteLogo className="register__logo"/>
@@ -23,49 +27,50 @@ function Register(props) {
 
       <form onSubmit={handleSubmit} className="register__form" name="register" noValidate>
         
-        <section className="form__section">
+        <section className="register-form__section">
           <label className="register__label" htmlFor="register-form-user-name">Имя</label>
           <input
-            className={`register__input ${errors["register-form-user-name"] ? "form__input_type_error" : ""}`}
+            className={`register__input ${errors["register-form-user-name"] ? "register-form__input_type_error" : ""}`}
             id="register-form-user-name"
             name="register-form-user-name"
             value={values["register-form-user-name"] || ""}
-            onChange={handleChange}
+            onChange={handleChangeForm}
             required
             minLength="2"
             maxLength="30"
             type="text"
+            pattern="^[A-Za-zА-Яа-яЁё\s\-]+$"            
           />
-          <span className={`form__span-error ${errors["register-form-user-name"] ? "form__span-error_active" : ""}`}>{errors["register-form-user-name"]}</span>
+          <span className={`register-form__span-error ${errors["register-form-user-name"] ? "register-form__span-error_active" : ""}`}>{errors["register-form-user-name"]}</span>
         </section>
         
-        <section className="form__section">
+        <section className="register-form__section">
           <label className="register__label" htmlFor="register-form-user-email">Email</label>
           <input
-            className={`register__input ${errors["register-form-user-email"] ? "form__input_type_error" : ""}`}
+            className={`register__input ${errors["register-form-user-email"] ? "register-form__input_type_error" : ""}`}
             id="register-form-user-email"
             name="register-form-user-email"
             value={values["register-form-user-email"] || ""}
-            onChange={handleChange}
+            onChange={handleChangeForm}
             required
-            minLength="2"            
+            minLength="2"
+            type="email"       
           />
-          <span className={`form__span-error ${errors["register-form-user-email"] ? "form__span-error_active" : ""}`}>{errors["register-form-user-email"]}</span>
+          <span className={`register-form__span-error ${errors["register-form-user-email"] ? "register-form__span-error_active" : ""}`}>{errors["register-form-user-email"]}</span>
         </section>
 
-        <section className="form__section">
+        <section className="register-form__section">
           <label className="register__label" htmlFor="register-form-user-password">Password</label>
           <input
-            className={`register__input ${errors["user-password"] ? "form__input_type_error" : ""}`}
+            className={`register__input ${errors["register-form-user-password"] ? "register-form__input_type_error" : ""}`}
             id="register-form-user-password"
             name="register-form-user-password"
             value={values["register-form-user-password"] || ""}
-            onChange={handleChange}
+            onChange={handleChangeForm}
             type="password"
             required
-            minLength="2"
-          />
-          <span className={`form__span-error ${errors["register-form-user-password"] ? "form__span-error_active" : ""}`}>{errors["register-form-user-password"]}</span>
+            minLength="2"/>
+          <span className={`register-form__span-error ${errors["register-form-user-password"] ? "register-form__span-error_active" : ""}`}>{errors["register-form-user-password"]}</span>
         </section>
 
         <Button

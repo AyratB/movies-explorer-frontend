@@ -81,7 +81,7 @@ function App() {
       .then((data) => {
         if (data.token) {
           handleSuccessLogin(data.token, userEmail);
-          history.push("/");
+          history.push("/movies");
         }
       })
       .catch((errorStatus) => {

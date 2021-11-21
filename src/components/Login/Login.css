@@ -21,7 +21,7 @@
 
 .login__signin{
     display: flex;
-    justify-content: center;    
+    justify-content: center;
     font-family: Inter;
     font-style: normal;
     font-weight: normal;
@@ -52,7 +52,7 @@
     padding: 0;
     padding-bottom: 13px;
     color: #CCCCCC;
-    background-color: transparent;    
+    background-color: transparent;
 }
 
 .login__form{
@@ -64,6 +64,7 @@
 
 .login__section{
     width: 100%;
+    position: relative;
 }
 
 .login__label{
@@ -102,37 +103,73 @@
     line-height: 17px;
 }
 
+.login-form__input{
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 0;
+    padding-bottom: 13px;
+    color: black;
+}
+
+.login-form__input_type_error{
+    border-bottom-color: red;
+}
+
+.login-form__section{
+    position: relative;
+    width: 100%;
+}
+
+.login-form__span-error{
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    color: #FF0000;
+    position: absolute;
+    opacity: 0;
+    top: calc(100% + 5px);
+    left: 0;
+    transition: opacity 0.3s;
+}
+
+.login-form__span-error_active{
+    opacity: 1;
+}
+
 @media screen and (max-width: 1023px){
-    .login{    
+    .login{
         margin-top: 232px;
     }
 }
 
 @media screen and (max-width: 767px){
-    .login{    
+    .login{
         margin-top: 150px;
     }
 }
 
 
 @media screen and (max-width: 424px){
-    .login{    
+    .login{
         margin-top: 56px;
         align-items: center
     }
 
-    .login__welcome{        
+    .login__welcome{
         letter-spacing: 0em;
         text-align: center;
-        
         margin: 50px 0 80px 0;
     }
 
-    .login__link{        
+    .login__link{
         font-size: 12px;
         line-height: 16px;
     }
-    
+
     .login__not-register{
         font-size: 12px;
         line-height: 16px;

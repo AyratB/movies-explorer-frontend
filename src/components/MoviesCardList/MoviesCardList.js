@@ -10,7 +10,7 @@ const MoviesCardList = (props) => {
         <section className="movies-cards">
             <ul className="movies-cards__list">
                 {props.cards.map((card) => {
-              
+
                     return (
                         <MoviesCard
                             key={card.id}
