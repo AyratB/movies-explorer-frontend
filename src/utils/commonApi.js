@@ -14,13 +14,8 @@ export const request = ({ url, endPoint, method, body, requestHeaders, credentia
         ? `${url}/${endPoint}`
         : `${url}`;
 
-    return fetch(
-      path,
-      body ? { ...fetchInit, body } : fetchInit
-      )
+    return fetch(path, body ? { ...fetchInit, body } : fetchInit)
       .then((res) => getResponseData(res));
 }
 
-function getResponseData(res) {
-    return res.ok ? res.json() : Promise.reject(res.status);
-}
+const getResponseData = (res) =>  res.ok ? res.json() : Promise.reject(res.status);

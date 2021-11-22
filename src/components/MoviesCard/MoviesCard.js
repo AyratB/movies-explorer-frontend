@@ -21,7 +21,7 @@ function MoviesCard(props) {
 
     const [isSaveButtonVisible, setIsSaveButtonVisible] = React.useState(false);
     const setButtonVisible = () => setIsSaveButtonVisible(true);
-    const setButtonUnVisible = () => setIsSaveButtonVisible(false);    
+    const setButtonUnVisible = () => setIsSaveButtonVisible(false);
 
     return (
         <li className="card">
@@ -30,7 +30,7 @@ function MoviesCard(props) {
                 onMouseLeave={setButtonUnVisible}>
                 <div
                     style={ {
-                        backgroundImage: `url(${BASE_MOVIES_IMAGE_URL}${props.cardData.image.url})`, 
+                        backgroundImage: `url(${BASE_MOVIES_IMAGE_URL}${props.cardData.image.url})`,
                         backgroundSize: 'contain', 
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center' }}
@@ -45,10 +45,10 @@ function MoviesCard(props) {
                         : isSavedMovie
 
                             ?   <Button type="button" className="button button_type_card__saved-icon" ariaLabel="Иконка сохраненного фильма"
-                                onClick={handleDeleteMovie} />
+                                    onClick={handleDeleteMovie} />
 
                             :   <Button type="button" className="button button_type_saved-movie" ariaLabel="Иконка сохранения"
-                                onClick={handleSaveMovie} style={{visibility: isSaveButtonVisible ? "visible" : "hidden"}}>Сохранить</Button>          
+                                    onClick={handleSaveMovie} style={{visibility: isSaveButtonVisible ? "visible" : "hidden"}}>Сохранить</Button>
                     }
                 </div>
             </div>

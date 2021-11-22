@@ -279,8 +279,7 @@ function App() {
 
   const [savedMovies, setSaveddMovies] = React.useState([]); // сохраненные фильмы
 
-//получение фильмов пользователя
-
+  //получение фильмов пользователя
   React.useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -288,7 +287,7 @@ function App() {
       mainApi
         .getMovies()
         .then((res) => {          
-          setSaveddMovies([...res.data, ...savedMovies]);          
+          setSaveddMovies([...res.data, ...savedMovies]);
         })
         .catch((err) => {
           console.log(err);
@@ -301,7 +300,7 @@ function App() {
     mainApi
       .saveMovie(movie)
       .then((savedMovie) => {
-        setSaveddMovies([savedMovie, ...savedMovies])        
+        setSaveddMovies([savedMovie, ...savedMovies])
       })
       .catch((err) => {
         console.log(err);
@@ -309,18 +308,15 @@ function App() {
   }
 
   const deleteMovieHandler = (movieId) => {
-    
     mainApi
       .deleteMovies(movieId)
-      .then((res) => {
-        debugger;
+      .then((deletedMovie) => {
+        setSaveddMovies(savedMovies.filter(movie => movie.movieId !== deletedMovie.movieId));
       })
       .catch((err) => {
-        debugger;
         console.log(err);
       });
   }
-
 
 
 
@@ -356,11 +352,9 @@ function App() {
               totalMoviesCount={filteredMovies.length}
               addCardsToShow={addCardsToShow}
               connectionErrorMessage={connectionErrorMessage}
-              
               onMovieSave={saveMovieHandler}
               onMovieDelete={deleteMovieHandler}
-
-              savedMovies={savedMovies}              
+              savedMovies={savedMovies}
             />
 
             <ProtectedRoute

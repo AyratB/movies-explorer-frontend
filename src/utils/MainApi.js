@@ -95,7 +95,6 @@ export const getMovies = () => {
 };
 
 export const deleteMovies = (movieId) => {
-  debugger;
   return request({
     url: BASE_MAIN_URL,
     endPoint: `movies/${movieId}`,
