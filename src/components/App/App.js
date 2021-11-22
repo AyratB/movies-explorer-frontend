@@ -150,7 +150,7 @@ function App() {
         setFilteredMovies(filteredMovies);        
       }
     }
-  }, []);
+  }, []);  
 
   function editUser(userEmail, userName) {
     if(userEmail === "" || userName === ""){
@@ -279,14 +279,44 @@ function App() {
 
   const [savedMovies, setSaveddMovies] = React.useState([]); // сохраненные фильмы
 
-  const saveMovieHandler = (cardData) => {    
-    debugger;
+//получение фильмов пользователя
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      mainApi
+        .getMovies()
+        .then((res) => {          
+          setSaveddMovies([...res.data, ...savedMovies]);          
+        })
+        .catch((err) => {
+          console.log(err);
+        });      
+    }
+  }, []);
+
+  const saveMovieHandler = (movie) => {
+    
     mainApi
-      .saveMovie(cardData)
+      .saveMovie(movie)
       .then((savedMovie) => {
-        setSaveddMovies([savedMovie, ...savedMovies])
+        setSaveddMovies([savedMovie, ...savedMovies])        
       })
       .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  const deleteMovieHandler = (movieId) => {
+    
+    mainApi
+      .deleteMovies(movieId)
+      .then((res) => {
+        debugger;
+      })
+      .catch((err) => {
+        debugger;
         console.log(err);
       });
   }
@@ -326,9 +356,11 @@ function App() {
               totalMoviesCount={filteredMovies.length}
               addCardsToShow={addCardsToShow}
               connectionErrorMessage={connectionErrorMessage}
+              
               onMovieSave={saveMovieHandler}
+              onMovieDelete={deleteMovieHandler}
 
-              savedMovies={savedMovies}
+              savedMovies={savedMovies}              
             />
 
             <ProtectedRoute

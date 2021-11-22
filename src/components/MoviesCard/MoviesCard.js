@@ -6,25 +6,20 @@ import './MoviesCard.css';
 
 function MoviesCard(props) {
 
-    // TODO необходимо проверять карточка кликнута или нет
-    //   const isLiked = props.cardData.likes.some(
-    //     (liker) => liker._id === currentUserId
-    //   );
+    let movieId = props.cardData.id;
 
-    const [isSaved, setIsSaved] = React.useState(false); //TODO имитация удалить
+    const [isSavedMovie, setIsSavedMovie] = React.useState(props.savedMovies.some((savedMovie) => savedMovie.movieId === movieId));
 
     const handleSaveMovie = () => {
         props.onMovieSave(props.cardData);
+        setIsSavedMovie(true);
     }
     const handleDeleteMovie = () => {
-        setIsSaved(false);
-        // props.onMovieDelete(props.cardData); 
+        props.onMovieDelete(movieId);
+        setIsSavedMovie(false);
     }
 
     const [isSaveButtonVisible, setIsSaveButtonVisible] = React.useState(false);
-  
-    
-
     const setButtonVisible = () => setIsSaveButtonVisible(true);
     const setButtonUnVisible = () => setIsSaveButtonVisible(false);    
 
@@ -40,18 +35,18 @@ function MoviesCard(props) {
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center' }}
                     className="card__image"/>
-
                 <div className="card__saving-choice">
 
                     {props.isSavedMovies
+
                         ?   <Button type="button" className="button button_type_card__delete-movie" ariaLabel="Иконка удаления фильма из сохраненных"
                                 onClick={handleDeleteMovie} style={{visibility: isSaveButtonVisible ? "visible" : "hidden"}}/>
                         
-                        : isSaved
-                
+                        : isSavedMovie
+
                             ?   <Button type="button" className="button button_type_card__saved-icon" ariaLabel="Иконка сохраненного фильма"
                                 onClick={handleDeleteMovie} />
-    
+
                             :   <Button type="button" className="button button_type_saved-movie" ariaLabel="Иконка сохранения"
                                 onClick={handleSaveMovie} style={{visibility: isSaveButtonVisible ? "visible" : "hidden"}}>Сохранить</Button>          
                     }

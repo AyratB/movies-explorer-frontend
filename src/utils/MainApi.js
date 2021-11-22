@@ -84,4 +84,23 @@ export const saveMovie = (movieData) => {
     credentials: 'include',
   });
 };
+
+export const getMovies = () => {
+  return request({
+    url: BASE_MAIN_URL,
+    endPoint: "movies",
+    method: "GET",    
+    credentials: 'include',
+  });
+};
+
+export const deleteMovies = (movieId) => {
+  debugger;
+  return request({
+    url: BASE_MAIN_URL,
+    endPoint: `movies/${movieId}`,
+    method: "DELETE",
+    credentials: 'include'
+  });
+};
 // ====================== Работа с фильмами ===================
