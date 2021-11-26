@@ -55,13 +55,7 @@ function App() {
         handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
         history.push("/signin");
       })
-      .catch((err) => {
-        handleTooltipPopup(
-          true,
-          "Что-то пошло не так! Попробуйте ещё раз!",
-          true
-        );
-      });
+      .catch((err) => { handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true); });
   }
 
   const [currentUser, setCurrentState] = React.useState({
@@ -108,13 +102,19 @@ function App() {
     history.push("/signin");
   }
 
-  //-----------работа с фильмами------------------------
-  const [fullMovies, setFullMovies] = React.useState([]); // общее количество фильмов
-  const [filteredMovies, setFilteredMovies] = React.useState([]); // фильмы по фильтру
+  //-----------работа с фильмами------------------------ 
+  
   const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false); // признак поиска
   const [previousSearchValue, setPreviousSearchValue] = React.useState("");
   const [connectionErrorMessage, setConnectionErrorMessage] = React.useState("");
-
+  
+  const [fullMovies, setFullMovies] = React.useState([]); // общее количество фильмов
+  const [filteredFullMovies, setFilteredFullMovies] = React.useState([]); // фильмы по фильтру
+  const [filteredFullMoviesByWidth, setFilteredFullMoviesByWidth] = React.useState([]);
+  
+  const [savedMovies, setSaveddMovies] = React.useState([]); // сохраненные фильмы из БД  
+  const [filteredSavedMovies] = React.useState([]); // сохраненные фильмы из БД после поиска
+  
   // проверка на наличие токена и пройденный логин
   React.useEffect(() => {
     const token = localStorage.getItem("token");
@@ -147,7 +147,7 @@ function App() {
       let filteredMovies = JSON.parse(localStorage.getItem("filteredMovies"));
 
       if(filteredMovies && filteredMovies.length > 0){
-        setFilteredMovies(filteredMovies);        
+        setFilteredFullMovies(filteredMovies);        
       }
     }
   }, []);  
@@ -187,14 +187,14 @@ function App() {
 
     if(result.length > 0){
 
-      setFilteredMovies(result);
+      setFilteredFullMovies(result);
       setPreviousSearchValue(searchValue);
 
       localStorage.setItem("searchValue", searchValue);
       localStorage.setItem("filteredMovies", JSON.stringify(result));
     }
     else{
-      setFilteredMoviesByWidth([]);
+      setFilteredFullMoviesByWidth([]);
       setPreviousSearchValue(searchValue);
 
       localStorage.setItem("searchValue", searchValue);
@@ -237,16 +237,17 @@ function App() {
     }
   }
 
-  const [filteredMoviesByWidth, setFilteredMoviesByWidth] = React.useState([]);
+  
 
   const savedMoviesSearchHandler = (searchParam) => {}
 
   React.useEffect(() => {
-    if(filteredMovies.length > 0){
+    if(filteredFullMovies.length > 0){
       recalculateCardsNumber();
     }
-  }, [filteredMovies]);
+  }, [filteredFullMovies]);
 
+  // вешаем обработчик на изменение ширины экрана
   React.useEffect(() => {
 
     window.addEventListener('resize', recalculateCardsNumber);
@@ -264,8 +265,8 @@ function App() {
         ? 8
         : 5;
 
-    if(filteredMovies.length > 0) // условие нужно, чтобы Реакт успевал прочитать данные при перерендере
-      setFilteredMoviesByWidth(filteredMovies.slice(0, totalCardsNumberToShow));
+    if(filteredFullMovies.length > 0) // условие нужно, чтобы Реакт успевал прочитать данные при перерендере
+      setFilteredFullMoviesByWidth(filteredFullMovies.slice(0, totalCardsNumberToShow));
   }
 
   const addCardsToShow = () => {    
@@ -274,10 +275,10 @@ function App() {
       ? 3
       : 2;
 
-    setFilteredMoviesByWidth(filteredMovies.slice(0, filteredMoviesByWidth.length + addCardsNumberToShow));
+    setFilteredFullMoviesByWidth(filteredFullMovies.slice(0, filteredFullMoviesByWidth.length + addCardsNumberToShow));
   }
 
-  const [savedMovies, setSaveddMovies] = React.useState([]); // сохраненные фильмы
+  
 
   //получение фильмов пользователя
   React.useEffect(() => {
@@ -299,8 +300,8 @@ function App() {
     
     mainApi
       .saveMovie(movie)
-      .then((savedMovie) => {
-        setSaveddMovies([savedMovie, ...savedMovies])
+      .then((savedMovie) => {     
+        setSaveddMovies([savedMovie.data, ...savedMovies]);              
       })
       .catch((err) => {
         console.log(err);
@@ -311,7 +312,7 @@ function App() {
     mainApi
       .deleteMovies(movieId)
       .then((deletedMovie) => {
-        setSaveddMovies(savedMovies.filter(movie => movie.movieId !== deletedMovie.movieId));
+        setSaveddMovies([...savedMovies.filter(movie => movie.movieId !== deletedMovie.data.movieId)]);
       })
       .catch((err) => {
         console.log(err);
@@ -341,7 +342,7 @@ function App() {
             <ProtectedRoute
               expract path="/movies"
               isLoggedIn={isLoggedIn}
-              movieCardsData={filteredMoviesByWidth}
+              movieCardsData={filteredFullMoviesByWidth}
               onBreadClick={handleBreadCrumbsPopupClick}
               isSavedMovies={false}
               handleSearchRequest={externalMoviesSearchHandler}
@@ -349,7 +350,7 @@ function App() {
               isMoviesSearchGoing={isMoviesSearchGoing}
               previousSearchValue={previousSearchValue ?? ""}
               recalculateCardsNumber={recalculateCardsNumber}
-              totalMoviesCount={filteredMovies.length}
+              totalMoviesCount={filteredFullMovies.length}
               addCardsToShow={addCardsToShow}
               connectionErrorMessage={connectionErrorMessage}
               onMovieSave={saveMovieHandler}
@@ -360,12 +361,15 @@ function App() {
             <ProtectedRoute
               expract path="/saved-movies"
               isLoggedIn={isLoggedIn}
-              // movieCardsData={externalFilteredMovieData}
               onBreadClick={handleBreadCrumbsPopupClick}
-              movieCardsData={filteredMoviesByWidth}
+
               isSavedMovies={true}
               handleSearchRequest={savedMoviesSearchHandler}
               component={Movies}
+
+              movieCardsData={filteredSavedMovies.length !== 0 ? filteredSavedMovies : savedMovies}              
+
+              onMovieDelete={deleteMovieHandler}
             />
 
             <ProtectedRoute

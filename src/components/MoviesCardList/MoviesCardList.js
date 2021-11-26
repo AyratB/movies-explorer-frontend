@@ -4,7 +4,7 @@ import Button from "./../Button/Button";
 
 import './MoviesCardList.css';
 
-const MoviesCardList = (props) => {
+const MoviesCardList = React.memo((props) => {
 
     return (
         <section className="movies-cards">
@@ -13,7 +13,7 @@ const MoviesCardList = (props) => {
 
                     return (
                         <MoviesCard
-                            key={card.id}
+                            key={props.isSavedMovies ? card.movieId : card.id}
                             cardData={card}
                             onMovieSave={props.onMovieSave}
                             onMovieDelete={props.onMovieDelete}
@@ -30,6 +30,6 @@ const MoviesCardList = (props) => {
             }
         </section>
     );
-};
+});
 
 export default MoviesCardList;

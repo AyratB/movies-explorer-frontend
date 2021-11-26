@@ -90,7 +90,10 @@ export const getMovies = () => {
     url: BASE_MAIN_URL,
     endPoint: "movies",
     method: "GET",    
-    credentials: 'include',
+    credentials: 'include',    
+    requestHeaders: {
+      Accept: "application/json",
+    },
   });
 };
 

@@ -4,20 +4,17 @@ import { BASE_MOVIES_IMAGE_URL } from "./../../utils/constants";
 
 import './MoviesCard.css';
 
-function MoviesCard(props) {
+const MoviesCard = React.memo((props) => {
 
-    let movieId = props.cardData.id;
+    let imageUrl = props.isSavedMovies
+        ? `url(${props.cardData.image})`
+        : `url(${BASE_MOVIES_IMAGE_URL}${props.cardData.image.url})`;
 
-    const [isSavedMovie, setIsSavedMovie] = React.useState(props.savedMovies.some((savedMovie) => savedMovie.movieId === movieId));
+    let movieId = props.isSavedMovies ? props.cardData.movieId : props.cardData.id;
+    let isSavedMovie = props.isSavedMovies ? true : props.savedMovies.some((savedMovie) => savedMovie.movieId === movieId);
 
-    const handleSaveMovie = () => {
-        props.onMovieSave(props.cardData);
-        setIsSavedMovie(true);
-    }
-    const handleDeleteMovie = () => {
-        props.onMovieDelete(movieId);
-        setIsSavedMovie(false);
-    }
+    const handleSaveMovie = () => props.onMovieSave(props.cardData);    
+    const handleDeleteMovie = () => props.onMovieDelete(movieId);    
 
     const [isSaveButtonVisible, setIsSaveButtonVisible] = React.useState(false);
     const setButtonVisible = () => setIsSaveButtonVisible(true);
@@ -25,12 +22,9 @@ function MoviesCard(props) {
 
     return (
         <li className="card">
-            <div className="card__image-wrapper" 
-                onMouseEnter={setButtonVisible}
-                onMouseLeave={setButtonUnVisible}>
-                <div
-                    style={ {
-                        backgroundImage: `url(${BASE_MOVIES_IMAGE_URL}${props.cardData.image.url})`,
+            <div className="card__image-wrapper" onMouseEnter={setButtonVisible} onMouseLeave={setButtonUnVisible}>
+                <div style={ {
+                        backgroundImage: imageUrl,
                         backgroundSize: 'contain', 
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center' }}
@@ -39,16 +33,16 @@ function MoviesCard(props) {
 
                     {props.isSavedMovies
 
-                        ?   <Button type="button" className="button button_type_card__delete-movie" ariaLabel="Иконка удаления фильма из сохраненных"
-                                onClick={handleDeleteMovie} style={{visibility: isSaveButtonVisible ? "visible" : "hidden"}}/>
-                        
-                        : isSavedMovie
+                        ?   isSaveButtonVisible && <Button type="button" className="button button_type_card__delete-movie" ariaLabel="Иконка удаления фильма из сохраненных"
+                                onClick={handleDeleteMovie}/>
+
+                        :   isSavedMovie
 
                             ?   <Button type="button" className="button button_type_card__saved-icon" ariaLabel="Иконка сохраненного фильма"
-                                    onClick={handleDeleteMovie} />
+                                    onClick={handleDeleteMovie}/>
 
-                            :   <Button type="button" className="button button_type_saved-movie" ariaLabel="Иконка сохранения"
-                                    onClick={handleSaveMovie} style={{visibility: isSaveButtonVisible ? "visible" : "hidden"}}>Сохранить</Button>
+                            :   isSaveButtonVisible && <Button type="button" className="button button_type_saved-movie" ariaLabel="Иконка сохранения"
+                                    onClick={handleSaveMovie}>Сохранить</Button>
                     }
                 </div>
             </div>
@@ -59,6 +53,6 @@ function MoviesCard(props) {
             </div>
         </li>
     );
-}
+});
 
 export default MoviesCard;

@@ -11,7 +11,7 @@ const Movies = (props) => {
     const [emptySearchWords, setEmptySearchWords] = React.useState("");
 
     const handleSearchRequest = ({searchValue, formCleaner, isChecked}) => {
-        setEmptySearchWords("Ничего не найдено");     
+        setEmptySearchWords("Ничего не найдено");
         props.handleSearchRequest(searchValue, formCleaner, isChecked);
     }
 
@@ -27,7 +27,7 @@ const Movies = (props) => {
 
                 {props.isMoviesSearchGoing
                     ? <Preloader/>
-                    : props.totalMoviesCount === 0 || typeof props.totalMoviesCount === "undefined"
+                    : !props.isSavedMovies && (props.totalMoviesCount === 0 || typeof props.totalMoviesCount === "undefined")
                         ? <div style={ {
                             'fontSize': '18px',
                             'fontFamily': 'Inter',
