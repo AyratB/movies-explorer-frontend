@@ -13,8 +13,6 @@ const SearchForm = (props) => {
 
     const [firstSearchValue, setFirstSearchValue] = React.useState("");
 
-    
-
     function searchFormHandleSubmit(e) {
         e.preventDefault();
 
@@ -37,7 +35,7 @@ const SearchForm = (props) => {
         if(searchValue.length < 2){
             return;
         }
-        
+
         props.onSubmit({
             searchValue: searchValue,
             isChecked: isChecked
@@ -47,9 +45,7 @@ const SearchForm = (props) => {
     React.useEffect(() => {
      
      setFirstSearchValue();
-     return () => {
-            resetForm();
-        }
+     return () => { resetForm(); }
     }, []);
 
     React.useEffect(() => {
@@ -61,6 +57,7 @@ const SearchForm = (props) => {
 
     const checked = (e) => {
         setIsChecked(e);
+        props.onCheckboxChecked(e);
     }
 
     const handleFormChange = (e) => {

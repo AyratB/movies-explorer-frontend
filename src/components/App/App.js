@@ -108,15 +108,20 @@ function App() {
   
   const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false); // признак поиска
   const [previousSearchValue, setPreviousSearchValue] = React.useState("");
-  const [connectionErrorMessage, setConnectionErrorMessage] = React.useState("");  
+  const [connectionErrorMessage, setConnectionErrorMessage] = React.useState("");
+
   const [fullMovies, setFullMovies] = React.useState([]); // общее количество фильмов
   const [filteredFullMovies, setFilteredFullMovies] = React.useState([]); // фильмы по фильтру
   const [filteredFullMoviesByWidth, setFilteredFullMoviesByWidth] = React.useState([]);
   
-  const [savedMovies, setSaveddMovies] = React.useState([]); // сохраненные фильмы из БД  
+  const [savedMovies, setSavedMovies] = React.useState([]); // сохраненные фильмы из БД
   const [filteredSavedMovies, setFilteredSavedMovies] = React.useState([]); // сохраненные фильмы из БД после поиска
   const [previousSearchSavedValue, setPreviousSearchSavedValue] = React.useState("");
   const [connectionSavedErrorMessage, setConnectionSavedErrorMessage] = React.useState("");
+
+  const [filteredFullMoviesCopyForCheckBox, setFilteredFullMoviesCopyForCheckBox] = React.useState([]); // фильмы по фильтру
+  const [savedMoviesCopyForCheckBox, setSavedMoviesCopyForCheckBox] = React.useState([]); // сохраненные фильмы из БД после поиска и чекбокса
+  const [filteredSavedMoviesCopyForCheckBox, setFilteredSavedMoviesCopyForCheckBox] = React.useState([]); // сохраненные фильмы из БД после поиска и чекбокса
 
   // проверка на наличие токена и пройденный логин
   React.useEffect(() => {
@@ -270,7 +275,7 @@ function App() {
 
   const moviesSavedSearch = (searchValue, isShortFilm, movies) => {
 
-    if(searchValue === ""){ // для случая пустого поика возвращаем полный набор сохраненных фильмов
+    if(searchValue === ""){ // для случая пустого поиcка возвращаем полный набор сохраненных фильмов
       setConnectionSavedErrorMessage("");
       setFilteredSavedMovies([]); 
     }
@@ -343,7 +348,7 @@ function App() {
     if (token) {
       mainApi
         .getMovies()
-        .then((res) => { setSaveddMovies([...res.data, ...savedMovies]); })
+        .then((res) => { setSavedMovies([...res.data, ...savedMovies]); })
         .catch((err) => { console.log(err); });
     }
   }, []);
@@ -352,16 +357,53 @@ function App() {
     
     mainApi
       .saveMovie(movie)
-      .then((savedMovie) => { setSaveddMovies([savedMovie.data, ...savedMovies]); })
+      .then((savedMovie) => { setSavedMovies([savedMovie.data, ...savedMovies]); })
       .catch((err) => { console.log(err); });
   }
 
   const deleteMovieHandler = (movieId) => {
     mainApi
       .deleteMovies(movieId)
-      .then((deletedMovie) => { setSaveddMovies([...savedMovies.filter(movie => movie.movieId !== deletedMovie.data.movieId)]); })
+      .then((deletedMovie) => { setSavedMovies([...savedMovies.filter(movie => movie.movieId !== deletedMovie.data.movieId)]); })
       .catch((err) => { console.log(err); });
   }
+
+  const checkBoxHandler = (isShortMoviesChecked, isSavedMovies) => {
+
+    if(isSavedMovies){
+
+      if(filteredSavedMovies.length === 0 && savedMovies.length === 0) return;
+
+      if(isShortMoviesChecked){
+
+        if(filteredSavedMovies.length !== 0){
+          setFilteredSavedMoviesCopyForCheckBox([...filteredSavedMovies]);
+          setFilteredSavedMovies([...filteredSavedMovies.filter(movie => movie.duration <= 40)]);
+        }
+        else{
+          setSavedMoviesCopyForCheckBox([...savedMovies]);
+          setSavedMovies([...savedMovies.filter(movie => movie.duration <= 40)])
+        }
+      } else{
+        if(filteredSavedMovies.length !== 0){
+          setFilteredSavedMovies([...filteredSavedMoviesCopyForCheckBox]);
+        }
+        else{
+          setSavedMovies([...savedMoviesCopyForCheckBox]);
+        }
+      }
+    } else {
+      
+      if(filteredFullMovies.length === 0) return;
+
+      if(isShortMoviesChecked){
+        setFilteredFullMoviesCopyForCheckBox([...filteredFullMovies]);
+        setFilteredFullMovies([...filteredFullMovies.filter(movie => movie.duration <= 40)]);
+      } else{
+        setFilteredFullMovies([...filteredFullMoviesCopyForCheckBox]);
+      }
+    }
+  }  
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -398,6 +440,7 @@ function App() {
               onMovieSave={saveMovieHandler}
               onMovieDelete={deleteMovieHandler}
               savedMovies={savedMovies}
+              onCheckboxChecked={checkBoxHandler}
             />
 
             <ProtectedRoute

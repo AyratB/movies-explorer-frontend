@@ -24,11 +24,17 @@ const Movies = (props) => {
         setEmptySearchWords("");
     }
 
+    const checkBoxHandler = (isChecked) => {
+        props.onCheckboxChecked(isChecked, props.isSavedMovies);
+    }
+
     return (
         <>
             <section className="movies">
                 <Header isLoggedIn={props.isLoggedIn} onBreadClick={props.onBreadClick}/>
-                <SearchForm previousSearchValue={props.previousSearchValue} onSubmit={handleSearchRequest} isSavedFilms={props.isSavedMovies} deleteEmptySearchResult={deleteEmptySearchResult}/>
+                <SearchForm previousSearchValue={props.previousSearchValue} onSubmit={handleSearchRequest} isSavedFilms={props.isSavedMovies} 
+                    deleteEmptySearchResult={deleteEmptySearchResult}
+                    onCheckboxChecked={checkBoxHandler}/>
 
                 {props.isMoviesSearchGoing
                     ? <Preloader/>
