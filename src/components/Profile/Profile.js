@@ -6,24 +6,39 @@ import Header from "./../Header/Header";
 import Button from "./../Button/Button";
 import './Profile.css';
 
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
+
 function Profile(props) {
   const currentUserContext = React.useContext(CurrentUserContext);
 
-  const [changedUserEmail, setUserEmail] = React.useState(currentUserContext.email);
-  const [changedUserName, setUserName] = React.useState(currentUserContext.name);
+  const [userEmail, setUserEmail] = React.useState(currentUserContext.email);
+  const [userName, setUserName] = React.useState(currentUserContext.name);
 
-  const handleChange = (e) => {
+  const [isSubmitButtonValid, submitButtonValid] = React.useState(false);
+  const [isUserDataChanged, setIsUserDataChanged] = React.useState(true);
+
+  const { values, handleChange, errors, isValid, customEditFormValidity } = useFormWithValidation();
+
+  const handleChangeForm = (e) => {
+
+    setIsUserDataChanged(true);
+
     const input = e.target;
-    if (input.name === "userName") {
-      setUserName(input.value);
-    } else if (input.name === "userEmail") {
-      setUserEmail(input.value);
+    if (input.name === "profile-form-user-name") {
+      setUserName("");
+    } else if (input.name === "profile-form-user-email") {
+      setUserEmail("");
     }
+
+    handleChange(e);
+
+    submitButtonValid(customEditFormValidity(currentUserContext.name, currentUserContext.email, e));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.editUser(changedUserEmail, changedUserName);
+    props.editUser(values["profile-form-user-email"] || userEmail, values["profile-form-user-name"] || userName);
+    setIsUserDataChanged(false);
   };
 
   return (
@@ -33,33 +48,45 @@ function Profile(props) {
       
         <p className="profile__welcome">Привет, {currentUserContext.name}</p>
         
-        <form onSubmit={handleSubmit} className="profile__form" name="profile">
-          <section className="profile__section">
-            <label className="profile__label" htmlFor="userName">Имя</label>
-            <input
-              className="profile__input"
-              id="userName"
-              name="userName"
-              onChange={handleChange}
-              value={changedUserName}
-            />
+        <form onSubmit={handleSubmit} className="profile__form" name="profile" noValidate>
+          <section className="profile-form__section">
+            <div className="profile__section">
+              <label className="profile__label" htmlFor="profile-form-user-name">Имя</label>
+              <input
+                className={`profile__input ${errors["profile-form-user-name"] ? "profile-form__input_type_error" : ""}`}
+                id="profile-form-user-name"
+                name="profile-form-user-name"
+                value={userName || values["profile-form-user-name"] || ""}
+                onChange={handleChangeForm}
+                required
+                minLength="2"
+                maxLength="30"
+                type="text"
+                pattern="^[A-Za-zА-Яа-яЁё\s\-]+$"/>
+            </div>
+            <span className={`profile-form__span-error ${errors["profile-form-user-name"] ? "profile-form__span-error_active" : ""}`}>{errors["profile-form-user-name"]}</span>
           </section>
 
-          <section className="profile__section">
-            <label className="profile__label" htmlFor="userEmail">Email</label>
-            <input
-              className="profile__input"
-              id="userEmail"
-              name="userEmail"
-              value={changedUserEmail}
-              onChange={handleChange}
-            />
+          <section className="profile-form__section">
+            <div className="profile__section">
+              <label className="profile__label" htmlFor="profile-form-user-email">Email</label>
+              <input
+                className={`profile__input ${errors["profile-form-user-email"] ? "profile-form__input_type_error" : ""}`}
+                id="profile-form-user-email"
+                name="profile-form-user-email"
+                value={userEmail || values["profile-form-user-email"] || ""}
+                onChange={handleChangeForm}
+                required
+                minLength="2"
+                type="email"/>
+            </div>
+            <span className={`profile-form__span-error ${errors["profile-form-user-email"] ? "profile-form__span-error_active" : ""}`}>{errors["profile-form-user-email"]}</span>
           </section>
 
           <Button
             type="submit"
-            className="button button_type_save-form button_type_edit-profile"
-            buttonText="Войти"
+            className={`button button_type_save-form button_type_edit-profile ${isValid && isSubmitButtonValid && isUserDataChanged ? "" : "button_inactive"}`}
+            disabled={!(isValid && isSubmitButtonValid && isUserDataChanged)}
             >Редактировать</Button>
 
           <div className="profile__profile">

@@ -147,17 +147,13 @@ function App() {
       let filteredMovies = JSON.parse(localStorage.getItem("filteredMovies"));
 
       if(filteredMovies && filteredMovies.length > 0){
-        setFilteredFullMovies(filteredMovies);        
+        setFilteredFullMovies(filteredMovies);
       }
     }
-  }, []);  
+  }, []);
 
   function editUser(userEmail, userName) {
-    if(userEmail === "" || userName === ""){
-      handleTooltipPopup(true, "Имя или email не могут быть пустыми", true);
-    } else if(currentUser.email === userEmail && currentUser.name === userName){
-      handleTooltipPopup(true, "Имя и email остались без изменений!", true);
-    } else {
+
       mainApi
         .updateUserData(userEmail, userName)
         .then((res) => {
@@ -167,11 +163,12 @@ function App() {
             name: res.data.name,
             email: res.data.email,
           });
+
+          handleTooltipPopup(true, "Успешно отредактированы данные пользователя!", false);
         })
         .catch(() => {
           handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true);
         });
-    }
   }
 
   const moviesSearch = (searchValue, isShortFilm, movies) => {
@@ -238,7 +235,7 @@ function App() {
   }
 
   
-
+  // TODO Поиск по сохраненным фильмам !!!
   const savedMoviesSearchHandler = (searchParam) => {}
 
   React.useEffect(() => {

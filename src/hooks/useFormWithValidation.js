@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-const validator = require('validator');
 
 export function useFormWithValidation() {
   const [values, setValues] = React.useState({});
@@ -25,27 +24,17 @@ export function useFormWithValidation() {
     if(target.name === "login-form-user-email" && target.validity.typeMismatch){
       setErrors({...errors, "login-form-user-email": "Поле 'Email' не соответствует шаблону электронной почты" });
     }
-    
-    setIsValid(target.closest("form").checkValidity());
+
+    setIsValid(target.closest("form").checkValidity());    
   };
 
-  // another variants to custom validate
-
-  // const additionalRegisterFormNameValidity = (target) => {
-  //   if(!(/[а-яa-z\sё -]/gi.test(target.value) && !(/\d/gi.test(target.value)))){
-  //     setErrors({...errors, [target.name]: "Имя пользователя может содержать только латиницу, кириллицу, пробел или дефис" });
-  //     setIsValid(false);
-  //   }
-  // }
-
-  // const additionalRegisterFormEmailValidity = (target) => {
-
-  //   if(!validator.isEmail(target.value)){
-
-  //     setErrors({...errors, [target.name]: "Поле 'Email' не соответствует шаблону электронной почты" });
-  //     setIsValid(false);
-  //   }
-  // }
+  const customEditFormValidity = (previusName, previusEmail, e) => {
+    if (e.target.name === "profile-form-user-name") {
+      return e.target.value !== previusName && values["profile-form-user-email"] !== previusEmail;
+    } else if (e.target === "profile-form-user-email") {
+      return values["profile-form-user-name"] !== previusName && e.target.value !== previusEmail;
+    }
+  }
 
   const resetForm = useCallback(
     (newValues = {}, newErrors = {}, newIsValid = false) => {
@@ -56,5 +45,5 @@ export function useFormWithValidation() {
     [setValues, setErrors, setIsValid]
   );
 
-  return { values, handleChange, errors, isValid, resetForm, setErrors };
+  return { values, handleChange, errors, isValid, resetForm, setErrors, customEditFormValidity };
 }
