@@ -12,7 +12,12 @@ const Movies = (props) => {
 
     const handleSearchRequest = ({searchValue, formCleaner, isChecked}) => {
         setEmptySearchWords("Ничего не найдено");
-        props.handleSearchRequest(searchValue, formCleaner, isChecked);
+
+        if(props.isSavedMovies){
+            props.handleSavedSearchRequest(searchValue, formCleaner, isChecked);
+        } else{
+            props.handleSearchRequest(searchValue, formCleaner, isChecked);
+        }
     }
 
     const deleteEmptySearchResult = () => {
@@ -27,7 +32,7 @@ const Movies = (props) => {
 
                 {props.isMoviesSearchGoing
                     ? <Preloader/>
-                    : !props.isSavedMovies && (props.totalMoviesCount === 0 || typeof props.totalMoviesCount === "undefined")
+                    : (!props.isSavedMovies && (typeof props.totalMoviesCount === "undefined" || props.totalMoviesCount === 0)) || (props.isSavedMovies && (props.movieCardsData.length === 0))
                         ? <div style={ {
                             'fontSize': '18px',
                             'fontFamily': 'Inter',
@@ -41,8 +46,7 @@ const Movies = (props) => {
                                 addCardsToShow={props.addCardsToShow}
                                 onMovieSave={props.onMovieSave}
                                 savedMovies={props.savedMovies}
-                                onMovieDelete={props.onMovieDelete}
-                                />
+                                onMovieDelete={props.onMovieDelete}/>
                 }
 
             </section>

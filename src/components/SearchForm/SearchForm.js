@@ -9,13 +9,23 @@ const SearchForm = (props) => {
 
     const { values, handleChange, errors, resetForm, setErrors } = useFormWithValidation();
 
-    let prevSearchValue = props.isSavedFilms ? props.previousSavedSearchValue : props.previousSearchValue;
+    let prevSearchValue = props.previousSearchValue;
 
     const [firstSearchValue, setFirstSearchValue] = React.useState("");
 
-    function searchFormHandleSubmit(e) {
+    
 
+    function searchFormHandleSubmit(e) {
         e.preventDefault();
+
+        if(props.isSavedFilms){
+            props.onSubmit({
+                searchValue: values["search-form-search-value"],
+                isChecked: isChecked
+            });
+
+            return;
+        }
 
         let searchValue = values["search-form-search-value"] || firstSearchValue;
 
@@ -24,14 +34,9 @@ const SearchForm = (props) => {
             return;
         }
 
-        // проверка на ограничения
         if(searchValue.length < 2){
             return;
         }
-
-
-        // TODO поиск по всем фильмам или по сохраненным
-
         
         props.onSubmit({
             searchValue: searchValue,

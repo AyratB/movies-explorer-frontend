@@ -60,7 +60,7 @@ function App() {
 
   const [currentUser, setCurrentState] = React.useState({
     name: "",
-    email: "",    
+    email: "",
     currentUserId: "",
   });
 
@@ -96,6 +96,8 @@ function App() {
     localStorage.removeItem("token");
     localStorage.removeItem("searchValue");
     localStorage.removeItem("filteredMovies");
+    localStorage.removeItem("searchSavedValue");
+    localStorage.removeItem("filteredSavedMovies");
 
     setIsLoggedIn(false);
 
@@ -106,15 +108,16 @@ function App() {
   
   const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false); // признак поиска
   const [previousSearchValue, setPreviousSearchValue] = React.useState("");
-  const [connectionErrorMessage, setConnectionErrorMessage] = React.useState("");
-  
+  const [connectionErrorMessage, setConnectionErrorMessage] = React.useState("");  
   const [fullMovies, setFullMovies] = React.useState([]); // общее количество фильмов
   const [filteredFullMovies, setFilteredFullMovies] = React.useState([]); // фильмы по фильтру
   const [filteredFullMoviesByWidth, setFilteredFullMoviesByWidth] = React.useState([]);
   
   const [savedMovies, setSaveddMovies] = React.useState([]); // сохраненные фильмы из БД  
-  const [filteredSavedMovies] = React.useState([]); // сохраненные фильмы из БД после поиска
-  
+  const [filteredSavedMovies, setFilteredSavedMovies] = React.useState([]); // сохраненные фильмы из БД после поиска
+  const [previousSearchSavedValue, setPreviousSearchSavedValue] = React.useState("");
+  const [connectionSavedErrorMessage, setConnectionSavedErrorMessage] = React.useState("");
+
   // проверка на наличие токена и пройденный логин
   React.useEffect(() => {
     const token = localStorage.getItem("token");
@@ -149,6 +152,18 @@ function App() {
       if(filteredMovies && filteredMovies.length > 0){
         setFilteredFullMovies(filteredMovies);
       }
+
+      const searchSavedValue = localStorage.getItem("searchSavedValue");
+
+      if(searchSavedValue){
+        setPreviousSearchSavedValue(searchSavedValue);
+      }
+
+      let filteredSavedMovies = JSON.parse(localStorage.getItem("filteredSavedMovies"));
+
+      if(filteredSavedMovies && filteredSavedMovies.length > 0){
+        setFilteredSavedMovies(filteredSavedMovies);
+      }
     }
   }, []);
 
@@ -169,7 +184,7 @@ function App() {
         .catch(() => {
           handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true);
         });
-  }
+  }  
 
   const moviesSearch = (searchValue, isShortFilm, movies) => {
 
@@ -182,19 +197,15 @@ function App() {
       result = result.filter(selectedFilm => selectedFilm.duration <= 40);
     }
 
+    setPreviousSearchValue(searchValue);
+    localStorage.setItem("searchValue", searchValue);
+
     if(result.length > 0){
-
       setFilteredFullMovies(result);
-      setPreviousSearchValue(searchValue);
-
-      localStorage.setItem("searchValue", searchValue);
       localStorage.setItem("filteredMovies", JSON.stringify(result));
     }
     else{
       setFilteredFullMoviesByWidth([]);
-      setPreviousSearchValue(searchValue);
-
-      localStorage.setItem("searchValue", searchValue);
       localStorage.removeItem("filteredMovies");
     }
   }
@@ -202,7 +213,7 @@ function App() {
   const externalMoviesSearchHandler = (searchValue, formCleaner, isShortFilm) => {
 
     setIsMoviesSearchGoing(true);
-    
+
     let previuosSearch = localStorage.getItem("searchValue");
     if(previuosSearch && previuosSearch === searchValue){
       setIsMoviesSearchGoing(false);
@@ -211,9 +222,9 @@ function App() {
       return;
     }
 
-    if(fullMovies.length === 0){
+    setConnectionErrorMessage("");
 
-      setConnectionErrorMessage("");
+    if(fullMovies.length === 0){
 
       moviesApi
         .getFilms()
@@ -225,18 +236,68 @@ function App() {
           setConnectionErrorMessage("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз");
         })
         .finally(() => {
-          setTimeout(setIsMoviesSearchGoing, 1000, false)
+          setTimeout(setIsMoviesSearchGoing, 1000, false);
         });
     }
     else{
       moviesSearch(searchValue, isShortFilm, fullMovies);
-      setTimeout(setIsMoviesSearchGoing, 1000, false)
+      setTimeout(setIsMoviesSearchGoing, 1000, false);
     }
   }
-
   
-  // TODO Поиск по сохраненным фильмам !!!
-  const savedMoviesSearchHandler = (searchParam) => {}
+  const savedMoviesSearchHandler = (searchValue, formCleaner, isShortFilm) => {
+    setIsMoviesSearchGoing(true);
+    
+    let previuosSavedSearch = localStorage.getItem("searchSavedValue");
+
+    if(previuosSavedSearch && previuosSavedSearch === searchValue){
+      setIsMoviesSearchGoing(false);
+      setConnectionSavedErrorMessage("Поменяйте значение поиска. Поисковый запрос равен предыдущему");
+      handleTooltipPopup(true, "Поменяйте значение поиска", true);
+      return;
+    }
+    
+    if(savedMovies.length === 0){
+      setIsMoviesSearchGoing(false);
+      setConnectionSavedErrorMessage("Сохраните сначала фильмы в коллекцию");
+      handleTooltipPopup(true, "Сохраните сначала фильмы в коллекцию", true);
+      return;
+    }    
+
+    moviesSavedSearch(searchValue, isShortFilm, savedMovies);
+    setTimeout(setIsMoviesSearchGoing, 1000, false)
+  }
+
+  const moviesSavedSearch = (searchValue, isShortFilm, movies) => {
+
+    if(searchValue === ""){ // для случая пустого поика возвращаем полный набор сохраненных фильмов
+      setConnectionSavedErrorMessage("");
+      setFilteredSavedMovies([]); 
+    }
+
+    let result = movies.filter(film =>
+      ((film.nameRU ?? "").toLowerCase().includes(searchValue.toLowerCase())
+      || 
+      (film.nameEN ?? "").toLowerCase().includes(searchValue.toLowerCase())));
+
+    if(isShortFilm){
+      result = result.filter(selectedFilm => selectedFilm.duration <= 40);
+    }
+
+    setPreviousSearchValue(searchValue);
+    localStorage.setItem("searchSavedValue", searchValue);
+
+    if(result.length > 0){
+      setConnectionSavedErrorMessage("");
+      setFilteredSavedMovies(result);      
+      localStorage.setItem("filteredSavedMovies", JSON.stringify(result));
+    }
+    else{
+      setConnectionSavedErrorMessage("Поиск без результатов");
+      setFilteredSavedMovies([]); 
+      localStorage.removeItem("filteredSavedMovies");
+    }
+  }
 
   React.useEffect(() => {
     if(filteredFullMovies.length > 0){
@@ -302,8 +363,6 @@ function App() {
       .catch((err) => { console.log(err); });
   }
 
-
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="app__page">
@@ -345,14 +404,13 @@ function App() {
               expract path="/saved-movies"
               isLoggedIn={isLoggedIn}
               onBreadClick={handleBreadCrumbsPopupClick}
-
+              connectionErrorMessage={connectionSavedErrorMessage}
               isSavedMovies={true}
-              handleSearchRequest={savedMoviesSearchHandler}
+              handleSavedSearchRequest={savedMoviesSearchHandler}
               component={Movies}
-
-              movieCardsData={filteredSavedMovies.length !== 0 ? filteredSavedMovies : savedMovies}              
-
+              movieCardsData={filteredSavedMovies.length === 0 && connectionSavedErrorMessage === "" ? savedMovies : filteredSavedMovies}
               onMovieDelete={deleteMovieHandler}
+              previousSearchValue={previousSearchSavedValue ?? ""}
             />
 
             <ProtectedRoute
