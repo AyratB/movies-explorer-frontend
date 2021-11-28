@@ -2,8 +2,8 @@ import { BASE_MAIN_URL, BASE_MOVIES_IMAGE_URL } from "./constants";
 import { request } from "./../utils/commonApi";
 
 // ====================== AUTH ================================
-export const register = (userEmail, userPassword, userName) => {
-    return request({
+export const register = async (userEmail, userPassword, userName) => {
+    return await request({
       url: BASE_MAIN_URL,
       endPoint: "signup",
       method: "POST",
@@ -18,8 +18,8 @@ export const register = (userEmail, userPassword, userName) => {
     });
 };
 
-export const authorize = (identifier, password) => {
-    return request({
+export const authorize = async (identifier, password) => {
+    return await request({
       url: BASE_MAIN_URL,
       endPoint: "signin",
       method: "POST",
@@ -31,8 +31,8 @@ export const authorize = (identifier, password) => {
     });
 };
 
-export const getUserInfo = (token) => {
-    return request({
+export const getUserInfo = async (token) => {
+    return await request({
       url: BASE_MAIN_URL,
       endPoint: "users/me",
       method: "GET",
@@ -47,8 +47,8 @@ export const getUserInfo = (token) => {
 
 
 // ====================== Работа с данными пользователя =======
-export const updateUserData = (userEmail, userName) => {
-    return request({
+export const updateUserData = async (userEmail, userName) => {
+    return await request({
       url: BASE_MAIN_URL,
       endPoint: "users/me",
       method: "PATCH",
@@ -63,8 +63,8 @@ export const updateUserData = (userEmail, userName) => {
 
 
 // ====================== Работа с фильмами ===================
-export const saveMovie = (movieData) => {
-  return request({
+export const saveMovie = async (movieData) => {
+  return await request({
     url: BASE_MAIN_URL,
     endPoint: "movies",
     method: "POST",
@@ -85,8 +85,8 @@ export const saveMovie = (movieData) => {
   });
 };
 
-export const getMovies = () => {
-  return request({
+export const getMovies = async () => {
+  return await request({
     url: BASE_MAIN_URL,
     endPoint: "movies",
     method: "GET",    
@@ -97,8 +97,8 @@ export const getMovies = () => {
   });
 };
 
-export const deleteMovies = (movieId) => {
-  return request({
+export const deleteMovies = async (movieId) => {
+  return await request({
     url: BASE_MAIN_URL,
     endPoint: `movies/${movieId}`,
     method: "DELETE",
