@@ -266,7 +266,7 @@ function App() {
       setFilteredFullMoviesByWidth(filteredFullMovies.slice(0, totalCardsNumberToShow));
   }
 
-  const addCardsToShow = () => {    
+  const addCardsToShow = () => {
 
     let addCardsNumberToShow = window.innerWidth >= 1280
       ? 3
@@ -275,8 +275,6 @@ function App() {
     setFilteredFullMoviesByWidth(filteredFullMovies.slice(0, filteredFullMoviesByWidth.length + addCardsNumberToShow));
   }
 
-  
-
   //получение фильмов пользователя
   React.useEffect(() => {
     const token = localStorage.getItem("token");
@@ -284,12 +282,8 @@ function App() {
     if (token) {
       mainApi
         .getMovies()
-        .then((res) => {          
-          setSaveddMovies([...res.data, ...savedMovies]);
-        })
-        .catch((err) => {
-          console.log(err);
-        });      
+        .then((res) => { setSaveddMovies([...res.data, ...savedMovies]); })
+        .catch((err) => { console.log(err); });
     }
   }, []);
 
@@ -297,23 +291,15 @@ function App() {
     
     mainApi
       .saveMovie(movie)
-      .then((savedMovie) => {     
-        setSaveddMovies([savedMovie.data, ...savedMovies]);              
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .then((savedMovie) => { setSaveddMovies([savedMovie.data, ...savedMovies]); })
+      .catch((err) => { console.log(err); });
   }
 
   const deleteMovieHandler = (movieId) => {
     mainApi
       .deleteMovies(movieId)
-      .then((deletedMovie) => {
-        setSaveddMovies([...savedMovies.filter(movie => movie.movieId !== deletedMovie.data.movieId)]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .then((deletedMovie) => { setSaveddMovies([...savedMovies.filter(movie => movie.movieId !== deletedMovie.data.movieId)]); })
+      .catch((err) => { console.log(err); });
   }
 
 

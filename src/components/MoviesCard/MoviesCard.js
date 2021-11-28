@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "./../Button/Button";
 import { BASE_MOVIES_IMAGE_URL } from "./../../utils/constants";
+import { ExternalLink } from 'react-external-link';
 
 import './MoviesCard.css';
 
@@ -18,17 +19,19 @@ const MoviesCard = React.memo((props) => {
 
     const [isSaveButtonVisible, setIsSaveButtonVisible] = React.useState(false);
     const setButtonVisible = () => setIsSaveButtonVisible(true);
-    const setButtonUnVisible = () => setIsSaveButtonVisible(false);
+    const setButtonUnVisible = () => setIsSaveButtonVisible(false);    
 
     return (
         <li className="card">
             <div className="card__image-wrapper" onMouseEnter={setButtonVisible} onMouseLeave={setButtonUnVisible}>
-                <div style={ {
+                <ExternalLink href={props.cardData.trailer} className="" target="_blank">
+                    <div style={ {
                         backgroundImage: imageUrl,
                         backgroundSize: 'contain', 
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center' }}
                     className="card__image"/>
+                </ExternalLink>                
                 <div className="card__saving-choice">
 
                     {props.isSavedMovies
