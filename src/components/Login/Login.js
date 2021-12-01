@@ -30,8 +30,8 @@ function Login(props) {
             value={values["login-form-user-email"] || ""}
             onChange={handleChange}
             required
-            minLength="2"
-            type="email"/>
+            minLength="4"
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"/>
           <span className={`login-form__span-error ${errors["login-form-user-email"] ? "login-form__span-error_active" : ""}`}>{errors["login-form-user-email"]}</span>
         </section>
 

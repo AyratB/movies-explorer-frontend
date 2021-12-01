@@ -53,8 +53,8 @@ function Register(props) {
             value={values["register-form-user-email"] || ""}
             onChange={handleChangeForm}
             required
-            minLength="2"
-            type="email"       
+            minLength="4"
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"      
           />
           <span className={`register-form__span-error ${errors["register-form-user-email"] ? "register-form__span-error_active" : ""}`}>{errors["register-form-user-email"]}</span>
         </section>

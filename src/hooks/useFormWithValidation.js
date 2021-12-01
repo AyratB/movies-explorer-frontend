@@ -5,6 +5,8 @@ export function useFormWithValidation() {
   const [errors, setErrors] = React.useState({});
   const [isValid, setIsValid] = React.useState(false);
 
+  const emailInputsName = ["register-form-user-email", "login-form-user-email"];
+
   const handleChange = (event) => {
     const target = event.target;
     const name = target.name;
@@ -13,16 +15,12 @@ export function useFormWithValidation() {
     setValues({...values, [name]: value});
     setErrors({...errors, [name]: target.validationMessage });
 
-    if(target.name === "register-form-user-name" && target.validity.patternMismatch){
-      setErrors({...errors, "register-form-user-name": "Поле 'Имя' может содержать только латиницу, кириллицу, пробел или дефис" });
+    if(name === "register-form-user-name" && target.validity.patternMismatch){
+      setErrors({...errors, [name] : "Поле 'Имя' может содержать только латиницу, кириллицу, пробел или дефис" });
     }
 
-    if(target.name === "register-form-user-email" && target.validity.typeMismatch){
-      setErrors({...errors, "register-form-user-email": "Поле 'Email' не соответствует шаблону электронной почты" });
-    }
-
-    if(target.name === "login-form-user-email" && target.validity.typeMismatch){
-      setErrors({...errors, "login-form-user-email": "Поле 'Email' не соответствует шаблону электронной почты" });
+    if(emailInputsName.includes(name) && target.validity.patternMismatch){
+      setErrors({...errors, [name] : "Поле 'Email' не соответствует шаблону электронной почты" });
     }
 
     setIsValid(target.closest("form").checkValidity());    
