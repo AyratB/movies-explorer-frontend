@@ -69,13 +69,23 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
+  const getUserMovies = () => {
+    mainApi
+      .getMovies()
+      .then((res) => { setSavedMovies([...res.data, ...savedMovies]); })
+      .catch((err) => { console.log(err); }); 
+  }
+
   const autorize = (userEmail, userPassword) => {
     mainApi
       .authorize(userEmail, userPassword)
       .then((data) => {
         if (data.token) {          
           localStorage.setItem("token", data.token);
+          
           setCurrentUserData(data.token, "/movies");
+
+          getUserMovies();
         }
       })
       .catch((errorStatus) => {
@@ -165,15 +175,24 @@ function App() {
       if(filteredSavedMovies && filteredSavedMovies.length > 0){
         setFilteredSavedMovies(filteredSavedMovies);
       }
-  }
+  }  
 
   React.useEffect(() => {
     const token = localStorage.getItem("token");
 
     if (token) {
       setCurrentUserData(token, "/");
+      
       setPreviousValues();
+
+      getUserMovies();
     }
+
+    window.addEventListener('resize', recalculateCardsNumber);
+
+    return () => {
+        window.removeEventListener("resize", recalculateCardsNumber);
+    };
   }, []);
 
   function editUser(userEmail, userName) {
@@ -313,16 +332,7 @@ function App() {
       recalculateCardsNumber();
     }
   }, [filteredFullMovies]);
-
-  // вешаем обработчик на изменение ширины экрана
-  React.useEffect(() => {
-
-    window.addEventListener('resize', recalculateCardsNumber);
-
-    return () => {
-        window.removeEventListener("resize", recalculateCardsNumber);
-    };
-  }, []);
+  
 
   const recalculateCardsNumber = () => {
 
@@ -345,17 +355,6 @@ function App() {
     setFilteredFullMoviesByWidth(filteredFullMovies.slice(0, filteredFullMoviesByWidth.length + addCardsNumberToShow));
   }
 
-  //получение фильмов пользователя
-  React.useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      mainApi
-        .getMovies()
-        .then((res) => { setSavedMovies([...res.data, ...savedMovies]); })
-        .catch((err) => { console.log(err); });
-    }
-  }, []);
 
   const saveMovieHandler = (movie) => {
     
