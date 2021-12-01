@@ -43,31 +43,10 @@ function App() {
     if (isTooltipPopupOpen) {
       setIsTooltipPopupOpen(false);
       setIsTooltipMistake(false);
-    }   
+    }
   };
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  
-  const register = (userEmail, userPassword, userName) => {
-    mainApi
-      .register(userEmail, userPassword, userName)
-      .then((res) => {
-        handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
-        history.push("/signin");
-      })
-      .catch((err) => { handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true); });
-  }
-
-  const [currentUser, setCurrentState] = React.useState({
-    name: "",
-    email: "",
-    currentUserId: "",
-  });
-
-  const handleSuccessLogin = (token) => {
-    setIsLoggedIn(true);
-    localStorage.setItem("token", token);
-  }
 
   const autorize = (userEmail, userPassword) => {
     mainApi
@@ -90,6 +69,30 @@ function App() {
         );
       });
   }
+
+  const register = (userEmail, userPassword, userName) => {
+    mainApi
+      .register(userEmail, userPassword, userName)
+      .then((res) => {
+
+        if(res.data){
+          handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
+          autorize(userEmail, userPassword);
+        }
+      })
+      .catch((err) => { handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true); });
+  }
+
+  const [currentUser, setCurrentState] = React.useState({
+    name: "",
+    email: "",
+    currentUserId: "",
+  });
+
+  const handleSuccessLogin = (token) => {
+    setIsLoggedIn(true);
+    localStorage.setItem("token", token);
+  }  
 
   const logout = () => {
 
