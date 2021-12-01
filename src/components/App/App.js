@@ -46,22 +46,43 @@ function App() {
     }
   };
 
+  const setCurrentUserData = (token, url) => {
+
+    mainApi
+        .getUserInfo(token)
+        .then((res) => {
+
+          setCurrentState({
+            name: res.data.name,
+            email: res.data.email,
+            currentUserId: res.data._id,
+          });
+
+          setIsLoggedIn(true);
+          history.push(url);
+        })
+        .catch(() => {
+          handleTooltipPopup(true, "Недействительный токен JWT", true);
+          logout();
+        });
+  }
+
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
   const autorize = (userEmail, userPassword) => {
     mainApi
       .authorize(userEmail, userPassword)
       .then((data) => {
-        if (data.token) {
-          handleSuccessLogin(data.token, userEmail);
-          history.push("/movies");
+        if (data.token) {          
+          localStorage.setItem("token", data.token);
+          setCurrentUserData(data.token, "/movies");
         }
       })
       .catch((errorStatus) => {
         handleTooltipPopup(
           true,
           errorStatus === 401
-            ? "Пользователь с email не найден! Пройдите регистрацию"
+            ? "Ошибка авторизации! Проверьте параметры"
             : errorStatus === 400
               ? "Не передано одно из полей. Заполните оба поля"
               : "Что-то пошло не так",
@@ -74,13 +95,12 @@ function App() {
     mainApi
       .register(userEmail, userPassword, userName)
       .then((res) => {
-
         if(res.data){
           handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
           autorize(userEmail, userPassword);
         }
       })
-      .catch((err) => { handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true); });
+      .catch(() => { handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true); });
   }
 
   const [currentUser, setCurrentState] = React.useState({
@@ -88,11 +108,6 @@ function App() {
     email: "",
     currentUserId: "",
   });
-
-  const handleSuccessLogin = (token) => {
-    setIsLoggedIn(true);
-    localStorage.setItem("token", token);
-  }  
 
   const logout = () => {
 
@@ -126,30 +141,8 @@ function App() {
   const [savedMoviesCopyForCheckBox, setSavedMoviesCopyForCheckBox] = React.useState([]); // сохраненные фильмы из БД после поиска и чекбокса
   const [filteredSavedMoviesCopyForCheckBox, setFilteredSavedMoviesCopyForCheckBox] = React.useState([]); // сохраненные фильмы из БД после поиска и чекбокса
 
-  // проверка на наличие токена и пройденный логин
-  React.useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      mainApi
-        .getUserInfo(token)
-        .then((res) => {
-
-          setCurrentState({
-            name: res.data.name,
-            email: res.data.email,
-            currentUserId: res.data._id,
-          });
-
-          setIsLoggedIn(true);
-          history.push("/");
-        })
-        .catch(() => {
-          handleTooltipPopup(true, "Недействительный токен JWT", true);
-          logout();
-        });
-
-      const searchValue = localStorage.getItem("searchValue");
+  const setPreviousValues = () => {
+    const searchValue = localStorage.getItem("searchValue");
 
       if(searchValue){
         setPreviousSearchValue(searchValue);
@@ -172,6 +165,14 @@ function App() {
       if(filteredSavedMovies && filteredSavedMovies.length > 0){
         setFilteredSavedMovies(filteredSavedMovies);
       }
+  }
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      setCurrentUserData(token, "/");
+      setPreviousValues();
     }
   }, []);
 
