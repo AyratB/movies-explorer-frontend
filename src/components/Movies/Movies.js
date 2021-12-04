@@ -6,7 +6,7 @@ import Footer from "./../Footer/Footer.js";
 import Preloader from "./../Preloader/Preloader";
 import './Movies.css';
 
-const Movies = (props) => {
+const Movies = (props) => {  
     
     const [emptySearchWords, setEmptySearchWords] = React.useState("");
 
@@ -24,17 +24,12 @@ const Movies = (props) => {
         setEmptySearchWords("");
     }
 
-    const checkBoxHandler = (isChecked) => {
-        props.onCheckboxChecked(isChecked, props.isSavedMovies);
-    }
-
     return (
         <>
             <section className="movies">
                 <Header isLoggedIn={props.isLoggedIn} onBreadClick={props.onBreadClick}/>
                 <SearchForm previousSearchValue={props.previousSearchValue} onSubmit={handleSearchRequest} isSavedFilms={props.isSavedMovies} 
-                    deleteEmptySearchResult={deleteEmptySearchResult}
-                    onCheckboxChecked={checkBoxHandler}/>
+                    deleteEmptySearchResult={deleteEmptySearchResult} isChecked={props.isChecked}/>
 
                 {props.isMoviesSearchGoing
                     ? <Preloader/>

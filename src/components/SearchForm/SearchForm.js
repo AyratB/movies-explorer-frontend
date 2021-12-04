@@ -8,13 +8,13 @@ import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 const SearchForm = (props) => {
 
     const { values, handleChange, errors, resetForm, setErrors } = useFormWithValidation();
-
+    
+    const [isChecked, setIsChecked] = React.useState(false);
+    const [firstSearchValue, setFirstSearchValue] = React.useState("");
+    
     let prevSearchValue = props.previousSearchValue;
 
-    const [firstSearchValue, setFirstSearchValue] = React.useState("");
-
-    function searchFormHandleSubmit(e) {
-        e.preventDefault();
+    const searcMovie = (isChecked) => {
 
         if(props.isSavedFilms){
             props.onSubmit({
@@ -36,10 +36,15 @@ const SearchForm = (props) => {
             searchValue: searchValue,
             isChecked: isChecked
         });
+    }
+
+    const searchFormHandleSubmit = (e) => {
+        e.preventDefault();
+        searcMovie(isChecked);
     }    
 
     React.useEffect(() => {
-     
+
      setFirstSearchValue();
      return () => { resetForm(); }
     }, []);
@@ -47,13 +52,11 @@ const SearchForm = (props) => {
     React.useEffect(() => {
         setFirstSearchValue(typeof prevSearchValue !== "undefined" ? prevSearchValue : "");
         resetForm();        
-    }, [props.isSavedFilms]);
-
-    const [isChecked, setIsChecked] = React.useState(false);
+    }, [props.isSavedFilms]);    
 
     const checked = (e) => {
         setIsChecked(e);
-        props.onCheckboxChecked(e);
+        searcMovie(e);
     }
 
     const handleFormChange = (e) => {
@@ -82,7 +85,7 @@ const SearchForm = (props) => {
                     <Button type="submit" className="button button_type_search-movie">Поиск</Button>
                 </div>
             </form>
-            <FilterCheckbox checked={checked}/>
+            <FilterCheckbox checked={checked} isChecked={props.isChecked}/>
         </section>
     );
 };

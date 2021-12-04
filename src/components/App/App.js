@@ -88,7 +88,6 @@ function App() {
     mainApi
       .getMovies()
       .then((res) => { 
-        debugger;
         setSavedMovies([...res.data, ...savedMovies]); 
       })
       .catch((err) => { console.log(err); }); 
@@ -139,6 +138,9 @@ function App() {
     localStorage.removeItem("searchSavedValue");
     localStorage.removeItem("filteredSavedMovies");
 
+    localStorage.removeItem("checkboxChecked");
+    localStorage.removeItem("savedCheckboxChecked");
+
     setIsLoggedIn(false);
 
     // почистить все сохраненные данные предыдущего пользователя
@@ -155,9 +157,8 @@ function App() {
     setPreviousSearchSavedValue("");
     setConnectionSavedErrorMessage("");
 
-    setFilteredFullMoviesCopyForCheckBox([]);
-    setSavedMoviesCopyForCheckBox([]);
-    setFilteredSavedMoviesCopyForCheckBox([]);
+    setCheckboxChecked(false);
+    setSavedCheckboxChecked(false);
 
     history.push("/signin");
   }
@@ -171,15 +172,15 @@ function App() {
   const [fullMovies, setFullMovies] = React.useState([]); // общее количество фильмов
   const [filteredFullMovies, setFilteredFullMovies] = React.useState([]); // фильмы по фильтру
   const [filteredFullMoviesByWidth, setFilteredFullMoviesByWidth] = React.useState([]);
-  
+    
   const [savedMovies, setSavedMovies] = React.useState([]); // сохраненные фильмы из БД
   const [filteredSavedMovies, setFilteredSavedMovies] = React.useState([]); // сохраненные фильмы из БД после поиска
   const [previousSearchSavedValue, setPreviousSearchSavedValue] = React.useState("");
   const [connectionSavedErrorMessage, setConnectionSavedErrorMessage] = React.useState("");
 
-  const [filteredFullMoviesCopyForCheckBox, setFilteredFullMoviesCopyForCheckBox] = React.useState([]); // фильмы по фильтру
-  const [savedMoviesCopyForCheckBox, setSavedMoviesCopyForCheckBox] = React.useState([]); // сохраненные фильмы из БД после поиска и чекбокса
-  const [filteredSavedMoviesCopyForCheckBox, setFilteredSavedMoviesCopyForCheckBox] = React.useState([]); // сохраненные фильмы из БД после поиска и чекбокса
+  const [checkboxChecked, setCheckboxChecked] = React.useState(false);
+  const [savedCheckboxChecked, setSavedCheckboxChecked] = React.useState(false);  
+
 
   const setPreviousValues = () => {
     const searchValue = localStorage.getItem("searchValue");
@@ -204,6 +205,18 @@ function App() {
 
       if(filteredSavedMovies && filteredSavedMovies.length > 0){
         setFilteredSavedMovies(filteredSavedMovies);
+      }
+
+      let checkboxChecked = JSON.parse(localStorage.getItem("checkboxChecked"));
+
+      if(checkboxChecked){
+        setCheckboxChecked(checkboxChecked);
+      }
+
+      let savedCheckboxChecked = JSON.parse(localStorage.getItem("savedCheckboxChecked"));
+
+      if(checkboxChecked){
+        setSavedCheckboxChecked(savedCheckboxChecked);
       }
   }  
 
@@ -260,12 +273,15 @@ function App() {
     return result;
   }
 
-  const moviesSearch = (searchValue, isShortFilm, movies) => {
+  const fullMoviesSearch = (searchValue, isShortFilm, movies) => {
 
     let result = getMovieSearch(searchValue, isShortFilm, movies);
 
     setPreviousSearchValue(searchValue);
     localStorage.setItem("searchValue", searchValue);
+
+    setCheckboxChecked(isShortFilm);
+    localStorage.setItem("checkboxChecked", isShortFilm);
 
     if(result.length > 0){
       setFilteredFullMovies(result);
@@ -289,7 +305,7 @@ function App() {
         .getFilms()
         .then((movies) => {
           setFullMovies(movies);
-          moviesSearch(searchValue, isShortFilm, movies);
+          fullMoviesSearch(searchValue, isShortFilm, movies);
         })
         .catch(() => {
           setConnectionErrorMessage("Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз");
@@ -299,7 +315,7 @@ function App() {
         });
     }
     else{
-      moviesSearch(searchValue, isShortFilm, fullMovies);
+      fullMoviesSearch(searchValue, isShortFilm, fullMovies);
       setTimeout(setIsMoviesSearchGoing, 1000, false);
     }
   }
@@ -329,6 +345,9 @@ function App() {
 
     setPreviousSearchValue(searchValue);
     localStorage.setItem("searchSavedValue", searchValue);
+
+    setSavedCheckboxChecked(isShortFilm);
+    localStorage.setItem("savedCheckboxChecked", isShortFilm);
 
     if(result.length > 0){
       setConnectionSavedErrorMessage("");
@@ -386,43 +405,6 @@ function App() {
       .catch((err) => { console.log(err); });
   }
 
-  const checkBoxHandler = (isShortMoviesChecked, isSavedMovies) => {
-
-    if(isSavedMovies){
-
-      if(filteredSavedMovies.length === 0 && savedMovies.length === 0) return;
-
-      if(isShortMoviesChecked){
-
-        if(filteredSavedMovies.length !== 0){
-          setFilteredSavedMoviesCopyForCheckBox([...filteredSavedMovies]);
-          setFilteredSavedMovies([...filteredSavedMovies.filter(movie => movie.duration <= SHORT_FILMS_DURATION)]);
-        }
-        else{
-          setSavedMoviesCopyForCheckBox([...savedMovies]);
-          setSavedMovies([...savedMovies.filter(movie => movie.duration <= SHORT_FILMS_DURATION)])
-        }
-      } else{
-        if(filteredSavedMovies.length !== 0){
-          setFilteredSavedMovies([...filteredSavedMoviesCopyForCheckBox]);
-        }
-        else{
-          setSavedMovies([...savedMoviesCopyForCheckBox]);
-        }
-      }
-    } else {
-      
-      if(filteredFullMovies.length === 0) return;
-
-      if(isShortMoviesChecked){
-        setFilteredFullMoviesCopyForCheckBox([...filteredFullMovies]);
-        setFilteredFullMovies([...filteredFullMovies.filter(movie => movie.duration <= 40)]);
-      } else{
-        setFilteredFullMovies([...filteredFullMoviesCopyForCheckBox]);
-      }
-    }
-  }  
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="app__page">
@@ -458,7 +440,7 @@ function App() {
               onMovieSave={saveMovieHandler}
               onMovieDelete={deleteMovieHandler}
               savedMovies={savedMovies}
-              onCheckboxChecked={checkBoxHandler}
+              isChecked = {checkboxChecked}
             />
 
             <ProtectedRoute
@@ -472,6 +454,7 @@ function App() {
               movieCardsData={filteredSavedMovies.length === 0 && connectionSavedErrorMessage === "" ? savedMovies : filteredSavedMovies}
               onMovieDelete={deleteMovieHandler}
               previousSearchValue={previousSearchSavedValue ?? ""}
+              isChecked = {savedCheckboxChecked}
             />
 
             <ProtectedRoute

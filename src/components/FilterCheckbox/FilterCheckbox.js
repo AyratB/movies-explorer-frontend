@@ -5,7 +5,7 @@ import checkboxCircle from "./../../images/checkbox-circle.svg";
 
 const FilterCheckbox = (props) => {
 
-    const [isChecked, setIsChecked] = React.useState(true);
+    const [isChecked, setIsChecked] = React.useState(!props.isChecked);
 
     const handleClick = () => {
         setIsChecked(!isChecked);
