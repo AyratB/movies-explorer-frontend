@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Route, Switch, useHistory, Redirect } from "react-router-dom";
 
 import Main from "./../Main/Main.js";
 import BreadCrumbsPopup from "./../BreadCrumbsPopup/BreadCrumbsPopup.js";
@@ -63,7 +63,7 @@ function App() {
     }
   };
 
-  const setCurrentUserData = (token, url) => {
+  const setCurrentUserData = (token) => {
 
     mainApi
         .getUserInfo(token)
@@ -75,8 +75,7 @@ function App() {
             currentUserId: res.data._id,
           });
 
-          setIsLoggedIn(true);
-          history.push(url);
+          setIsLoggedIn(true);          
         })
         .catch(() => {
           handleTooltipPopup(true, "Недействительный токен JWT", true);
@@ -100,9 +99,8 @@ function App() {
         if (data.token) {          
           localStorage.setItem("token", data.token);
           
-          setCurrentUserData(data.token, "/movies");
-
-          getUserMovies();
+          setCurrentUserData(data.token, );
+          history.push("/movies");
         }
       })
       .catch((errorStatus) => {
@@ -224,7 +222,7 @@ function App() {
     const token = localStorage.getItem("token");
 
     if (token) {
-      setCurrentUserData(token, "/");
+      setCurrentUserData(token);
       
       setPreviousValues();
 
@@ -416,15 +414,15 @@ function App() {
             </Route>
 
             <Route path="/signup">
-              <Register register={register} />
+              {isLoggedIn ? <Redirect to="/" /> : <Register register={register} />}              
             </Route>
 
             <Route path="/signin">
-              <Login autorize={autorize} />
+              {isLoggedIn ? <Redirect to="/" /> : <Login autorize={autorize} />}              
             </Route>
 
             <ProtectedRoute
-              expract path="/movies"
+              path="/movies"
               isLoggedIn={isLoggedIn}
               movieCardsData={filteredFullMoviesByWidth}
               onBreadClick={handleBreadCrumbsPopupClick}
@@ -444,7 +442,7 @@ function App() {
             />
 
             <ProtectedRoute
-              expract path="/saved-movies"
+              path="/saved-movies"
               isLoggedIn={isLoggedIn}
               onBreadClick={handleBreadCrumbsPopupClick}
               connectionErrorMessage={connectionSavedErrorMessage}
@@ -458,7 +456,7 @@ function App() {
             />
 
             <ProtectedRoute
-              expract path="/profile"
+              path="/profile"
               logout={logout}
               editUser={editUser}
               isLoggedIn={isLoggedIn}
@@ -471,6 +469,7 @@ function App() {
             </Route>
 
           </Switch>
+
 
           <BreadCrumbsPopup isOpened={isBreadCrumbsPopupOpened} onClose={closeAllPopups} className="common-links_type_popup"/>
 
