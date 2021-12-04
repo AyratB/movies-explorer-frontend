@@ -27,12 +27,8 @@ const SearchForm = (props) => {
 
         let searchValue = values["search-form-search-value"] || firstSearchValue;
 
-        if(typeof searchValue === "undefined" || searchValue === ""){
+        if(typeof searchValue === "undefined" || searchValue === "" || searchValue.trim() === ""){
             setErrors({...errors, "search-form-search-value": "Нужно ввести ключевое слово" });
-            return;
-        }
-
-        if(searchValue.length < 2){
             return;
         }
 
@@ -77,8 +73,6 @@ const SearchForm = (props) => {
                             name="search-form-search-value"
                             id="search-form-search-value"
                             placeholder="Фильм"
-                            minLength="2"
-                            maxLength="40"
                             onChange={handleFormChange}
                             value={values["search-form-search-value"] || firstSearchValue || ""}/>
                         <span className={`search-form__span-error ${errors["search-form-search-value"] ? "search-form__span-error_active" : ""}`}>

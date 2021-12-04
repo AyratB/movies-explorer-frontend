@@ -15,6 +15,15 @@ import { CurrentUserContext } from "./../../contexts/CurrentUserContext";
 
 import './App.css';
 
+import { 
+  SHORT_FILMS_DURATION, 
+  CARDS_SHOW_NUMBER_GREATER_1280, 
+  CARDS_SHOW_NUMBER_GREATER_760_LESS_1280, 
+  CARDS_SHOW_NUMBER__LESS_760,
+  ADD_CARD_GREATER_1280,
+  ADD_CARD_LESS_1280
+} from "./../../utils/constants.js";
+
 import * as mainApi from "./../../utils/MainApi";
 import * as moviesApi from "./../../utils/MoviesApi";
 
@@ -37,6 +46,14 @@ function App() {
     setIsTooltipMistake(isMistake);
   };
   // открытие попапов
+
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
+  const [currentUser, setCurrentState] = React.useState({
+    name: "",
+    email: "",
+    currentUserId: "",
+  });
   
   const closeAllPopups = () => {
     if (isBreadCrumbsPopupOpened) setIsBreadCrumbsPopupOpened(false);
@@ -65,14 +82,15 @@ function App() {
           handleTooltipPopup(true, "Недействительный токен JWT", true);
           logout();
         });
-  }
-
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  }  
 
   const getUserMovies = () => {
     mainApi
       .getMovies()
-      .then((res) => { setSavedMovies([...res.data, ...savedMovies]); })
+      .then((res) => { 
+        debugger;
+        setSavedMovies([...res.data, ...savedMovies]); 
+      })
       .catch((err) => { console.log(err); }); 
   }
 
@@ -111,13 +129,7 @@ function App() {
         }
       })
       .catch(() => { handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true); });
-  }
-
-  const [currentUser, setCurrentState] = React.useState({
-    name: "",
-    email: "",
-    currentUserId: "",
-  });
+  }  
 
   const logout = () => {
 
@@ -128,6 +140,24 @@ function App() {
     localStorage.removeItem("filteredSavedMovies");
 
     setIsLoggedIn(false);
+
+    // почистить все сохраненные данные предыдущего пользователя
+    setIsMoviesSearchGoing(false);
+    setPreviousSearchValue("");
+    setConnectionErrorMessage("");
+
+    setFullMovies([]);
+    setFilteredFullMovies([]);
+    setFilteredFullMoviesByWidth([]);
+
+    setSavedMovies([]);
+    setFilteredSavedMovies([]);
+    setPreviousSearchSavedValue("");
+    setConnectionSavedErrorMessage("");
+
+    setFilteredFullMoviesCopyForCheckBox([]);
+    setSavedMoviesCopyForCheckBox([]);
+    setFilteredSavedMoviesCopyForCheckBox([]);
 
     history.push("/signin");
   }
@@ -212,18 +242,27 @@ function App() {
         .catch(() => {
           handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true);
         });
-  }  
+  }
+
+  const getMovieSearch = (searchValue, isShortFilm, movies) => {
+    
+    let trimmedSearchValue = searchValue.trim();
+
+    let result = movies.filter(film =>
+      ((film.nameRU ?? "").toLowerCase().includes(trimmedSearchValue)
+      || 
+      (film.nameEN ?? "").toLowerCase().includes(trimmedSearchValue)));
+
+    if(isShortFilm){
+      result = result.filter(selectedFilm => selectedFilm.duration <= SHORT_FILMS_DURATION);
+    }
+
+    return result;
+  }
 
   const moviesSearch = (searchValue, isShortFilm, movies) => {
 
-    let result = movies.filter(film =>
-      ((film.nameRU ?? "").toLowerCase().includes(searchValue.toLowerCase())
-      || 
-      (film.nameEN ?? "").toLowerCase().includes(searchValue.toLowerCase())));
-
-    if(isShortFilm){
-      result = result.filter(selectedFilm => selectedFilm.duration <= 40);
-    }
+    let result = getMovieSearch(searchValue, isShortFilm, movies);
 
     setPreviousSearchValue(searchValue);
     localStorage.setItem("searchValue", searchValue);
@@ -241,14 +280,6 @@ function App() {
   const externalMoviesSearchHandler = (searchValue, formCleaner, isShortFilm) => {
 
     setIsMoviesSearchGoing(true);
-
-    let previuosSearch = localStorage.getItem("searchValue");
-    if(previuosSearch && previuosSearch === searchValue){
-      setIsMoviesSearchGoing(false);
-      setConnectionErrorMessage("Поменяйте значение поиска. Поисковый запрос равен предыдущему");
-      handleTooltipPopup(true, "Поменяйте значение поиска", true);
-      return;
-    }
 
     setConnectionErrorMessage("");
 
@@ -276,15 +307,6 @@ function App() {
   const savedMoviesSearchHandler = (searchValue, formCleaner, isShortFilm) => {
     setIsMoviesSearchGoing(true);
     
-    let previuosSavedSearch = localStorage.getItem("searchSavedValue");
-
-    if(previuosSavedSearch && previuosSavedSearch === searchValue){
-      setIsMoviesSearchGoing(false);
-      setConnectionSavedErrorMessage("Поменяйте значение поиска. Поисковый запрос равен предыдущему");
-      handleTooltipPopup(true, "Поменяйте значение поиска", true);
-      return;
-    }
-    
     if(savedMovies.length === 0){
       setIsMoviesSearchGoing(false);
       setConnectionSavedErrorMessage("Сохраните сначала фильмы в коллекцию");
@@ -303,14 +325,7 @@ function App() {
       setFilteredSavedMovies([]); 
     }
 
-    let result = movies.filter(film =>
-      ((film.nameRU ?? "").toLowerCase().includes(searchValue.toLowerCase())
-      || 
-      (film.nameEN ?? "").toLowerCase().includes(searchValue.toLowerCase())));
-
-    if(isShortFilm){
-      result = result.filter(selectedFilm => selectedFilm.duration <= 40);
-    }
+    let result = getMovieSearch(searchValue, isShortFilm, movies);
 
     setPreviousSearchValue(searchValue);
     localStorage.setItem("searchSavedValue", searchValue);
@@ -337,20 +352,20 @@ function App() {
   const recalculateCardsNumber = () => {
 
     let totalCardsNumberToShow = window.innerWidth >= 1280
-      ? 12
+      ? CARDS_SHOW_NUMBER_GREATER_1280
       : window.innerWidth < 1280 && window.innerWidth > 760
-        ? 8
-        : 5;
+        ? CARDS_SHOW_NUMBER_GREATER_760_LESS_1280
+        : CARDS_SHOW_NUMBER__LESS_760;
 
     if(filteredFullMovies.length > 0) // условие нужно, чтобы Реакт успевал прочитать данные при перерендере
       setFilteredFullMoviesByWidth(filteredFullMovies.slice(0, totalCardsNumberToShow));
   }
 
-  const addCardsToShow = () => {
+  const addCardsToShow = () => {  
 
     let addCardsNumberToShow = window.innerWidth >= 1280
-      ? 3
-      : 2;
+      ? ADD_CARD_GREATER_1280
+      : ADD_CARD_LESS_1280;
 
     setFilteredFullMoviesByWidth(filteredFullMovies.slice(0, filteredFullMoviesByWidth.length + addCardsNumberToShow));
   }
@@ -381,11 +396,11 @@ function App() {
 
         if(filteredSavedMovies.length !== 0){
           setFilteredSavedMoviesCopyForCheckBox([...filteredSavedMovies]);
-          setFilteredSavedMovies([...filteredSavedMovies.filter(movie => movie.duration <= 40)]);
+          setFilteredSavedMovies([...filteredSavedMovies.filter(movie => movie.duration <= SHORT_FILMS_DURATION)]);
         }
         else{
           setSavedMoviesCopyForCheckBox([...savedMovies]);
-          setSavedMovies([...savedMovies.filter(movie => movie.duration <= 40)])
+          setSavedMovies([...savedMovies.filter(movie => movie.duration <= SHORT_FILMS_DURATION)])
         }
       } else{
         if(filteredSavedMovies.length !== 0){
