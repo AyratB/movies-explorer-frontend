@@ -27,9 +27,10 @@ export function useFormWithValidation() {
   };
 
   const customEditFormValidity = (previusName, previusEmail, e) => {
+    
     if (e.target.name === "profile-form-user-name") {
       return e.target.value !== previusName && values["profile-form-user-email"] !== previusEmail;
-    } else if (e.target === "profile-form-user-email") {
+    } else if (e.target.name === "profile-form-user-email") {
       return values["profile-form-user-name"] !== previusName && e.target.value !== previusEmail;
     }
   }

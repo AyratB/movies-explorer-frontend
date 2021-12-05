@@ -87,7 +87,9 @@ function App() {
     mainApi
       .getMovies()
       .then((res) => { 
-        setSavedMovies([...res.data, ...savedMovies]); 
+        if(typeof res !== 'undefined' && res.data){
+          setSavedMovies([...res.data, ...savedMovies]);
+        }         
       })
       .catch((err) => { console.log(err); }); 
   }
@@ -96,10 +98,19 @@ function App() {
     mainApi
       .authorize(userEmail, userPassword)
       .then((data) => {
-        if (data.token) {          
+        if (data.token) {
           localStorage.setItem("token", data.token);
-          
-          setCurrentUserData(data.token, );
+
+          if(data.user){
+            setCurrentState({
+              name: data.user.name,
+              email: data.user.email,
+              currentUserId: data.user._id,
+            });
+          }
+
+          setIsLoggedIn(true); 
+
           history.push("/movies");
         }
       })

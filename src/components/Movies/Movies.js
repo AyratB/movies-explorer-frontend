@@ -24,6 +24,10 @@ const Movies = (props) => {
         setEmptySearchWords("");
     }
 
+    React.useEffect(() => {
+        setEmptySearchWords("");
+      }, [props.isSavedMovies]);
+
     return (
         <>
             <section className="movies">

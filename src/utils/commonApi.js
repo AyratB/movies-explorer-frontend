@@ -15,7 +15,7 @@ export const request = async ({ url, endPoint, method, body, requestHeaders, cre
         : `${url}`;
 
     let response = await fetch(path, body ? { ...fetchInit, body } : fetchInit);
-    let data = await await getResponseData(response);
+    let data = await getResponseData(response);
 
     return data;
 }
