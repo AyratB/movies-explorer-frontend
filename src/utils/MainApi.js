@@ -2,8 +2,8 @@ import { BASE_MAIN_URL, BASE_MOVIES_IMAGE_URL } from "./constants";
 import { request } from "./../utils/commonApi";
 
 // ====================== AUTH ================================
-export const register = async (userEmail, userPassword, userName) => {
-    return await request({
+export const register = (userEmail, userPassword, userName) => {
+    return request({
       url: BASE_MAIN_URL,
       endPoint: "signup",
       method: "POST",
@@ -11,15 +11,12 @@ export const register = async (userEmail, userPassword, userName) => {
         email: userEmail,
         password: userPassword,
         name: userName,
-      }),
-      requestHeaders: {
-        Accept: "application/json",
-      },
+      })
     });
 };
 
-export const authorize = async (identifier, password) => {
-    return await request({
+export const authorize = (identifier, password) => {
+    return request({
       url: BASE_MAIN_URL,
       endPoint: "signin",
       method: "POST",
@@ -31,13 +28,12 @@ export const authorize = async (identifier, password) => {
     });
 };
 
-export const getUserInfo = async (token) => {
-    return await request({
+export const getUserInfo = (token) => {
+    return request({
       url: BASE_MAIN_URL,
       endPoint: "users/me",
       method: "GET",
       requestHeaders: {
-        Accept: "application/json",
         Authorization: `Bearer ${token}`,
       },
       credentials: 'include',
@@ -47,8 +43,8 @@ export const getUserInfo = async (token) => {
 
 
 // ====================== Работа с данными пользователя =======
-export const updateUserData = async (userEmail, userName) => {
-    return await request({
+export const updateUserData = (userEmail, userName, token) => {
+    return request({
       url: BASE_MAIN_URL,
       endPoint: "users/me",
       method: "PATCH",
@@ -56,6 +52,9 @@ export const updateUserData = async (userEmail, userName) => {
         email: userEmail,
         name: userName,
       }),
+      requestHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
       credentials: 'include',
     });
 };
@@ -63,8 +62,8 @@ export const updateUserData = async (userEmail, userName) => {
 
 
 // ====================== Работа с фильмами ===================
-export const saveMovie = async (movieData) => {
-  return await request({
+export const saveMovie = (movieData, token) => {
+  return request({
     url: BASE_MAIN_URL,
     endPoint: "movies",
     method: "POST",
@@ -81,27 +80,33 @@ export const saveMovie = async (movieData) => {
       thumbnail:`${BASE_MOVIES_IMAGE_URL}${movieData.image.formats.thumbnail.url}`,
       movieId: movieData.id
     }),
+    requestHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
     credentials: 'include',
   });
 };
 
-export const getMovies = async () => {
-  return await request({
+export const getMovies = (token) => {
+  return request({
     url: BASE_MAIN_URL,
     endPoint: "movies",
     method: "GET",    
     credentials: 'include',    
     requestHeaders: {
-      Accept: "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
 };
 
-export const deleteMovies = async (movieId) => {
-  return await request({
+export const deleteMovies = (movieId, token) => {
+  return request({
     url: BASE_MAIN_URL,
     endPoint: `movies/${movieId}`,
     method: "DELETE",
+    requestHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
     credentials: 'include'
   });
 };

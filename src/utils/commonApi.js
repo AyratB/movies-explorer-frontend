@@ -1,4 +1,4 @@
-export const request = async ({ url, endPoint, method, body, requestHeaders, credentials }) => {
+export const request = ({ url, endPoint, method, body, requestHeaders, credentials }) => {
     const fetchInit = {
       method: method,
       headers: Object.assign(
@@ -14,10 +14,9 @@ export const request = async ({ url, endPoint, method, body, requestHeaders, cre
         ? `${url}/${endPoint}`
         : `${url}`;
 
-    let response = await fetch(path, body ? { ...fetchInit, body } : fetchInit);
-    let data = await getResponseData(response);
-
-    return data;
+    return fetch(
+      path, body ? { ...fetchInit, body } : fetchInit)
+      .then((res) => getResponseData(res));
 }
 
-const getResponseData = async (res) =>  res.ok ? await res.json() : await Promise.reject(res.status);
+const getResponseData = (res) =>  res.ok ? res.json() : Promise.reject(res.status); 

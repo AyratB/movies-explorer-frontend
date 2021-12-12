@@ -84,8 +84,13 @@ function App() {
   }  
 
   const getUserMovies = () => {
+    
+    const token = localStorage.getItem("token");
+
+    if(!token) return;
+
     mainApi
-      .getMovies()
+      .getMovies(token)
       .then((res) => { 
         if(typeof res !== 'undefined' && res.data){
           setSavedMovies([...res.data, ...savedMovies]);
@@ -101,6 +106,8 @@ function App() {
         if (data.token) {
           localStorage.setItem("token", data.token);
 
+          setToken(data.token);
+
           if(data.user){
             setCurrentState({
               name: data.user.name,
@@ -109,7 +116,7 @@ function App() {
             });
           }
 
-          setIsLoggedIn(true); 
+          setIsLoggedIn(true);
 
           history.push("/movies");
         }
@@ -152,6 +159,8 @@ function App() {
 
     setIsLoggedIn(false);
 
+    setToken("");
+
     // почистить все сохраненные данные предыдущего пользователя
     setIsMoviesSearchGoing(false);
     setPreviousSearchValue("");
@@ -189,7 +198,7 @@ function App() {
 
   const [checkboxChecked, setCheckboxChecked] = React.useState(false);
   const [savedCheckboxChecked, setSavedCheckboxChecked] = React.useState(false);  
-
+  const [token, setToken] = React.useState("");  
 
   const setPreviousValues = () => {
     const searchValue = localStorage.getItem("searchValue");
@@ -230,6 +239,16 @@ function App() {
   }  
 
   React.useEffect(() => {
+    
+    window.addEventListener('resize', recalculateCardsNumber);
+
+    return () => {
+        window.removeEventListener("resize", recalculateCardsNumber);
+    };
+  }, []);
+
+  React.useEffect(() => {
+
     const token = localStorage.getItem("token");
 
     if (token) {
@@ -239,18 +258,14 @@ function App() {
 
       getUserMovies();
     }
-
-    window.addEventListener('resize', recalculateCardsNumber);
-
-    return () => {
-        window.removeEventListener("resize", recalculateCardsNumber);
-    };
-  }, []);
+  }, [token]);
 
   function editUser(userEmail, userName) {
 
+    var token = getToken();
+
       mainApi
-        .updateUserData(userEmail, userName)
+        .updateUserData(userEmail, userName, token)
         .then((res) => {
 
           setCurrentState({
@@ -261,7 +276,7 @@ function App() {
 
           handleTooltipPopup(true, "Успешно отредактированы данные пользователя!", false);
         })
-        .catch(() => {
+        .catch((er) => {
           handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true);
         });
   }
@@ -398,20 +413,32 @@ function App() {
     setFilteredFullMoviesByWidth(filteredFullMovies.slice(0, filteredFullMoviesByWidth.length + addCardsNumberToShow));
   }
 
-
   const saveMovieHandler = (movie) => {
+
+    var token = getToken();
     
     mainApi
-      .saveMovie(movie)
+      .saveMovie(movie, token)
       .then((savedMovie) => { setSavedMovies([savedMovie.data, ...savedMovies]); })
       .catch((err) => { console.log(err); });
   }
 
   const deleteMovieHandler = (movieId) => {
+    var token = getToken();
+
     mainApi
-      .deleteMovies(movieId)
+      .deleteMovies(movieId, token)
       .then((deletedMovie) => { setSavedMovies([...savedMovies.filter(movie => movie.movieId !== deletedMovie.data.movieId)]); })
       .catch((err) => { console.log(err); });
+  }
+
+  const getToken = () => {
+    const token = localStorage.getItem("token");
+
+    if(!token) {
+      handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true);
+      logout();
+    }
   }
 
   return (
