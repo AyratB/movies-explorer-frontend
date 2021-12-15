@@ -16,10 +16,6 @@ const Movies = React.memo((props) => {
         props.commonMoviesSearchHandler(searchValue, isChecked, props.movieObject);
     }
 
-    let isNeedToShowMovies = props.movieObject["isSavedMovies"]
-        ? props.movieObject["fullMovies"].length === 0
-        : props.movieObject["filteredMovies"] === 0;
-
     const deleteEmptySearchResult = () => {
         setEmptySearchWords("");
     }
@@ -48,16 +44,16 @@ const Movies = React.memo((props) => {
                 {props.isMoviesSearchGoing
                     ? <Preloader/>
 
-                    : !isNeedToShowMovies
-                        ? <div style={emptyMessageStyle}>{props.connectionErrorMessage || emptySearchWords}</div>
-
-                        : <MoviesCardList 
+                    : props.movieCardsData.length !== 0
+                        ? <MoviesCardList 
                             cards={props.movieCardsData}
                             addCardsToShow={props.addCardsToShow}
                             onMovieSave={props.onMovieSave}
                             onMovieDelete={props.onMovieDelete}
                             savedMoviesObject={props.savedMoviesObject}
-                            movieObject ={props.movieObject}/>
+                            movieObject ={props.movieObject}/>                        
+
+                        : <div style={emptyMessageStyle}>{props.connectionErrorMessage || emptySearchWords}</div>
                 }
 
             </section>

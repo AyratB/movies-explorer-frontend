@@ -69,6 +69,7 @@ function App() {
       .authorize(userEmail, userPassword)
       .then((data) => {
         if (data.token) {
+          
           localStorage.setItem("token", data.token);
 
           setToken(data.token);
@@ -98,7 +99,7 @@ function App() {
           true
         );
       });
-  }
+  }  
 
   const register = (userEmail, userPassword, userName) => {
     mainApi
@@ -144,7 +145,7 @@ function App() {
 
   const setMovieObjectProperty = (isSavedMovies, movieDataPropertyName, movieDataPropertyValue) => {
 
-    if(typeof movieDataPropertyValue === "undefined") return;
+    if(movieDataPropertyValue == null || typeof movieDataPropertyValue === "undefined") return;
 
     let functionType = isSavedMovies ? setSavedMoviesData : setFullMoviesData;
     let movieObject = isSavedMovies ? savedMoviesData : fullMoviesData;
@@ -204,8 +205,10 @@ function App() {
     const token = localStorage.getItem("token");
 
     if (token) {
-      Promise.all([mainApi.getUserInfo(token), moviesApi.getMovies(token)])
-        .then(([userData, movies]) => {
+      
+      Promise.all([mainApi.getUserInfo(token), mainApi.getMovies(token), moviesApi.getFilms()])
+        .then(([userData, userSavedMovies, externalMovies]) => {
+
           setCurrentState({
             ...currentUser,
             name: userData.data.name,
@@ -217,15 +220,24 @@ function App() {
 
           setIsLoggedIn(true);
 
-          if(typeof movies !== 'undefined' && movies.data){
+          if(typeof userSavedMovies !== 'undefined' && userSavedMovies.data){
 
             setMovieObjectProperty(
               true,
               "fullMovies",
-              [...movies.data]);
+              [...userSavedMovies.data]);
           }    
 
           setPreviousValues();
+
+          // Фильмы из внешнего АПИ
+          if(typeof externalMovies !== 'undefined' && externalMovies.length > 0){
+
+            setMovieObjectProperty(
+              false,
+              "fullMovies",
+              [...externalMovies]);
+          }  
         })
         .catch((err) => {
           console.log(err)
@@ -449,7 +461,7 @@ function App() {
               handleSavedSearchRequest={commonMoviesSearchHandler}
               onMovieDelete={deleteMovieHandler}              
               movieCardsData={savedMoviesData["filteredMovies"].length !== 0 ? savedMoviesData["filteredMovies"] :  savedMoviesData["fullMovies"]}
-              
+              movieObject ={savedMoviesData}
               // TODO попробовать 
               //movieCardsData={savedMoviesData["filteredMovies"] || savedMoviesData["fullMovies"]}              
             />
