@@ -6,58 +6,64 @@ import Footer from "./../Footer/Footer.js";
 import Preloader from "./../Preloader/Preloader";
 import './Movies.css';
 
-const Movies = (props) => {  
-    
+const Movies = React.memo((props) => {
+
     const [emptySearchWords, setEmptySearchWords] = React.useState("");
 
-    const handleSearchRequest = ({searchValue, formCleaner, isChecked}) => {
+    const handleSearchRequest = (searchValue, isChecked) => {
         setEmptySearchWords("Ничего не найдено");
 
-        if(props.isSavedMovies){
-            props.handleSavedSearchRequest(searchValue, formCleaner, isChecked);
-        } else{
-            props.handleSearchRequest(searchValue, formCleaner, isChecked);
-        }
+        props.commonMoviesSearchHandler(searchValue, isChecked, props.movieObject);
     }
+
+    let isNeedToShowMovies = props.movieObject["isSavedMovies"]
+        ? props.movieObject["fullMovies"].length === 0
+        : props.movieObject["filteredMovies"] === 0;
 
     const deleteEmptySearchResult = () => {
         setEmptySearchWords("");
     }
 
+    let emptyMessageStyle = {
+        'fontSize': '18px',
+        'fontFamily': 'Inter',
+        'color': '#FFFFFF',
+        'textAlign': 'center',
+    }
+
     React.useEffect(() => {
         setEmptySearchWords("");
-      }, [props.isSavedMovies]);
+      }, [props.movieObject]);
 
     return (
         <>
             <section className="movies">
                 <Header isLoggedIn={props.isLoggedIn} onBreadClick={props.onBreadClick}/>
-                <SearchForm previousSearchValue={props.previousSearchValue} onSubmit={handleSearchRequest} isSavedFilms={props.isSavedMovies} 
-                    deleteEmptySearchResult={deleteEmptySearchResult} isChecked={props.isChecked}/>
+
+                <SearchForm
+                    movieObject ={props.movieObject}
+                    onSubmit={handleSearchRequest} 
+                    deleteEmptySearchResult={deleteEmptySearchResult}/>
 
                 {props.isMoviesSearchGoing
                     ? <Preloader/>
-                    : (!props.isSavedMovies && (typeof props.totalMoviesCount === "undefined" || props.totalMoviesCount === 0)) || (props.isSavedMovies && (props.movieCardsData.length === 0))
-                        ? <div style={ {
-                            'fontSize': '18px',
-                            'fontFamily': 'Inter',
-                            'color': '#FFFFFF',
-                            'textAlign': 'center',
-                        }}>{props.connectionErrorMessage || emptySearchWords}</div>
+
+                    : !isNeedToShowMovies
+                        ? <div style={emptyMessageStyle}>{props.connectionErrorMessage || emptySearchWords}</div>
+
                         : <MoviesCardList 
-                                cards={props.movieCardsData}
-                                isSavedMovies={props.isSavedMovies}
-                                totalMoviesCount={props.totalMoviesCount}
-                                addCardsToShow={props.addCardsToShow}
-                                onMovieSave={props.onMovieSave}
-                                savedMovies={props.savedMovies}
-                                onMovieDelete={props.onMovieDelete}/>
+                            cards={props.movieCardsData}
+                            addCardsToShow={props.addCardsToShow}
+                            onMovieSave={props.onMovieSave}
+                            onMovieDelete={props.onMovieDelete}
+                            savedMoviesObject={props.savedMoviesObject}
+                            movieObject ={props.movieObject}/>
                 }
 
             </section>
             <Footer />
         </>
     );
-};
+});
 
 export default Movies;

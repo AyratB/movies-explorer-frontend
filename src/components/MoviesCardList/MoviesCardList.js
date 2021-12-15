@@ -6,6 +6,10 @@ import './MoviesCardList.css';
 
 const MoviesCardList = React.memo((props) => {
 
+    let isSavedMovies = props.movieObject["isSavedMovies"];
+
+    let isNeedToShowAddButton = isSavedMovies || props.movieObject["filteredMoviesByWidth"].length === props.movieObject["filteredMovies"].length;
+
     return (
         <section className="movies-cards">
             <ul className="movies-cards__list">
@@ -13,18 +17,20 @@ const MoviesCardList = React.memo((props) => {
 
                     return (
                         <MoviesCard
-                            key={props.isSavedMovies ? card.movieId : card.id}
+                            key={ isSavedMovies ? card.movieId : card.id}
                             cardData={card}
                             onMovieSave={props.onMovieSave}
                             onMovieDelete={props.onMovieDelete}
-                            isSavedMovies={props.isSavedMovies}
-                            savedMovies={props.savedMovies}
+
+                            // для вывода иконки сохраненного фильма
+                            savedMoviesObject={props.savedMoviesObject}
+                            movieObject ={props.movieObject}
                         />
                     );
                 })}
             </ul>
 
-            { typeof props.totalMoviesCount === 'undefined' || props.cards.length === props.totalMoviesCount
+            { isNeedToShowAddButton
                 ? <></>
                 : <Button className="button button_type_add-movies" onClick={props.addCardsToShow}>Еще</Button>
             }

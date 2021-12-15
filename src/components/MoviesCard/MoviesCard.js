@@ -7,44 +7,51 @@ import './MoviesCard.css';
 
 const MoviesCard = React.memo((props) => {
 
-    let imageUrl = props.isSavedMovies
+    let isMovieSaved = props.movieObject["isSavedMovies"];
+
+    let imageUrl = isMovieSaved
         ? `url(${props.cardData.image})`
         : `url(${BASE_MOVIES_IMAGE_URL}${props.cardData.image.url})`;
 
-    let movieId = props.isSavedMovies ? props.cardData.movieId : props.cardData.id;
-    let isSavedMovie = props.isSavedMovies ? true : props.savedMovies.some((savedMovie) => savedMovie.movieId === movieId);
+    let movieId = isMovieSaved
+         ? props.cardData.movieId
+         : props.cardData.id;
 
-    const handleSaveMovie = () => props.onMovieSave(props.cardData);    
-    const handleDeleteMovie = () => props.onMovieDelete(movieId);    
+    let isNeedToShowSavedIcon = isMovieSaved || props.savedMoviesObject["fullMovies"].some((savedMovie) => savedMovie.movieId === movieId);
 
-    const [isSaveButtonVisible, setIsSaveButtonVisible] = React.useState(false);
-    const setButtonVisible = () => setIsSaveButtonVisible(true);
-    const setButtonUnVisible = () => setIsSaveButtonVisible(false);    
+    const handleSaveMovie = () => props.onMovieSave(props.cardData);
+    const handleDeleteMovie = () => props.onMovieDelete(movieId);
+
+    const [isIconVisible, setIsIconVisible] = React.useState(false);
+    const setIconVisible = () => setIsIconVisible(true);
+    const setIconUnvisible = () => setIsIconVisible(false);
 
     return (
         <li className="card">
-            <div className="card__image-wrapper" onMouseEnter={setButtonVisible} onMouseLeave={setButtonUnVisible}>
+            <div className="card__image-wrapper" onMouseEnter={setIconVisible} onMouseLeave={setIconUnvisible}>
+                
                 <ExternalLink href={props.cardData.trailer} className="" target="_blank">
                     <div style={ {
                         backgroundImage: imageUrl,
                         backgroundSize: 'contain', 
                         backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center' }}
+                        backgroundPosition: 'center' } }
                     className="card__image"/>
-                </ExternalLink>                
+                </ExternalLink>
+
                 <div className="card__saving-choice">
 
-                    {props.isSavedMovies
+                    {isMovieSaved
 
-                        ?   isSaveButtonVisible && <Button type="button" className="button button_type_card__delete-movie" ariaLabel="Иконка удаления фильма из сохраненных"
+                        ?   isIconVisible && <Button type="button" className="button button_type_card__delete-movie" ariaLabel="Иконка удаления фильма из сохраненных"
                                 onClick={handleDeleteMovie}/>
 
-                        :   isSavedMovie
+                        :   isNeedToShowSavedIcon
 
                             ?   <Button type="button" className="button button_type_card__saved-icon" ariaLabel="Иконка сохраненного фильма"
                                     onClick={handleDeleteMovie}/>
 
-                            :   isSaveButtonVisible && <Button type="button" className="button button_type_saved-movie" ariaLabel="Иконка сохранения"
+                            :   isIconVisible && <Button type="button" className="button button_type_saved-movie" ariaLabel="Иконка сохранения"
                                     onClick={handleSaveMovie}>Сохранить</Button>
                     }
                 </div>
