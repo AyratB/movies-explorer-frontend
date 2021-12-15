@@ -411,12 +411,15 @@ function App() {
   }
 
   const getToken = () => {
+
     const token = localStorage.getItem("token");
 
-    if(!token) {
+    if (!token) {
       handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true);
       logout();
     }
+
+    return token;
   }
 
   return (

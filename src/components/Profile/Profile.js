@@ -12,41 +12,54 @@ function Profile(props) {
 
   const currentUserContext = React.useContext(CurrentUserContext);
   
+  const [userName, setUserName] = React.useState("");
+  const [userEmail, setUserEmail] = React.useState("");  
 
-  const [userEmail, setUserEmail] = React.useState(currentUserContext.email);
-  const [userName, setUserName] = React.useState(currentUserContext.name);
-
-  const [userNameFirstChange, setUserNameFirstChange] = React.useState(false);
-  const [userEmailFirstChange, setUserEmailFirstChange] = React.useState(false);
-
-  const [isSubmitButtonValid, submitButtonValid] = React.useState(false);
   const [isUserDataChanged, setIsUserDataChanged] = React.useState(true);
+  const [isSubmitButtonValid, submitButtonValid] = React.useState(false);
 
   const { values, handleChange, errors, isValid, customEditFormValidity } = useFormWithValidation();
+
+  // в первый раз считываем значения из Контекста, потом - из измененных  
+  const [userNameFirstChange, setUserNameFirstChange] = React.useState(false);
+  const [userEmailFirstChange, setUserEmailFirstChange] = React.useState(false);  
 
   const handleChangeForm = (e) => {
 
     setIsUserDataChanged(true);
 
     const input = e.target;
+
     if (input.name === "profile-form-user-name") {
-      setUserName("");
       setUserNameFirstChange(true);
+      
+      setUserName("");
+      
     } else if (input.name === "profile-form-user-email") {
-      setUserEmail("");
       setUserEmailFirstChange(true);
+      
+      setUserEmail("");
+      
     }
 
     handleChange(e);
-
     submitButtonValid(customEditFormValidity(currentUserContext.name, currentUserContext.email, e));
   };
 
   const handleSubmit = (e) => {
+
     e.preventDefault();
     props.editUser(values["profile-form-user-email"] || userEmail, values["profile-form-user-name"] || userName);
     setIsUserDataChanged(false);
   };
+
+  React.useEffect(() => {
+
+    if(currentUserContext.currentUserId){
+      setUserName(currentUserContext.name);
+      setUserEmail(currentUserContext.email);
+    }
+  }, [currentUserContext]);
 
   return (
     <section className="profile__wrapper">
@@ -62,8 +75,8 @@ function Profile(props) {
               <input
                 className={`profile__input ${errors["profile-form-user-name"] ? "profile-form__input_type_error" : ""}`}
                 id="profile-form-user-name"
-                name="profile-form-user-name"
-                value={!userNameFirstChange ? currentUserContext.name : userName || values["profile-form-user-name"] || ""}
+                name="profile-form-user-name"                
+                value={userNameFirstChange ? userName || values["profile-form-user-name"] || "" :  currentUserContext.name}
                 onChange={handleChangeForm}
                 required
                 minLength="2"
@@ -81,7 +94,7 @@ function Profile(props) {
                 className={`profile__input ${errors["profile-form-user-email"] ? "profile-form__input_type_error" : ""}`}
                 id="profile-form-user-email"
                 name="profile-form-user-email"
-                value={!userEmailFirstChange ? currentUserContext.email : userEmail || values["profile-form-user-email"] || ""}
+                value={userEmailFirstChange ? userEmail || values["profile-form-user-email"] || "" : currentUserContext.email }
                 onChange={handleChangeForm}
                 required
                 minLength="2"
