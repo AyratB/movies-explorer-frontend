@@ -15,10 +15,10 @@ import { CurrentUserContext } from "./../../contexts/CurrentUserContext";
 
 import './App.css';
 
-import { 
-  SHORT_FILMS_DURATION, 
+import {
+  SHORT_FILMS_DURATION,
   CARDS_SHOW_NUMBER_GREATER_1280, 
-  CARDS_SHOW_NUMBER_GREATER_760_LESS_1280, 
+  CARDS_SHOW_NUMBER_GREATER_760_LESS_1280,
   CARDS_SHOW_NUMBER__LESS_760,
   ADD_CARD_GREATER_1280,
   ADD_CARD_LESS_1280
@@ -54,7 +54,7 @@ function App() {
     name: "",
     email: "",
     currentUserId: "",
-  });  
+  });
   
   const closeAllPopups = () => {
     if (isBreadCrumbsPopupOpened) setIsBreadCrumbsPopupOpened(false);
@@ -62,7 +62,7 @@ function App() {
       setIsTooltipPopupOpen(false);
       setIsTooltipMistake(false);
     }
-  };  
+  };
 
   const autorize = (userEmail, userPassword) => {
     mainApi
@@ -99,7 +99,7 @@ function App() {
           true
         );
       });
-  }  
+  }
 
   const register = (userEmail, userPassword, userName) => {
     mainApi
@@ -116,8 +116,10 @@ function App() {
   const logout = () => {
 
     localStorage.clear();
+
     setIsLoggedIn(false);
     setToken("");
+
     setFullMoviesData({});
     setSavedMoviesData({});
 
@@ -125,35 +127,39 @@ function App() {
   }
   
   const [fullMoviesData, setFullMoviesData] = React.useState({
-    "isSavedMovies": false,                 // флаг сохраненных фильмов
-    "shortChecked": false,                  // признак короткого метра
-    "previousSearchValue": "",              // предыдущая строка поиска
-    "connectionErrorMessage": "",           // сообщение об ошибке поиска
-    "fullMovies": [],                       // полный перечень фильмы из внешнего АПИ
-    "filteredMovies": [],                   // фильмы после поиска 
-    "filteredMoviesByWidth": [],            // фильмы после поиска с фильтрацией отображения ЕЩЕ. ТОЛЬКО для FULL!
+    isSavedMovies: false,                 // флаг сохраненных фильмов
+    shortChecked: false,                  // признак короткого метра
+    previousSearchValue: "",              // предыдущая строка поиска
+    connectionErrorMessage: "",           // сообщение об ошибке поиска
+    fullMovies: [],                       // полный перечень фильмы из внешнего АПИ
+    filteredMovies: [],                   // фильмы после поиска 
+    filteredMoviesByWidth: [],            // фильмы после поиска с фильтрацией отображения ЕЩЕ. ТОЛЬКО для FULL!
   });
 
   const [savedMoviesData, setSavedMoviesData] = React.useState({
-    "isSavedMovies": true,                  // флаг сохраненных фильмов
-    "shortChecked": false,                  // признак короткого метра
-    "previousSearchValue": "",              // предыдущая строка поиска
-    "connectionErrorMessage": "",           // сообщение об ошибке поиска
-    "fullMovies": [],                       // сохраненные фильмы пользователя из БД
-    "filteredMovies": [],                   // фильмы после поиска 
+    isSavedMovies: true,                  // флаг сохраненных фильмов
+    shortChecked: false,                  // признак короткого метра
+    previousSearchValue: "",              // предыдущая строка поиска
+    connectionErrorMessage: "",           // сообщение об ошибке поиска
+    fullMovies: [],                       // сохраненные фильмы пользователя из БД
+    filteredMovies: [],                   // фильмы после поиска 
   });
 
   const setMovieObjectProperty = (isSavedMovies, movieDataPropertyName, movieDataPropertyValue) => {
-
+    
     if(movieDataPropertyValue == null || typeof movieDataPropertyValue === "undefined") return;
 
     let functionType = isSavedMovies ? setSavedMoviesData : setFullMoviesData;
     let movieObject = isSavedMovies ? savedMoviesData : fullMoviesData;
 
-    functionType({
-      ...movieObject,
-      [movieDataPropertyName]: movieDataPropertyValue
-    });
+    functionType(
+      Object.assign(
+        movieObject,
+        {
+          [movieDataPropertyName]: movieDataPropertyValue
+        }
+      )
+    );
   }
 
   const setPreviousValues = () => {
@@ -165,9 +171,16 @@ function App() {
       localStorage.getItem("FM_previousSearchValue"));
 
     let filteredFullMovies = JSON.parse(localStorage.getItem("FM_filteredMovies"));
-
+    
     if(filteredFullMovies && filteredFullMovies.length > 0){
-      setMovieObjectProperty(false, "filteredMovies", [...filteredFullMovies]);
+
+      setFullMoviesData(
+        Object.assign(
+          fullMoviesData, 
+          {
+            filteredMovies : [...filteredFullMovies]
+          }
+        ));
     }
 
     setMovieObjectProperty(
@@ -182,10 +195,19 @@ function App() {
       "previousSearchValue",
       localStorage.getItem("SM_previousSearchValue"));    
 
-    let filteredSavedMovies = JSON.parse(localStorage.getItem("SM_filteredMovies"));
+    {
+      let filteredSavedMovies = JSON.parse(localStorage.getItem("SM_filteredMovies"));
+      
+      if (filteredSavedMovies && filteredSavedMovies.length > 0) {
 
-    if(filteredSavedMovies && filteredSavedMovies.length > 0){
-      setMovieObjectProperty(true, "filteredMovies", [...filteredSavedMovies]);
+        setSavedMoviesData(
+          Object.assign(
+            savedMoviesData, 
+            {
+              filteredMovies : [...filteredSavedMovies]
+            }
+          ));
+      }
     }
 
     setMovieObjectProperty(
@@ -196,8 +218,34 @@ function App() {
   }
 
   React.useEffect(() => {
+
+    moviesApi
+      .getFilms()
+      .then((externalMovies) => {
+
+        if(typeof externalMovies !== 'undefined' && externalMovies.length > 0){
+
+          setFullMoviesData(
+            Object.assign(
+              fullMoviesData, 
+              {
+                fullMovies : [...externalMovies]
+              }
+            ));
+        }  
+      })
+      .catch((err) => {
+        console.log(err)
+      });
+
+      // TODO - при перегрузке необходимо обнулить +++ коллекцию
+
     window.addEventListener('resize', recalculateCardsNumber);
-    return () => window.removeEventListener("resize", recalculateCardsNumber);
+    
+    return () => {
+      window.removeEventListener("resize", recalculateCardsNumber);
+    }
+
   }, []);
 
   React.useEffect(() => {
@@ -205,9 +253,11 @@ function App() {
     const token = localStorage.getItem("token");
 
     if (token) {
+
+      setPreviousValues(); 
       
-      Promise.all([mainApi.getUserInfo(token), mainApi.getMovies(token), moviesApi.getFilms()])
-        .then(([userData, userSavedMovies, externalMovies]) => {
+      Promise.all([mainApi.getUserInfo(token), mainApi.getMovies(token)])
+        .then(([userData, userSavedMovies]) => {
 
           setCurrentState({
             ...currentUser,
@@ -222,22 +272,14 @@ function App() {
 
           if(typeof userSavedMovies !== 'undefined' && userSavedMovies.data){
 
-            setMovieObjectProperty(
-              true,
-              "fullMovies",
-              [...userSavedMovies.data]);
-          }    
-
-          setPreviousValues();
-
-          // Фильмы из внешнего АПИ
-          if(typeof externalMovies !== 'undefined' && externalMovies.length > 0){
-
-            setMovieObjectProperty(
-              false,
-              "fullMovies",
-              [...externalMovies]);
-          }  
+            setSavedMoviesData(
+              Object.assign(
+                savedMoviesData, 
+                {
+                  fullMovies : [...userSavedMovies.data]
+                }
+              ));
+          }        
         })
         .catch((err) => {
           console.log(err)
@@ -248,11 +290,10 @@ function App() {
   }, [token]);
 
   React.useEffect(() => {
-
-    if(fullMoviesData["filteredMovies"].length > 0){
+    if(fullMoviesData.filteredMovies.length > 0){
       recalculateCardsNumber();
     }
-  }, [fullMoviesData["filteredMovies"]]);
+  }, [fullMoviesData.filteredMovies]);
 
   function editUser(userEmail, userName) {
 
@@ -302,7 +343,14 @@ function App() {
       
       setMovieObjectProperty(true, "connectionErrorMessage", "");
 
-      setMovieObjectProperty(true, "filteredMovies", []);
+      setSavedMoviesData(
+        Object.assign(
+          savedMoviesData, 
+          {
+            filteredMovies : []
+          }
+        ));
+
       localStorage.setItem(`${localStoragePrefix}_filteredMovies`, "");
 
       return;
@@ -322,12 +370,54 @@ function App() {
     if (result.length > 0) {
       setMovieObjectProperty(isSavedMovies, "connectionErrorMessage", "");      
 
-      setMovieObjectProperty(isSavedMovies, "filteredMovies", result);
+      if (isSavedMovies) {
+
+        setSavedMoviesData(
+          Object.assign(
+            savedMoviesData, 
+            {
+              filteredMovies : [...result]
+            }
+          ));
+
+      } else {
+
+        setFullMoviesData(
+          Object.assign(
+            fullMoviesData, 
+            {
+              filteredMovies : [...result]
+            }
+          ));
+      }
+
       localStorage.setItem(`${localStoragePrefix}_filteredMovies`, JSON.stringify(result));
+
     } else {
+
       setMovieObjectProperty(isSavedMovies, "connectionErrorMessage", "Поиск без результатов");
 
-      setMovieObjectProperty(isSavedMovies, "filteredMoviesByWidth", []);
+      if (isSavedMovies) {
+
+        setSavedMoviesData(
+          Object.assign(
+            savedMoviesData, 
+            {
+              filteredMovies : []
+            }
+          ));
+
+      } else {
+
+        setFullMoviesData(
+          Object.assign(
+            fullMoviesData, 
+            {
+              filteredMovies : []
+            }
+          ));
+      }
+
       localStorage.removeItem(`${localStoragePrefix}_filteredMovies`);
     }
   }
@@ -358,25 +448,32 @@ function App() {
         ? CARDS_SHOW_NUMBER_GREATER_760_LESS_1280
         : CARDS_SHOW_NUMBER__LESS_760;
 
-    // условие нужно, чтобы Реакт успевал прочитать данные при перерендере
-    if (fullMoviesData["filteredMovies"].length > 0) {
-      setMovieObjectProperty(
-        false,
-        "filteredMoviesByWidth", 
-        [...fullMoviesData["filteredMovies"].slice(0, totalCardsNumberToShow)]);
-    }
+    // // условие нужно, чтобы Реакт успевал прочитать данные при перерендере
+    // if (fullMoviesData.filteredMovies.length > 0) {
+
+      setFullMoviesData(
+        Object.assign(
+          fullMoviesData, 
+          {
+            filteredMoviesByWidth : [...fullMoviesData.filteredMovies.slice(0, totalCardsNumberToShow)]
+          }
+        ));
+    // }
   }
 
-  const addCardsToShow = () => {  
+  const addCardsToShow = () => { 
 
     let addCardsNumberToShow = window.innerWidth >= 1280
       ? ADD_CARD_GREATER_1280
       : ADD_CARD_LESS_1280;
 
-    setMovieObjectProperty(
-      false,
-      "filteredMoviesByWidth", 
-      [...fullMoviesData["filteredMovies"].slice(0, fullMoviesData["filteredMoviesByWidth"].length + addCardsNumberToShow)]);      
+    setFullMoviesData(
+      Object.assign(
+        fullMoviesData, 
+        {
+          filteredMoviesByWidth : fullMoviesData.filteredMovies.slice(0, fullMoviesData.filteredMoviesByWidth.length + addCardsNumberToShow)
+        }
+      ));   
   }
 
   const saveMovieHandler = (movie) => {
@@ -386,11 +483,16 @@ function App() {
     mainApi
       .saveMovie(movie, token)
       .then((savedMovie) => { 
-        
-        setMovieObjectProperty(
-          true,
-          "fullMovies",
-          [savedMovie, [...savedMoviesData["fullMovies"]]]);
+
+        setSavedMoviesData(
+
+          Object.assign(
+            savedMoviesData, 
+            {
+              fullMovies : [savedMovie.data, [...savedMoviesData.fullMovies]]
+            }
+          ));
+
       })
       .catch((err) => { console.log(err); });
   }
@@ -402,10 +504,13 @@ function App() {
       .deleteMovies(movieId, token)
       .then((deletedMovie) => {
 
-        setMovieObjectProperty(
-          true,
-          "fullMovies",
-          [[...savedMoviesData["fullMovies"]].filter(movie => movie.movieId !== deletedMovie.data.movieId)]);
+        setSavedMoviesData(
+          Object.assign(
+            savedMoviesData, 
+            {
+              fullMovies : [[...savedMoviesData["fullMovies"]].filter(movie => movie.movieId !== deletedMovie.data.movieId)]
+            }
+          ));
       })
       .catch((err) => { console.log(err); });
   }
@@ -451,8 +556,10 @@ function App() {
               handleSearchRequest={commonMoviesSearchHandler}
               onMovieSave={saveMovieHandler}
               onMovieDelete={deleteMovieHandler}
+              
               movieObject ={fullMoviesData}
               savedMoviesObject={savedMoviesData}
+
               movieCardsData={fullMoviesData["filteredMoviesByWidth"]}
             />
 
@@ -463,7 +570,9 @@ function App() {
               onBreadClick={handleBreadCrumbsPopupClick}
               handleSavedSearchRequest={commonMoviesSearchHandler}
               onMovieDelete={deleteMovieHandler}              
-              movieCardsData={savedMoviesData["filteredMovies"].length !== 0 ? savedMoviesData["filteredMovies"] :  savedMoviesData["fullMovies"]}
+              
+              movieCardsData={[...(savedMoviesData["filteredMovies"].length !== 0 ? savedMoviesData["filteredMovies"] :  savedMoviesData["fullMovies"])]}
+              
               movieObject ={savedMoviesData}
               // TODO попробовать 
               //movieCardsData={savedMoviesData["filteredMovies"] || savedMoviesData["fullMovies"]}              

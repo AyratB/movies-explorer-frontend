@@ -6,6 +6,7 @@ import { ExternalLink } from 'react-external-link';
 import './MoviesCard.css';
 
 const MoviesCard = React.memo((props) => {
+    
 
     let isMovieSaved = props.movieObject["isSavedMovies"];
 

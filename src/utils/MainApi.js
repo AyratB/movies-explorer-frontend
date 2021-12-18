@@ -63,6 +63,8 @@ export const updateUserData = (userEmail, userName, token) => {
 
 // ====================== Работа с фильмами ===================
 export const saveMovie = (movieData, token) => {
+
+  debugger;
   return request({
     url: BASE_MAIN_URL,
     endPoint: "movies",

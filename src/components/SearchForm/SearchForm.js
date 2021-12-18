@@ -9,11 +9,12 @@ const SearchForm = (props) => {
    
     const { values, handleChange, errors, resetForm, setErrors } = useFormWithValidation();    
 
-    const [isFirstPageReload, setIsFirstPageReload] = React.useState(true);
+    const [isFirstPageLoad, setIsFirstPageLoad] = React.useState(true);
+    const [firtsSearchValue, setFirtsSearchValue] = React.useState("");
 
     const searchMovie = (isChecked) => {
 
-        let searchValue = values["search-form-search-value"] || props.movieObject["previousSearchValue"];
+        let searchValue = isFirstPageLoad ? firtsSearchValue : values["search-form-search-value"];
 
         if(!props.movieObject["isSavedMovies"] && (typeof searchValue === "undefined" || searchValue === "" || searchValue.trim() === "")){
             setErrors({...errors, "search-form-search-value": "Нужно ввести ключевое слово" });
@@ -24,16 +25,22 @@ const SearchForm = (props) => {
             searchValue: searchValue,
             isChecked: isChecked
         });
-    }    
+    } 
+    
+    React.useEffect(() => {
+        if(props.movieObject["previousSearchValue"] !== ""){
+            setFirtsSearchValue(props.movieObject["previousSearchValue"]);
+        }        
+    }, [props.movieObject["previousSearchValue"]]);
 
     React.useEffect(() => {
-
         return () => resetForm();
     }, [props.movieObject]);
 
-    const handleFormChange = (e) => {
-
-        setIsFirstPageReload(false);
+    const handleFormChange = (e) => {   
+        
+        setFirtsSearchValue("");
+        setIsFirstPageLoad(false);
         props.deleteEmptySearchResult();
         handleChange(e);
     }
@@ -60,9 +67,9 @@ const SearchForm = (props) => {
                             placeholder="Фильм"
                             onChange={handleFormChange}
 
-                            value={values["search-form-search-value"] 
-                                  ||
-                                  isFirstPageReload ? props.movieObject["previousSearchValue"] : ""}/>
+                            // value={values["search-form-search-value"]}/>
+
+                            value={ isFirstPageLoad ? firtsSearchValue : values["search-form-search-value"]}/>
 
                         <span className={`search-form__span-error ${errors["search-form-search-value"] ? "search-form__span-error_active" : ""}`}>
                             {errors["search-form-search-value"]}

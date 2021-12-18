@@ -6,14 +6,16 @@ import Footer from "./../Footer/Footer.js";
 import Preloader from "./../Preloader/Preloader";
 import './Movies.css';
 
-const Movies = React.memo((props) => {
+const Movies = (props) => {
 
+    
+  
     const [emptySearchWords, setEmptySearchWords] = React.useState("");
 
-    const handleSearchRequest = (searchValue, isChecked) => {
+    const handleSearchRequest = ({searchValue, isChecked}) => {
         setEmptySearchWords("Ничего не найдено");
 
-        props.commonMoviesSearchHandler(searchValue, isChecked, props.movieObject);
+        props.handleSearchRequest(searchValue, isChecked, props.movieObject);
     }
 
     const deleteEmptySearchResult = () => {
@@ -60,6 +62,6 @@ const Movies = React.memo((props) => {
             <Footer />
         </>
     );
-});
+};
 
 export default Movies;
