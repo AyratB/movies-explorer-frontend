@@ -8,8 +8,7 @@ import './Movies.css';
 
 const Movies = (props) => {
 
-    
-  
+    debugger;
     const [emptySearchWords, setEmptySearchWords] = React.useState("");
 
     const handleSearchRequest = ({searchValue, isChecked}) => {
@@ -29,8 +28,13 @@ const Movies = (props) => {
         'textAlign': 'center',
     }
 
+    let moviesCount = props.movieObject.isSavedMovies 
+        ? props.movieObject.filteredMovies.length || props.movieObject.fullMovies.length                                        
+        : props.movieObject.filteredMoviesByWidth.length;
+
     React.useEffect(() => {
         setEmptySearchWords("");
+
       }, [props.movieObject]);
 
     return (
@@ -46,13 +50,15 @@ const Movies = (props) => {
                 {props.isMoviesSearchGoing
                     ? <Preloader/>
 
-                    : props.movieCardsData.length !== 0
-                        ? <MoviesCardList 
-                            cards={props.movieCardsData}
+                    : moviesCount !== 0
+                    
+                        ? <MoviesCardList
+
                             addCardsToShow={props.addCardsToShow}
                             onMovieSave={props.onMovieSave}
                             onMovieDelete={props.onMovieDelete}
                             savedMoviesObject={props.savedMoviesObject}
+
                             movieObject ={props.movieObject}/>                        
 
                         : <div style={emptyMessageStyle}>{props.connectionErrorMessage || emptySearchWords}</div>

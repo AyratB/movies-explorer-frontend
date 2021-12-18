@@ -13,6 +13,9 @@ import Profile from "./../Profile/Profile.js";
 
 import { CurrentUserContext } from "./../../contexts/CurrentUserContext";
 
+import { FullMovieContext } from "./../../contexts/FullMovieContext";
+import { SavedMoviesContext } from "./../../contexts/SavedMoviesContext";
+
 import './App.css';
 
 import {
@@ -440,7 +443,17 @@ function App() {
     setTimeout(setIsMoviesSearchGoing, 1000, false);
   }
 
-  const recalculateCardsNumber = () => {
+  const [testArr, setTestArr] = React.useState([]); 
+  const [testArr2, setTestArr2] = React.useState([]); 
+
+  React.useEffect(() => {
+
+    setTestArr2(fullMoviesData.filteredMoviesByWidth)
+    
+  }, [fullMoviesData["filteredMoviesByWidth"]]);
+
+
+  const recalculateCardsNumber = () => {    
 
     let totalCardsNumberToShow = window.innerWidth >= 1280
       ? CARDS_SHOW_NUMBER_GREATER_1280
@@ -448,8 +461,11 @@ function App() {
         ? CARDS_SHOW_NUMBER_GREATER_760_LESS_1280
         : CARDS_SHOW_NUMBER__LESS_760;
 
-    // // условие нужно, чтобы Реакт успевал прочитать данные при перерендере
-    // if (fullMoviesData.filteredMovies.length > 0) {
+    // условие нужно, чтобы Реакт успевал прочитать данные при перерендере
+    if (fullMoviesData.filteredMovies.length > 0) {
+
+      setTestArr([...fullMoviesData.filteredMovies.slice(0, totalCardsNumberToShow)])
+
 
       setFullMoviesData(
         Object.assign(
@@ -458,7 +474,7 @@ function App() {
             filteredMoviesByWidth : [...fullMoviesData.filteredMovies.slice(0, totalCardsNumberToShow)]
           }
         ));
-    // }
+    }
   }
 
   const addCardsToShow = () => { 
@@ -482,17 +498,19 @@ function App() {
     
     mainApi
       .saveMovie(movie, token)
-      .then((savedMovie) => { 
+      .then((savedMovie) => {
 
-        setSavedMoviesData(
+        if(savedMovie.data){
 
-          Object.assign(
-            savedMoviesData, 
-            {
-              fullMovies : [savedMovie.data, [...savedMoviesData.fullMovies]]
-            }
-          ));
+          setSavedMoviesData(
 
+            Object.assign(
+              savedMoviesData, 
+              {
+                fullMovies : [...savedMoviesData.fullMovies, savedMovie.data]
+              }
+            ));
+        }
       })
       .catch((err) => { console.log(err); });
   }
@@ -545,6 +563,7 @@ function App() {
               {isLoggedIn ? <Redirect to="/" /> : <Login autorize={autorize} />}
             </Route>
 
+            <FullMovieContext.Provider value={fullMoviesData}>
             <ProtectedRoute
               path="/movies"
               component={Movies}
@@ -560,8 +579,14 @@ function App() {
               movieObject ={fullMoviesData}
               savedMoviesObject={savedMoviesData}
 
-              movieCardsData={fullMoviesData["filteredMoviesByWidth"]}
+              testData={testArr}
+              testData2={JSON.parse(JSON.stringify(fullMoviesData.filteredMoviesByWidth))}
+              testData3={testArr2}
+
+              testObj = {JSON.parse(JSON.stringify(fullMoviesData))}
             />
+            </FullMovieContext.Provider>
+            
 
             <ProtectedRoute
               path="/saved-movies"
@@ -569,13 +594,9 @@ function App() {
               isLoggedIn={isLoggedIn}
               onBreadClick={handleBreadCrumbsPopupClick}
               handleSavedSearchRequest={commonMoviesSearchHandler}
-              onMovieDelete={deleteMovieHandler}              
+              onMovieDelete={deleteMovieHandler}
               
-              movieCardsData={[...(savedMoviesData["filteredMovies"].length !== 0 ? savedMoviesData["filteredMovies"] :  savedMoviesData["fullMovies"])]}
-              
-              movieObject ={savedMoviesData}
-              // TODO попробовать 
-              //movieCardsData={savedMoviesData["filteredMovies"] || savedMoviesData["fullMovies"]}              
+              movieObject ={savedMoviesData}             
             />
 
             <ProtectedRoute

@@ -34,7 +34,9 @@ const SearchForm = (props) => {
     }, [props.movieObject["previousSearchValue"]]);
 
     React.useEffect(() => {
-        return () => resetForm();
+        return () => {
+            setFirtsSearchValue("");
+            resetForm();}
     }, [props.movieObject]);
 
     const handleFormChange = (e) => {   
