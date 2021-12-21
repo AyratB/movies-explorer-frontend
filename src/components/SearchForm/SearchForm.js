@@ -14,7 +14,7 @@ const SearchForm = (props) => {
 
     const searchMovie = (isChecked) => {
 
-        let searchValue = isFirstPageLoad ? firtsSearchValue : values["search-form-search-value"];
+        let searchValue = isFirstPageLoad ? firtsSearchValue : values["search-form-search-value"];        
 
         if(!props.movieObject.isSavedMovies && (typeof searchValue === "undefined" || searchValue === "" || searchValue.trim() === "")){
             setErrors({...errors, "search-form-search-value": "Нужно ввести ключевое слово" });
@@ -31,9 +31,7 @@ const SearchForm = (props) => {
         if(props.movieObject.previousSearchValue !== ""){
             setFirtsSearchValue(props.movieObject.previousSearchValue);
         }
-    }, [props.movieObject.previousSearchValue]);
-
-    React.useEffect(() => {        
+        
         return () => {
             setFirtsSearchValue("");
             resetForm();}
@@ -52,8 +50,7 @@ const SearchForm = (props) => {
         searchMovie(props.movieObject.shortChecked);
     }
 
-    let searchValue = (isFirstPageLoad ? firtsSearchValue : values["search-form-search-value"]) || '';
-
+    let searchValue = (isFirstPageLoad ? firtsSearchValue || props.movieObject.previousSearchValue : values["search-form-search-value"]) || '';
     //отдельный поиск по клику по Короткометражке
     const checked = (e) => searchMovie(e);
 
