@@ -7,7 +7,7 @@ import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
 const SearchForm = (props) => {
    
-    const { values, handleChange, errors, resetForm, setErrors } = useFormWithValidation();    
+    const { values, handleChange, errors, resetForm, setErrors } = useFormWithValidation();
 
     const [isFirstPageLoad, setIsFirstPageLoad] = React.useState(true);
     const [firtsSearchValue, setFirtsSearchValue] = React.useState("");
@@ -16,7 +16,7 @@ const SearchForm = (props) => {
 
         let searchValue = isFirstPageLoad ? firtsSearchValue : values["search-form-search-value"];
 
-        if(!props.movieObject["isSavedMovies"] && (typeof searchValue === "undefined" || searchValue === "" || searchValue.trim() === "")){
+        if(!props.movieObject.isSavedMovies && (typeof searchValue === "undefined" || searchValue === "" || searchValue.trim() === "")){
             setErrors({...errors, "search-form-search-value": "Нужно ввести ключевое слово" });
             return;
         }
@@ -28,29 +28,31 @@ const SearchForm = (props) => {
     } 
     
     React.useEffect(() => {
-        if(props.movieObject["previousSearchValue"] !== ""){
-            setFirtsSearchValue(props.movieObject["previousSearchValue"]);
-        }        
-    }, [props.movieObject["previousSearchValue"]]);
+        if(props.movieObject.previousSearchValue !== ""){
+            setFirtsSearchValue(props.movieObject.previousSearchValue);
+        }
+    }, [props.movieObject.previousSearchValue]);
 
-    React.useEffect(() => {
+    React.useEffect(() => {        
         return () => {
             setFirtsSearchValue("");
             resetForm();}
     }, [props.movieObject]);
 
-    const handleFormChange = (e) => {   
+    const handleFormChange = (e) => {
         
         setFirtsSearchValue("");
         setIsFirstPageLoad(false);
-        props.deleteEmptySearchResult();
+        // props.deleteEmptySearchResult();
         handleChange(e);
     }
 
     const searchFormHandleSubmit = (e) => {
         e.preventDefault();
-        searchMovie(props.movieObject["shortChecked"]);
+        searchMovie(props.movieObject.shortChecked);
     }
+
+    let searchValue = (isFirstPageLoad ? firtsSearchValue : values["search-form-search-value"]) || '';
 
     //отдельный поиск по клику по Короткометражке
     const checked = (e) => searchMovie(e);
@@ -68,10 +70,7 @@ const SearchForm = (props) => {
                             id="search-form-search-value"
                             placeholder="Фильм"
                             onChange={handleFormChange}
-
-                            // value={values["search-form-search-value"]}/>
-
-                            value={ isFirstPageLoad ? firtsSearchValue : values["search-form-search-value"]}/>
+                            value={ searchValue }/>
 
                         <span className={`search-form__span-error ${errors["search-form-search-value"] ? "search-form__span-error_active" : ""}`}>
                             {errors["search-form-search-value"]}

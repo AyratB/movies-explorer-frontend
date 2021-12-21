@@ -13,9 +13,6 @@ import Profile from "./../Profile/Profile.js";
 
 import { CurrentUserContext } from "./../../contexts/CurrentUserContext";
 
-import { FullMovieContext } from "./../../contexts/FullMovieContext";
-import { SavedMoviesContext } from "./../../contexts/SavedMoviesContext";
-
 import './App.css';
 
 import {
@@ -60,7 +57,9 @@ function App() {
   });
   
   const closeAllPopups = () => {
-    if (isBreadCrumbsPopupOpened) setIsBreadCrumbsPopupOpened(false);
+    if (isBreadCrumbsPopupOpened) {
+      setIsBreadCrumbsPopupOpened(false);
+    }
     if (isTooltipPopupOpen) {
       setIsTooltipPopupOpen(false);
       setIsTooltipMistake(false);
@@ -72,7 +71,10 @@ function App() {
       .authorize(userEmail, userPassword)
       .then((data) => {
         if (data.token) {
-          
+
+          // на случай, если остались чужие данные
+          localStorage.clear();
+
           localStorage.setItem("token", data.token);
 
           setToken(data.token);
@@ -126,26 +128,34 @@ function App() {
     setFullMoviesData({});
     setSavedMoviesData({});
 
+    setFullMoviesArray([]);
+    setFullFilteredMovies([]);
+
+    setSavedMoviesArray([]);
+    setSavedFilteredMovies([]);
+
     history.push("/signin");
   }
+
+  const [fullMoviesArray, setFullMoviesArray] = React.useState([]);
+
+  const [fullFilteredMovies, setFullFilteredMovies] = React.useState([]);
   
   const [fullMoviesData, setFullMoviesData] = React.useState({
     isSavedMovies: false,                 // флаг сохраненных фильмов
     shortChecked: false,                  // признак короткого метра
     previousSearchValue: "",              // предыдущая строка поиска
     connectionErrorMessage: "",           // сообщение об ошибке поиска
-    fullMovies: [],                       // полный перечень фильмы из внешнего АПИ
-    filteredMovies: [],                   // фильмы после поиска 
-    filteredMoviesByWidth: [],            // фильмы после поиска с фильтрацией отображения ЕЩЕ. ТОЛЬКО для FULL!
-  });
+  });  
+  
+  const [savedMoviesArray, setSavedMoviesArray] = React.useState([]);
+  const [savedFilteredMovies, setSavedFilteredMovies] = React.useState([]);
 
   const [savedMoviesData, setSavedMoviesData] = React.useState({
     isSavedMovies: true,                  // флаг сохраненных фильмов
     shortChecked: false,                  // признак короткого метра
     previousSearchValue: "",              // предыдущая строка поиска
     connectionErrorMessage: "",           // сообщение об ошибке поиска
-    fullMovies: [],                       // сохраненные фильмы пользователя из БД
-    filteredMovies: [],                   // фильмы после поиска 
   });
 
   const setMovieObjectProperty = (isSavedMovies, movieDataPropertyName, movieDataPropertyValue) => {
@@ -165,83 +175,82 @@ function App() {
     );
   }
 
-  const setPreviousValues = () => {
+  const setPreviousValues = () => {    
 
     // FULL MOVIES
-    setMovieObjectProperty(
-      false, 
-      "previousSearchValue",
-      localStorage.getItem("FM_previousSearchValue"));
-
-    let filteredFullMovies = JSON.parse(localStorage.getItem("FM_filteredMovies"));
-    
-    if(filteredFullMovies && filteredFullMovies.length > 0){
-
-      setFullMoviesData(
-        Object.assign(
-          fullMoviesData, 
-          {
-            filteredMovies : [...filteredFullMovies]
-          }
-        ));
+    {
+      let FM_previousSearchValue = localStorage.getItem("FM_previousSearchValue");
+      
+      if(FM_previousSearchValue !== null && typeof FM_previousSearchValue !== 'undefined' && FM_previousSearchValue !== 'undefined'){
+        setMovieObjectProperty(
+          false, 
+          "previousSearchValue",
+          FM_previousSearchValue);
+        }
     }
-
-    setMovieObjectProperty(
-      false, 
-      "shortChecked",
-      JSON.parse(localStorage.getItem("FM_shortChecked")));
-    // FULL MOVIES 
-
-    // SAVED MOVIES 
-    setMovieObjectProperty(
-      true,
-      "previousSearchValue",
-      localStorage.getItem("SM_previousSearchValue"));    
 
     {
-      let filteredSavedMovies = JSON.parse(localStorage.getItem("SM_filteredMovies"));
-      
-      if (filteredSavedMovies && filteredSavedMovies.length > 0) {
+      let filteredFullMovies = JSON.parse(localStorage.getItem("FM_filteredMovies"));
 
-        setSavedMoviesData(
-          Object.assign(
-            savedMoviesData, 
-            {
-              filteredMovies : [...filteredSavedMovies]
-            }
-          ));
+      if(filteredFullMovies !== "" && filteredFullMovies &&  filteredFullMovies.length > 0 && fullFilteredMovies.length === 0){
+        
+        setFullFilteredMovies([...filteredFullMovies]);
       }
     }
+       
+    {
+      let FM_shortChecked = localStorage.getItem("FM_shortChecked");
+      
+      if(FM_shortChecked !== null && typeof FM_shortChecked !== 'undefined' && FM_shortChecked !== 'undefined'){
+        setMovieObjectProperty(
+          false, 
+          "shortChecked",
+          JSON.parse(FM_shortChecked));
+      }
+    } 
+    // FULL MOVIES 
 
-    setMovieObjectProperty(
-      true,
-      "shortChecked",
-      JSON.parse(localStorage.getItem("SM_shortChecked")));
+    // SAVED MOVIES
+    {
+      let SM_previousSearchValue = localStorage.getItem("SM_previousSearchValue");
+      
+      if(SM_previousSearchValue !== null && typeof SM_previousSearchValue !== 'undefined' && SM_previousSearchValue !== 'undefined'){
+        setMovieObjectProperty(
+          true,
+          "previousSearchValue",
+          SM_previousSearchValue);
+      }
+    }    
+      
+    let filteredSavedMoviesArray = localStorage.getItem("SM_filteredMovies");
+    
+    if(filteredSavedMoviesArray && filteredSavedMoviesArray !== ""){
+      
+      let filteredSavedMovies = JSON.parse(filteredSavedMoviesArray);
+      
+      if (filteredSavedMovies && filteredSavedMovies.length > 0 && savedFilteredMovies.length === 0) {
+
+        setSavedFilteredMovies([...filteredSavedMovies]);
+      } 
+    }   
+    
+    {
+      let SM_shortChecked = localStorage.getItem("SM_shortChecked");
+      
+      if(SM_shortChecked !== null &&typeof SM_shortChecked !== 'undefined' && SM_shortChecked !== 'undefined'){
+
+        setSearchWithShortCheck(true);
+
+        setMovieObjectProperty(
+          true,
+          "shortChecked",
+          JSON.parse(SM_shortChecked));
+      }
+    }    
     // SAVED MOVIES
   }
 
-  React.useEffect(() => {
-
-    moviesApi
-      .getFilms()
-      .then((externalMovies) => {
-
-        if(typeof externalMovies !== 'undefined' && externalMovies.length > 0){
-
-          setFullMoviesData(
-            Object.assign(
-              fullMoviesData, 
-              {
-                fullMovies : [...externalMovies]
-              }
-            ));
-        }  
-      })
-      .catch((err) => {
-        console.log(err)
-      });
-
-      // TODO - при перегрузке необходимо обнулить +++ коллекцию
+  React.useEffect(() => {   
 
     window.addEventListener('resize', recalculateCardsNumber);
     
@@ -273,15 +282,9 @@ function App() {
 
           setIsLoggedIn(true);
 
-          if(typeof userSavedMovies !== 'undefined' && userSavedMovies.data){
+          if(typeof userSavedMovies !== 'undefined' && userSavedMovies.data && savedMoviesArray.length === 0){
 
-            setSavedMoviesData(
-              Object.assign(
-                savedMoviesData, 
-                {
-                  fullMovies : [...userSavedMovies.data]
-                }
-              ));
+            setSavedMoviesArray([...userSavedMovies.data]);            
           }        
         })
         .catch((err) => {
@@ -293,10 +296,11 @@ function App() {
   }, [token]);
 
   React.useEffect(() => {
-    if(fullMoviesData.filteredMovies.length > 0){
+   
+    if(fullFilteredMovies.length > 0){
       recalculateCardsNumber();
     }
-  }, [fullMoviesData.filteredMovies]);
+  }, [fullFilteredMovies]);
 
   function editUser(userEmail, userName) {
 
@@ -319,117 +323,133 @@ function App() {
       });
   }
 
-  const getMovieSearch = (searchValue, isShortFilm, movies) => {
+  const [searchWithShortCheck, setSearchWithShortCheck] = React.useState(false);
+  
+  const getMoviesArray = (searchValue, isShortFilm, isSavedMovies, localStoragePrefix) => {
+    
+    if (isSavedMovies) { // сохраненнеы
+
+    } else { //внешние фильмы
+
+      moviesApi
+        .getFilms()
+        .then((externalMovies) => {
+
+          if(typeof externalMovies !== 'undefined' && externalMovies.length > 0 && fullMoviesArray.length === 0){
+            setFullMoviesArray([...externalMovies]);
+
+            //поиск
+            searchMovies(searchValue, isShortFilm, externalMovies, isSavedMovies, localStoragePrefix);
+        }  
+       })
+        .catch((err) => {console.log(err)});
+    }    
+  }
+
+  const getMovieSearch = (searchValue, isShortFilm, movies, isSavedMovies) => {
+
+    if(isSavedMovies){
+      setSearchWithShortCheck(false);
+    }
+    
+    if(typeof searchValue === 'undefined') return [];
 
     let trimmedSearchValue = searchValue.trim();
 
     let result = movies.filter(film =>
       ((film.nameRU ?? "").toLowerCase().includes(trimmedSearchValue)
       || 
-      (film.nameEN ?? "").toLowerCase().includes(trimmedSearchValue)));
+      (film.nameEN ?? "").toLowerCase().includes(trimmedSearchValue)));    
 
     if (isShortFilm) {
-      result = result.filter(selectedFilm => selectedFilm.duration <= SHORT_FILMS_DURATION);
-    }
 
-    return result;
+      if(isSavedMovies){
+        setSearchWithShortCheck(true);
+      }
+      
+      result = result.filter(selectedFilm => selectedFilm.duration <= SHORT_FILMS_DURATION);
+    }    
+    
+    return result;    
   }
 
-  const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false); // признак поиска фильма
+  const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false);
 
   const commonMoviesSearch = (searchValue, isShortFilm, movieDataObject) => {
-
-    let isSavedMovies = movieDataObject["isSavedMovies"];
+    
+    let isSavedMovies = movieDataObject.isSavedMovies;
     var localStoragePrefix = isSavedMovies ? "SM": "FM";
     
-    if (isSavedMovies && searchValue === "") { // для случая пустого поиcка возвращаем полный набор сохраненных фильмов
+    // if (isSavedMovies && (typeof searchValue === 'undefined' || searchValue === "")) { // для случая пустого поиcка возвращаем полный набор сохраненных фильмов
       
-      setMovieObjectProperty(true, "connectionErrorMessage", "");
+    //   проверить на короткий метр
 
-      setSavedMoviesData(
-        Object.assign(
-          savedMoviesData, 
-          {
-            filteredMovies : []
-          }
-        ));
+    //   setMovieObjectProperty(true, "connectionErrorMessage", "");
 
-      localStorage.setItem(`${localStoragePrefix}_filteredMovies`, "");
+    //   setSavedFilteredMovies([]);
+    //   setIsSavedEmptySearch(false);
 
-      return;
+    //   localStorage.setItem(`${localStoragePrefix}_filteredMovies`, "");
+
+    //   return;
+    // }
+
+    let arrayForSearch = isSavedMovies ? savedMoviesArray : fullMoviesArray;
+
+    if (arrayForSearch.length === 0) {
+      getMoviesArray(searchValue, isShortFilm, isSavedMovies, localStoragePrefix);      
     }
+    else{
+      searchMovies(searchValue, isShortFilm, arrayForSearch, isSavedMovies, localStoragePrefix);
+    }
+  }
+
+  const searchMovies = (searchValue, isShortFilm, searchArray, isSavedMovies, localStoragePrefix) => {
 
     let result = getMovieSearch(
       searchValue, 
       isShortFilm, 
-      isSavedMovies ? savedMoviesData["fullMovies"] : fullMoviesData["fullMovies"]);
+      searchArray,
+      isSavedMovies);
       
     setMovieObjectProperty(isSavedMovies, "previousSearchValue", searchValue);
     localStorage.setItem(`${localStoragePrefix}_previousSearchValue`, searchValue);
 
     setMovieObjectProperty(isSavedMovies, "shortChecked", isShortFilm);
     localStorage.setItem(`${localStoragePrefix}_shortChecked`, JSON.stringify(isShortFilm));
-
+        
     if (result.length > 0) {
+
       setMovieObjectProperty(isSavedMovies, "connectionErrorMessage", "");      
 
-      if (isSavedMovies) {
-
-        setSavedMoviesData(
-          Object.assign(
-            savedMoviesData, 
-            {
-              filteredMovies : [...result]
-            }
-          ));
-
-      } else {
-
-        setFullMoviesData(
-          Object.assign(
-            fullMoviesData, 
-            {
-              filteredMovies : [...result]
-            }
-          ));
+      if(isSavedMovies){
+        setSavedFilteredMovies([...result]);
       }
-
-      localStorage.setItem(`${localStoragePrefix}_filteredMovies`, JSON.stringify(result));
+      else{
+        setFullFilteredMovies([...result]);
+      }
 
     } else {
 
       setMovieObjectProperty(isSavedMovies, "connectionErrorMessage", "Поиск без результатов");
 
-      if (isSavedMovies) {
+      if(isSavedMovies){
 
-        setSavedMoviesData(
-          Object.assign(
-            savedMoviesData, 
-            {
-              filteredMovies : []
-            }
-          ));
-
-      } else {
-
-        setFullMoviesData(
-          Object.assign(
-            fullMoviesData, 
-            {
-              filteredMovies : []
-            }
-          ));
+        setSavedFilteredMovies([]);
       }
-
-      localStorage.removeItem(`${localStoragePrefix}_filteredMovies`);
+      else{
+        setFullFilteredMovies([]);
+      }
     }
+
+    localStorage.setItem(`${localStoragePrefix}_filteredMovies`, JSON.stringify(result));
   }
 
   const commonMoviesSearchHandler = (searchValue, isShortFilm, movieDataObject) => {
 
     setIsMoviesSearchGoing(true);
 
-    if (movieDataObject["isSavedMovies"] && movieDataObject["fullMovies"].length === 0) {
+    if (movieDataObject.isSavedMovies && savedMoviesArray.length === 0) {
 
       setIsMoviesSearchGoing(false);
       setMovieObjectProperty(true, "connectionErrorMessage", "Сохраните сначала фильмы в коллекцию");
@@ -443,17 +463,9 @@ function App() {
     setTimeout(setIsMoviesSearchGoing, 1000, false);
   }
 
-  const [testArr, setTestArr] = React.useState([]); 
-  const [testArr2, setTestArr2] = React.useState([]); 
+  const [totalCardToShowNumber, setTotalCardToShowNumber] = React.useState(0); // количество показать пользователю
 
-  React.useEffect(() => {
-
-    setTestArr2(fullMoviesData.filteredMoviesByWidth)
-    
-  }, [fullMoviesData["filteredMoviesByWidth"]]);
-
-
-  const recalculateCardsNumber = () => {    
+  const recalculateCardsNumber = () => {
 
     let totalCardsNumberToShow = window.innerWidth >= 1280
       ? CARDS_SHOW_NUMBER_GREATER_1280
@@ -461,35 +473,16 @@ function App() {
         ? CARDS_SHOW_NUMBER_GREATER_760_LESS_1280
         : CARDS_SHOW_NUMBER__LESS_760;
 
-    // условие нужно, чтобы Реакт успевал прочитать данные при перерендере
-    if (fullMoviesData.filteredMovies.length > 0) {
-
-      setTestArr([...fullMoviesData.filteredMovies.slice(0, totalCardsNumberToShow)])
-
-
-      setFullMoviesData(
-        Object.assign(
-          fullMoviesData, 
-          {
-            filteredMoviesByWidth : [...fullMoviesData.filteredMovies.slice(0, totalCardsNumberToShow)]
-          }
-        ));
-    }
+    setTotalCardToShowNumber(totalCardsNumberToShow);
   }
 
-  const addCardsToShow = () => { 
+  const addCardsToShow = () => {
 
     let addCardsNumberToShow = window.innerWidth >= 1280
       ? ADD_CARD_GREATER_1280
       : ADD_CARD_LESS_1280;
 
-    setFullMoviesData(
-      Object.assign(
-        fullMoviesData, 
-        {
-          filteredMoviesByWidth : fullMoviesData.filteredMovies.slice(0, fullMoviesData.filteredMoviesByWidth.length + addCardsNumberToShow)
-        }
-      ));   
+      setTotalCardToShowNumber(totalCardToShowNumber + addCardsNumberToShow);
   }
 
   const saveMovieHandler = (movie) => {
@@ -502,14 +495,7 @@ function App() {
 
         if(savedMovie.data){
 
-          setSavedMoviesData(
-
-            Object.assign(
-              savedMoviesData, 
-              {
-                fullMovies : [...savedMoviesData.fullMovies, savedMovie.data]
-              }
-            ));
+          setSavedMoviesArray([savedMovie.data, ...savedMoviesArray]);
         }
       })
       .catch((err) => { console.log(err); });
@@ -522,13 +508,7 @@ function App() {
       .deleteMovies(movieId, token)
       .then((deletedMovie) => {
 
-        setSavedMoviesData(
-          Object.assign(
-            savedMoviesData, 
-            {
-              fullMovies : [[...savedMoviesData["fullMovies"]].filter(movie => movie.movieId !== deletedMovie.data.movieId)]
-            }
-          ));
+        setSavedMoviesArray([...savedMoviesArray.filter(movie => movie.movieId !== deletedMovie.data.movieId)]);
       })
       .catch((err) => { console.log(err); });
   }
@@ -562,41 +542,44 @@ function App() {
             <Route path="/signin">
               {isLoggedIn ? <Redirect to="/" /> : <Login autorize={autorize} />}
             </Route>
-
-            <FullMovieContext.Provider value={fullMoviesData}>
+            
             <ProtectedRoute
               path="/movies"
               component={Movies}
               isLoggedIn={isLoggedIn}
               onBreadClick={handleBreadCrumbsPopupClick}
               isMoviesSearchGoing={isMoviesSearchGoing}
-              recalculateCardsNumber={recalculateCardsNumber}
               addCardsToShow={addCardsToShow}
               handleSearchRequest={commonMoviesSearchHandler}
               onMovieSave={saveMovieHandler}
               onMovieDelete={deleteMovieHandler}
-              
+              recalculateCardsNumber={recalculateCardsNumber}
               movieObject ={fullMoviesData}
-              savedMoviesObject={savedMoviesData}
+              moviesCardData={fullFilteredMovies.slice(0, totalCardToShowNumber)}
+              savedMovies={savedMoviesArray}
+              isNeedToHideAddButton={fullFilteredMovies.length <= totalCardToShowNumber}
 
-              testData={testArr}
-              testData2={JSON.parse(JSON.stringify(fullMoviesData.filteredMoviesByWidth))}
-              testData3={testArr2}
-
-              testObj = {JSON.parse(JSON.stringify(fullMoviesData))}
-            />
-            </FullMovieContext.Provider>
-            
+              isSavedMovie={false}
+            />  
 
             <ProtectedRoute
               path="/saved-movies"
               component={Movies}
               isLoggedIn={isLoggedIn}
               onBreadClick={handleBreadCrumbsPopupClick}
-              handleSavedSearchRequest={commonMoviesSearchHandler}
+              handleSearchRequest={commonMoviesSearchHandler}
               onMovieDelete={deleteMovieHandler}
-              
-              movieObject ={savedMoviesData}             
+              movieObject ={savedMoviesData}
+
+              isSavedMovie={true}
+
+              moviesCardData={savedFilteredMovies.length !== 0 
+                ? savedFilteredMovies 
+                : (typeof savedMoviesData.previousSearchValue === 'undefined' || savedMoviesData.previousSearchValue === "") && !searchWithShortCheck
+                  ? savedMoviesArray
+                  : []
+               
+                 }
             />
 
             <ProtectedRoute

@@ -2,48 +2,45 @@ import React from "react";
 import MoviesCard from "./../MoviesCard/MoviesCard";
 import Button from "./../Button/Button";
 
-import { FullMovieContext } from "./../../contexts/FullMovieContext";
-
 import './MoviesCardList.css';
 
-const MoviesCardList = (props) => {
+const MoviesCardList = React.memo((props) => {
 
-    const fullMovieContext = React.useContext(FullMovieContext);
-
-    let isSavedMovies = props.movieObject["isSavedMovies"];
-
-    let isNeedToShowAddButton = isSavedMovies || props.movieObject["filteredMoviesByWidth"].length === props.movieObject["filteredMovies"].length;
-
-    let cards = props.movieObject.isSavedMovies 
-        ? props.movieObject.filteredMovies.length !== 0 ? props.movieObject.filteredMovies :  props.movieObject.fullMovies                                        
-        : props.movieObject.filteredMoviesByWidth;
+    let isSavedMovies = props.isSavedMovie;
 
     return (
         <section className="movies-cards">
             <ul className="movies-cards__list">
-                {cards.map((card) => {
+                {props.moviesCardData.map((card) => {
+
+                    let movieId = isSavedMovies ? card.movieId : card.id;
+
+                    let isNeedToShowSavedIcon = isSavedMovies
+                        ? true
+                        : props.savedMovies.some((savedMovie) => savedMovie.movieId === movieId);
 
                     return (
                         <MoviesCard
-                            key={ isSavedMovies ? card.movieId : card.id}
+                            key={movieId}
                             cardData={card}
                             onMovieSave={props.onMovieSave}
                             onMovieDelete={props.onMovieDelete}
-
-                            // для вывода иконки сохраненного фильма
-                            savedMoviesObject={props.savedMoviesObject}
-                            movieObject ={props.movieObject}
+                            isNeedToShowSavedIcon={isNeedToShowSavedIcon}
+                            isSavedMovies={isSavedMovies}
+                            movieId={movieId}
                         />
                     );
                 })}
             </ul>
 
-            { isNeedToShowAddButton
+            { isSavedMovies
                 ? <></>
-                : <Button className="button button_type_add-movies" onClick={props.addCardsToShow}>Еще</Button>
+                : props.isNeedToHideAddButton 
+                    ? <></>  
+                    : <Button className="button button_type_add-movies" onClick={props.addCardsToShow}>Еще</Button>                     
             }
         </section>
     );
-};
+});
 
 export default MoviesCardList;

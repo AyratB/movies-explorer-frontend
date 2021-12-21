@@ -6,22 +6,15 @@ import { ExternalLink } from 'react-external-link';
 import './MoviesCard.css';
 
 const MoviesCard = React.memo((props) => {
-    
 
-    let isMovieSaved = props.movieObject["isSavedMovies"];
+    let isMovieSaved = props.isSavedMovies;
 
     let imageUrl = isMovieSaved
         ? `url(${props.cardData.image})`
         : `url(${BASE_MOVIES_IMAGE_URL}${props.cardData.image.url})`;
 
-    let movieId = isMovieSaved
-         ? props.cardData.movieId
-         : props.cardData.id;
-
-    let isNeedToShowSavedIcon = isMovieSaved || props.savedMoviesObject["fullMovies"].some((savedMovie) => savedMovie.movieId === movieId);
-
     const handleSaveMovie = () => props.onMovieSave(props.cardData);
-    const handleDeleteMovie = () => props.onMovieDelete(movieId);
+    const handleDeleteMovie = () => props.onMovieDelete(props.movieId);
 
     const [isIconVisible, setIsIconVisible] = React.useState(false);
     const setIconVisible = () => setIsIconVisible(true);
@@ -30,7 +23,7 @@ const MoviesCard = React.memo((props) => {
     return (
         <li className="card">
             <div className="card__image-wrapper" onMouseEnter={setIconVisible} onMouseLeave={setIconUnvisible}>
-                
+
                 <ExternalLink href={props.cardData.trailer} className="" target="_blank">
                     <div style={ {
                         backgroundImage: imageUrl,
@@ -47,7 +40,7 @@ const MoviesCard = React.memo((props) => {
                         ?   isIconVisible && <Button type="button" className="button button_type_card__delete-movie" ariaLabel="Иконка удаления фильма из сохраненных"
                                 onClick={handleDeleteMovie}/>
 
-                        :   isNeedToShowSavedIcon
+                        :   props.isNeedToShowSavedIcon
 
                             ?   <Button type="button" className="button button_type_card__saved-icon" ariaLabel="Иконка сохраненного фильма"
                                     onClick={handleDeleteMovie}/>
