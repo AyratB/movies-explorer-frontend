@@ -48,7 +48,6 @@ function App() {
   // открытие попапов
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [token, setToken] = React.useState("");
 
   const [currentUser, setCurrentState] = React.useState({
     name: "",
@@ -67,33 +66,35 @@ function App() {
   };
 
   const autorize = (userEmail, userPassword) => {
+
     mainApi
       .authorize(userEmail, userPassword)
       .then((data) => {
-        if (data.token) {
 
-          // на случай, если остались чужие данные
-          localStorage.clear();
+        localStorage.clear();
+        localStorage.setItem("token", data.token);
 
-          localStorage.setItem("token", data.token);
+        setCurrentState({
+          ...currentUser,
+          name: data.user.name,
+          email: data.user.email,
+          currentUserId: data.user._id,
+        });
+          
+        setIsLoggedIn(true);
 
-          setToken(data.token);
+        return data.token;
+      })
+      .then(token => mainApi.getMovies(token))
+      .then(movies => {
 
-          if(data.user){
-            setCurrentState({
-              ...currentUser,
-              name: data.user.name,
-              email: data.user.email,
-              currentUserId: data.user._id,
-            });
-          }
+        setSavedMoviesArray([...movies.data]);
 
-          setIsLoggedIn(true);
-
-          history.push("/movies");
-        }
+        history.push("/movies");
       })
       .catch((errorStatus) => {
+
+        debugger
         handleTooltipPopup(
           true,
           errorStatus === 401
@@ -123,7 +124,6 @@ function App() {
     localStorage.clear();
 
     setIsLoggedIn(false);
-    setToken("");
 
     setFullMoviesData({});
     setSavedMoviesData({});
@@ -250,16 +250,6 @@ function App() {
     // SAVED MOVIES
   }
 
-  React.useEffect(() => {   
-
-    window.addEventListener('resize', recalculateCardsNumber);
-    
-    return () => {
-      window.removeEventListener("resize", recalculateCardsNumber);
-    }
-
-  }, []);
-
   React.useEffect(() => {
 
     const token = localStorage.getItem("token");
@@ -267,7 +257,7 @@ function App() {
     if (token) {
 
       setPreviousValues(); 
-      
+
       Promise.all([mainApi.getUserInfo(token), mainApi.getMovies(token)])
         .then(([userData, userSavedMovies]) => {
 
@@ -278,22 +268,22 @@ function App() {
             currentUserId: userData.data._id,
           });
 
-          setToken(token);
-
           setIsLoggedIn(true);
 
-          if(typeof userSavedMovies !== 'undefined' && userSavedMovies.data && savedMoviesArray.length === 0){
-
-            setSavedMoviesArray([...userSavedMovies.data]);            
-          }        
+          setSavedMoviesArray([...userSavedMovies.data]);          
         })
         .catch((err) => {
-          console.log(err)
-          // handleTooltipPopup(true, "Недействительный токен JWT", true);
-          // logout();
+          handleTooltipPopup(true, "Недействительный токен", true);
         });
     }
-  }, [token]);
+
+    window.addEventListener('resize', recalculateCardsNumber);
+
+    return () => {
+      window.removeEventListener("resize", recalculateCardsNumber);
+    }
+
+  }, []);
 
   React.useEffect(() => {
    
@@ -324,9 +314,12 @@ function App() {
   }
 
   const [searchWithShortCheck, setSearchWithShortCheck] = React.useState(false);
+
   
-  const getMoviesArray = (searchValue, isShortFilm, isSavedMovies, localStoragePrefix) => {
+  const getExternalMovies = (searchValue, isShortFilm, isSavedMovies, localStoragePrefix) => {
     
+    
+
     if (isSavedMovies) { // сохраненнеы
 
     } else { //внешние фильмы
@@ -342,7 +335,9 @@ function App() {
             searchMovies(searchValue, isShortFilm, externalMovies, isSavedMovies, localStoragePrefix);
         }  
        })
-        .catch((err) => {console.log(err)});
+        .catch((err) => {
+          console.log(err);
+        });      
     }    
   }
 
@@ -379,25 +374,11 @@ function App() {
     
     let isSavedMovies = movieDataObject.isSavedMovies;
     var localStoragePrefix = isSavedMovies ? "SM": "FM";
-    
-    // if (isSavedMovies && (typeof searchValue === 'undefined' || searchValue === "")) { // для случая пустого поиcка возвращаем полный набор сохраненных фильмов
-      
-    //   проверить на короткий метр
-
-    //   setMovieObjectProperty(true, "connectionErrorMessage", "");
-
-    //   setSavedFilteredMovies([]);
-    //   setIsSavedEmptySearch(false);
-
-    //   localStorage.setItem(`${localStoragePrefix}_filteredMovies`, "");
-
-    //   return;
-    // }
 
     let arrayForSearch = isSavedMovies ? savedMoviesArray : fullMoviesArray;
 
     if (arrayForSearch.length === 0) {
-      getMoviesArray(searchValue, isShortFilm, isSavedMovies, localStoragePrefix);      
+      getExternalMovies(searchValue, isShortFilm, isSavedMovies, localStoragePrefix);      
     }
     else{
       searchMovies(searchValue, isShortFilm, arrayForSearch, isSavedMovies, localStoragePrefix);
@@ -460,10 +441,10 @@ function App() {
 
     commonMoviesSearch(searchValue, isShortFilm, movieDataObject);
 
-    setTimeout(setIsMoviesSearchGoing, 1000, false);
+    setIsMoviesSearchGoing(false);
   }
 
-  const [totalCardToShowNumber, setTotalCardToShowNumber] = React.useState(0); // количество показать пользователю
+  const [totalCardToShowNumber, setTotalCardToShowNumber] = React.useState(0);
 
   const recalculateCardsNumber = () => {
 
@@ -502,6 +483,7 @@ function App() {
   }
 
   const deleteMovieHandler = (movieId) => {
+    console.log(movieId)
     var token = getToken();
 
     mainApi
