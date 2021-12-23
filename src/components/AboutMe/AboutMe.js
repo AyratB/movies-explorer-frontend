@@ -2,7 +2,6 @@ import React from "react";
 import './AboutMe.css';
 import authorFoto from "./../../images/diploma_author_foto.jpg";
 import { ExternalLink } from 'react-external-link';
-import portfolioLink from "./../../images/portfolio_link_logo.svg";
 
 import Portfolio from "./../Portfolio/Portfolio.js";
 

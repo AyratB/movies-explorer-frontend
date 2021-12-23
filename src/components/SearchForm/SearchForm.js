@@ -14,7 +14,7 @@ const SearchForm = (props) => {
 
     const searchMovie = (isChecked) => {
 
-        let searchValue = isFirstPageLoad ? firtsSearchValue : values["search-form-search-value"];        
+        let searchValue = isFirstPageLoad ? firtsSearchValue || props.movieObject.previousSearchValue : values["search-form-search-value"];        
 
         if(!props.movieObject.isSavedMovies && (typeof searchValue === "undefined" || searchValue === "" || searchValue.trim() === "")){
             setErrors({...errors, "search-form-search-value": "Нужно ввести ключевое слово" });
@@ -67,14 +67,18 @@ const SearchForm = (props) => {
                             id="search-form-search-value"
                             placeholder="Фильм"
                             onChange={handleFormChange}
-                            value={ searchValue }/>
+                            value={ searchValue }
+                            disabled={props.isMoviesSearchGoing}/>
 
                         <span className={`search-form__span-error ${errors["search-form-search-value"] ? "search-form__span-error_active" : ""}`}>
                             {errors["search-form-search-value"]}
                         </span>
 
                     </section>
-                    <Button type="submit" className="button button_type_search-movie">Поиск</Button>
+                    <Button 
+                        type="submit" 
+                        className="button button_type_search-movie"
+                        disabled={props.isMoviesSearchGoing}>Поиск</Button>
                 </div>
             </form>
             <FilterCheckbox checked={checked} movieObject ={props.movieObject}/>

@@ -45,7 +45,8 @@ const Movies = React.memo((props) => {
                 <SearchForm
                     movieObject ={props.movieObject}
                     onSubmit={handleSearchRequest} 
-                    deleteEmptySearchResult={deleteEmptySearchResult}/>
+                    deleteEmptySearchResult={deleteEmptySearchResult}
+                    isMoviesSearchGoing={props.isMoviesSearchGoing}/>
 
                 {props.isMoviesSearchGoing
                     ? <Preloader/>
@@ -61,7 +62,7 @@ const Movies = React.memo((props) => {
                             movieObject ={props.movieObject}
                             isNeedToHideAddButton={props.isNeedToHideAddButton}
                             savedMovies={props.savedMovies}
-                            isSavedMovie={props.isSavedMovie}
+                            isSavedMovie={props.isSavedMovie}                            
                             />
 
                         : <div style={emptyMessageStyle}>{props.connectionErrorMessage || emptySearchWords}</div>
