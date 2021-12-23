@@ -82,7 +82,8 @@ function Profile(props) {
                 minLength="2"
                 maxLength="30"
                 type="text"
-                pattern="^[A-Za-zА-Яа-яЁё\s\-]+$"/>
+                pattern="^[A-Za-zА-Яа-яЁё\s\-]+$"
+                disabled={props.isProfileDataEditing}/>
             </div>
             <span className={`profile-form__span-error ${errors["profile-form-user-name"] ? "profile-form__span-error_active" : ""}`}>{errors["profile-form-user-name"]}</span>
           </section>
@@ -98,7 +99,8 @@ function Profile(props) {
                 onChange={handleChangeForm}
                 required
                 minLength="2"
-                type="email"/>
+                type="email"
+                disabled={props.isProfileDataEditing}/>
             </div>
             <span className={`profile-form__span-error ${errors["profile-form-user-email"] ? "profile-form__span-error_active" : ""}`}>{errors["profile-form-user-email"]}</span>
           </section>

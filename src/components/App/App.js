@@ -34,6 +34,8 @@ function App() {
   const [isBreadCrumbsPopupOpened, setIsBreadCrumbsPopupOpened] = React.useState(false);
   const [isTooltipPopupOpen, setIsTooltipPopupOpen] = React.useState(false);
 
+  const [isProfileDataEditing, setIsProfileDataEditing] = React.useState(false);
+
   // Данные для информационного попапа
   const [popupMessage, setPopupMessage] = React.useState("");
   const [isTooltipMistake, setIsTooltipMistake] = React.useState(false);
@@ -65,6 +67,18 @@ function App() {
     }
   };
 
+  const register = (userEmail, userPassword, userName) => {
+    mainApi
+      .register(userEmail, userPassword, userName)
+      .then((res) => {
+        if(res.data){
+          handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
+          autorize(userEmail, userPassword);
+        }
+      })
+      .catch(() => { handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true); });
+  }
+
   const autorize = (userEmail, userPassword) => {
 
     mainApi
@@ -94,7 +108,6 @@ function App() {
       })
       .catch((errorStatus) => {
 
-        debugger
         handleTooltipPopup(
           true,
           errorStatus === 401
@@ -105,19 +118,7 @@ function App() {
           true
         );
       });
-  }
-
-  const register = (userEmail, userPassword, userName) => {
-    mainApi
-      .register(userEmail, userPassword, userName)
-      .then((res) => {
-        if(res.data){
-          handleTooltipPopup(true, "Вы успешно зарегистрировались!", false);
-          autorize(userEmail, userPassword);
-        }
-      })
-      .catch(() => { handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true); });
-  }  
+  }   
 
   const logout = () => {
 
@@ -178,6 +179,15 @@ function App() {
   const setPreviousValues = () => {    
 
     // FULL MOVIES
+    {
+      let fullMovies = JSON.parse(localStorage.getItem("FM_fullMovies"));
+
+      if(fullMovies !== "" && fullMovies &&  fullMovies.length > 0 && fullFilteredMovies.length === 0){
+        
+        setFullMoviesArray([...fullMovies]);
+      }
+    }
+
     {
       let FM_previousSearchValue = localStorage.getItem("FM_previousSearchValue");
       
@@ -296,6 +306,8 @@ function App() {
 
     var token = getToken();
 
+    setIsProfileDataEditing(true);
+
     mainApi
       .updateUserData(userEmail, userName, token)
       .then((updatedUserData) => {
@@ -310,36 +322,13 @@ function App() {
       })
       .catch((er) => {
         handleTooltipPopup(true, "Что-то пошло не так! Попробуйте ещё раз!", true);
+      })
+      .finally(() => {
+        setIsProfileDataEditing(false);
       });
   }
 
   const [searchWithShortCheck, setSearchWithShortCheck] = React.useState(false);
-
-  
-  const getExternalMovies = (searchValue, isShortFilm, isSavedMovies, localStoragePrefix) => {
-    
-    
-
-    if (isSavedMovies) { // сохраненнеы
-
-    } else { //внешние фильмы
-
-      moviesApi
-        .getFilms()
-        .then((externalMovies) => {
-
-          if(typeof externalMovies !== 'undefined' && externalMovies.length > 0 && fullMoviesArray.length === 0){
-            setFullMoviesArray([...externalMovies]);
-
-            //поиск
-            searchMovies(searchValue, isShortFilm, externalMovies, isSavedMovies, localStoragePrefix);
-        }  
-       })
-        .catch((err) => {
-          console.log(err);
-        });      
-    }    
-  }
 
   const getMovieSearch = (searchValue, isShortFilm, movies, isSavedMovies) => {
 
@@ -369,21 +358,6 @@ function App() {
   }
 
   const [isMoviesSearchGoing, setIsMoviesSearchGoing] = React.useState(false);
-
-  const commonMoviesSearch = (searchValue, isShortFilm, movieDataObject) => {
-    
-    let isSavedMovies = movieDataObject.isSavedMovies;
-    var localStoragePrefix = isSavedMovies ? "SM": "FM";
-
-    let arrayForSearch = isSavedMovies ? savedMoviesArray : fullMoviesArray;
-
-    if (arrayForSearch.length === 0) {
-      getExternalMovies(searchValue, isShortFilm, isSavedMovies, localStoragePrefix);      
-    }
-    else{
-      searchMovies(searchValue, isShortFilm, arrayForSearch, isSavedMovies, localStoragePrefix);
-    }
-  }
 
   const searchMovies = (searchValue, isShortFilm, searchArray, isSavedMovies, localStoragePrefix) => {
 
@@ -424,13 +398,47 @@ function App() {
     }
 
     localStorage.setItem(`${localStoragePrefix}_filteredMovies`, JSON.stringify(result));
+
+    setIsMoviesSearchGoing(false); 
   }
 
-  const commonMoviesSearchHandler = (searchValue, isShortFilm, movieDataObject) => {
+  const externalMoviesSearchHandler = (searchValue, isShortFilm, movieDataObject) => {
 
     setIsMoviesSearchGoing(true);
 
-    if (movieDataObject.isSavedMovies && savedMoviesArray.length === 0) {
+    if (fullMoviesArray.length === 0){
+
+      moviesApi
+        .getFilms()
+        .then((externalMovies) => {
+
+          if(typeof externalMovies !== 'undefined' && externalMovies.length > 0){
+
+            setFullMoviesArray([...externalMovies]);
+
+            localStorage.setItem('FM_fullMovies', JSON.stringify(externalMovies));
+
+            searchMovies(searchValue, isShortFilm, externalMovies, false, "FM_");
+          }
+        })
+        .catch((err) => {
+          handleTooltipPopup(true, "Ошибка обращения к сервису поиска фильмов!", true);
+        })
+        .finally(() => {
+          setIsMoviesSearchGoing(false);
+        });
+
+    } else {
+
+      setTimeout(searchMovies, 2000, searchValue, isShortFilm, fullMoviesArray, false, "FM");   
+    }
+  }
+
+  const savedMoviesSearchHandler = (searchValue, isShortFilm, movieDataObject) => {
+
+    setIsMoviesSearchGoing(true);
+
+    if (savedMoviesArray.length === 0) {
 
       setIsMoviesSearchGoing(false);
       setMovieObjectProperty(true, "connectionErrorMessage", "Сохраните сначала фильмы в коллекцию");
@@ -439,8 +447,7 @@ function App() {
       return;
     }
 
-    commonMoviesSearch(searchValue, isShortFilm, movieDataObject);
-
+    searchMovies(searchValue, isShortFilm, savedMoviesArray, true, "SM");
     setIsMoviesSearchGoing(false);
   }
 
@@ -532,7 +539,7 @@ function App() {
               onBreadClick={handleBreadCrumbsPopupClick}
               isMoviesSearchGoing={isMoviesSearchGoing}
               addCardsToShow={addCardsToShow}
-              handleSearchRequest={commonMoviesSearchHandler}
+              handleSearchRequest={externalMoviesSearchHandler}
               onMovieSave={saveMovieHandler}
               onMovieDelete={deleteMovieHandler}
               recalculateCardsNumber={recalculateCardsNumber}
@@ -540,28 +547,23 @@ function App() {
               moviesCardData={fullFilteredMovies.slice(0, totalCardToShowNumber)}
               savedMovies={savedMoviesArray}
               isNeedToHideAddButton={fullFilteredMovies.length <= totalCardToShowNumber}
-
               isSavedMovie={false}
-            />  
+            />
 
             <ProtectedRoute
               path="/saved-movies"
               component={Movies}
               isLoggedIn={isLoggedIn}
               onBreadClick={handleBreadCrumbsPopupClick}
-              handleSearchRequest={commonMoviesSearchHandler}
+              handleSearchRequest={savedMoviesSearchHandler}
               onMovieDelete={deleteMovieHandler}
               movieObject ={savedMoviesData}
-
               isSavedMovie={true}
-
               moviesCardData={savedFilteredMovies.length !== 0 
                 ? savedFilteredMovies 
                 : (typeof savedMoviesData.previousSearchValue === 'undefined' || savedMoviesData.previousSearchValue === "") && !searchWithShortCheck
                   ? savedMoviesArray
-                  : []
-               
-                 }
+                  : []}
             />
 
             <ProtectedRoute
@@ -570,7 +572,8 @@ function App() {
               editUser={editUser}
               isLoggedIn={isLoggedIn}
               onBreadClick={handleBreadCrumbsPopupClick}
-              component={Profile} 
+              component={Profile}
+              isProfileDataEditing={isProfileDataEditing}
             />
 
             <Route path="*">
