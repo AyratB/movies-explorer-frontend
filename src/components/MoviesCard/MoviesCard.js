@@ -14,7 +14,7 @@ const MoviesCard = React.memo((props) => {
         : `url(${BASE_MOVIES_IMAGE_URL}${props.cardData.image.url})`;
 
     const handleSaveMovie = () => props.onMovieSave(props.cardData);
-    const handleDeleteMovie = () => props.onMovieDelete(props.movieId);
+    const handleDeleteMovie = () => props.onMovieDelete(props.movieId);    
 
     const [isIconVisible, setIsIconVisible] = React.useState(false);
     const setIconVisible = () => setIsIconVisible(true);
@@ -37,16 +37,26 @@ const MoviesCard = React.memo((props) => {
 
                     {isMovieSaved
 
-                        ?   isIconVisible && <Button type="button" className="button button_type_card__delete-movie" ariaLabel="Иконка удаления фильма из сохраненных"
-                                onClick={handleDeleteMovie}/>
+                        ?   isIconVisible && <Button 
+                                                type="button" 
+                                                className="button button_type_card__delete-movie" 
+                                                ariaLabel="Иконка удаления фильма из сохраненных"
+                                                onClick={handleDeleteMovie}/>
 
                         :   props.isNeedToShowSavedIcon
 
-                            ?   <Button type="button" className="button button_type_card__saved-icon" ariaLabel="Иконка сохраненного фильма"
-                                    onClick={handleDeleteMovie}/>
+                            ?   <Button type="button" 
+                                        className="button button_type_card__saved-icon" 
+                                        ariaLabel="Иконка сохраненного фильма"
+                                        onClick={handleDeleteMovie}/>
 
-                            :   isIconVisible && <Button type="button" className="button button_type_saved-movie" ariaLabel="Иконка сохранения"
-                                    onClick={handleSaveMovie}>Сохранить</Button>
+                            :   isIconVisible && <Button 
+                                                    type="button" 
+                                                    className="button button_type_saved-movie" 
+                                                    ariaLabel="Иконка сохранения"
+                                                    onClick={handleSaveMovie}>
+                                                        Сохранить
+                                                 </Button>
                     }
                 </div>
             </div>

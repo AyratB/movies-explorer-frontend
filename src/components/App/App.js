@@ -34,7 +34,7 @@ function App() {
   const [isBreadCrumbsPopupOpened, setIsBreadCrumbsPopupOpened] = React.useState(false);
   const [isTooltipPopupOpen, setIsTooltipPopupOpen] = React.useState(false);
 
-  const [isProfileDataEditing, setIsProfileDataEditing] = React.useState(false);
+  const [isProfileDataEditing, setIsProfileDataEditing] = React.useState(false);  
 
   // Данные для информационного попапа
   const [popupMessage, setPopupMessage] = React.useState("");
@@ -249,7 +249,7 @@ function App() {
       
       if(SM_shortChecked !== null &&typeof SM_shortChecked !== 'undefined' && SM_shortChecked !== 'undefined'){
 
-        setSearchWithShortCheck(true);
+        setSearchSavedWithShortCheck(true);
 
         setMovieObjectProperty(
           true,
@@ -263,7 +263,6 @@ function App() {
   React.useEffect(() => {
 
     const token = localStorage.getItem("token");
-
     if (token) {
 
       setPreviousValues(); 
@@ -284,6 +283,7 @@ function App() {
         })
         .catch((err) => {
           handleTooltipPopup(true, "Недействительный токен", true);
+          logout();
         });
     }
 
@@ -328,12 +328,12 @@ function App() {
       });
   }
 
-  const [searchWithShortCheck, setSearchWithShortCheck] = React.useState(false);
+  const [searchWithShortCheck, setSearchSavedWithShortCheck] = React.useState(false);
 
   const getMovieSearch = (searchValue, isShortFilm, movies, isSavedMovies) => {
 
     if(isSavedMovies){
-      setSearchWithShortCheck(false);
+      setSearchSavedWithShortCheck(isShortFilm);
     }
     
     if(typeof searchValue === 'undefined') return [];
@@ -343,14 +343,9 @@ function App() {
     let result = movies.filter(film =>
       ((film.nameRU ?? "").toLowerCase().includes(trimmedSearchValue)
       || 
-      (film.nameEN ?? "").toLowerCase().includes(trimmedSearchValue)));    
+      (film.nameEN ?? "").toLowerCase().includes(trimmedSearchValue)));
 
-    if (isShortFilm) {
-
-      if(isSavedMovies){
-        setSearchWithShortCheck(true);
-      }
-      
+    if (isShortFilm) {      
       result = result.filter(selectedFilm => selectedFilm.duration <= SHORT_FILMS_DURATION);
     }    
     
@@ -418,7 +413,7 @@ function App() {
 
             localStorage.setItem('FM_fullMovies', JSON.stringify(externalMovies));
 
-            searchMovies(searchValue, isShortFilm, externalMovies, false, "FM_");
+            searchMovies(searchValue, isShortFilm, externalMovies, false, "FM");
           }
         })
         .catch((err) => {
@@ -475,29 +470,32 @@ function App() {
 
   const saveMovieHandler = (movie) => {
 
-    var token = getToken();
-    
+    var token = getToken();    
+
     mainApi
       .saveMovie(movie, token)
-      .then((savedMovie) => {
-
-        if(savedMovie.data){
-
-          setSavedMoviesArray([savedMovie.data, ...savedMoviesArray]);
-        }
-      })
+      .then((savedMovie) => setSavedMoviesArray([savedMovie.data, ...savedMoviesArray]))
       .catch((err) => { console.log(err); });
   }
 
   const deleteMovieHandler = (movieId) => {
-    console.log(movieId)
+    
     var token = getToken();
 
     mainApi
       .deleteMovies(movieId, token)
-      .then((deletedMovie) => {
+      .then((deletedMovieData) => {
 
-        setSavedMoviesArray([...savedMoviesArray.filter(movie => movie.movieId !== deletedMovie.data.movieId)]);
+        setSavedMoviesArray([...savedMoviesArray.filter(movie => movie.movieId !== movieId)]);
+
+        if (savedFilteredMovies.length > 0) {
+
+          let savedMoviesAfterDelete = [...savedFilteredMovies.filter(movie => movie.movieId !== movieId)];
+          
+          setSavedFilteredMovies([...savedMoviesAfterDelete]);
+
+          localStorage.setItem('SM_filteredMovies', JSON.stringify(savedMoviesAfterDelete));
+        }
       })
       .catch((err) => { console.log(err); });
   }
@@ -512,7 +510,7 @@ function App() {
     }
 
     return token;
-  }
+  } 
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -559,11 +557,14 @@ function App() {
               onMovieDelete={deleteMovieHandler}
               movieObject ={savedMoviesData}
               isSavedMovie={true}
-              moviesCardData={savedFilteredMovies.length !== 0 
-                ? savedFilteredMovies 
-                : (typeof savedMoviesData.previousSearchValue === 'undefined' || savedMoviesData.previousSearchValue === "") && !searchWithShortCheck
-                  ? savedMoviesArray
-                  : []}
+              moviesCardData={savedMoviesData.previousSearchValue || searchWithShortCheck
+                ? savedFilteredMovies.length !== 0
+                  ? savedFilteredMovies
+                  : []
+                : savedMoviesArray}
+
+              fullSavedData={savedMoviesArray}
+              filteredSavedData={savedFilteredMovies}
             />
 
             <ProtectedRoute

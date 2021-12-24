@@ -6,7 +6,7 @@ import './SearchForm.css';
 import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
 const SearchForm = (props) => {
-   
+    
     const { values, handleChange, errors, resetForm, setErrors } = useFormWithValidation();
 
     const [isFirstPageLoad, setIsFirstPageLoad] = React.useState(true);
@@ -27,7 +27,7 @@ const SearchForm = (props) => {
         });
     } 
     
-    React.useEffect(() => {
+    React.useEffect(() => {        
         if(props.movieObject.previousSearchValue !== ""){
             setFirtsSearchValue(props.movieObject.previousSearchValue);
         }
@@ -50,7 +50,12 @@ const SearchForm = (props) => {
         searchMovie(props.movieObject.shortChecked);
     }
 
-    let searchValue = (isFirstPageLoad ? firtsSearchValue || props.movieObject.previousSearchValue : values["search-form-search-value"]) || '';
+    let searchValue = (isFirstPageLoad 
+        ? props.movieObject.previousSearchValue 
+        : typeof values["search-form-search-value"] !== 'undefined' 
+            ? values["search-form-search-value"] 
+            : props.movieObject.previousSearchValue) || '';
+        
     //отдельный поиск по клику по Короткометражке
     const checked = (e) => searchMovie(e);
 
