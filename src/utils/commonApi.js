@@ -7,18 +7,18 @@ export const request = async ({ url, endPoint, method, body, requestHeaders, cre
         },
         requestHeaders
       ),
-      credentials: credentials
+      mode: 'cors', // 'cors', // no-cors, *cors, same-origin
     };
 
     const path = typeof endPoint !== "undefined"
         ? `${url}/${endPoint}`
         : `${url}`;
 
-    var fetchResponce = await fetch(path, body ? { ...fetchInit, body } : fetchInit);
+        var fetchResponce = await fetch(path, body ? { ...fetchInit, body } : fetchInit);
 
-    var responce = await getResponseData(fetchResponce);
-
-    return responce;
+        var responce = await getResponseData(fetchResponce);
+    
+        return responce;      
 }
 
 const getResponseData = async (res) =>  res.ok ? await Promise.resolve(res.json()) : await Promise.reject(res.status);
