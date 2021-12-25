@@ -10,12 +10,15 @@ const SearchForm = (props) => {
     const { values, handleChange, errors, resetForm, setErrors } = useFormWithValidation();
 
     const [isFirstPageLoad, setIsFirstPageLoad] = React.useState(true);
-    const [firtsSearchValue, setFirtsSearchValue] = React.useState("");
 
     const searchMovie = (isChecked) => {
 
-        let searchValue = isFirstPageLoad ? firtsSearchValue || props.movieObject.previousSearchValue : values["search-form-search-value"];        
-
+        let searchValue = isFirstPageLoad 
+            ? props.movieObject.previousSearchValue 
+            : typeof values["search-form-search-value"] !== 'undefined' 
+                ? values["search-form-search-value"] 
+                : props.movieObject.previousSearchValue || '';        
+        
         if(!props.movieObject.isSavedMovies && (typeof searchValue === "undefined" || searchValue === "" || searchValue.trim() === "")){
             setErrors({...errors, "search-form-search-value": "Нужно ввести ключевое слово" });
             return;
@@ -28,18 +31,11 @@ const SearchForm = (props) => {
     } 
     
     React.useEffect(() => {        
-        if(props.movieObject.previousSearchValue !== ""){
-            setFirtsSearchValue(props.movieObject.previousSearchValue);
-        }
-        
-        return () => {
-            setFirtsSearchValue("");
-            resetForm();}
+        return () => resetForm();
     }, [props.movieObject]);
 
     const handleFormChange = (e) => {
         
-        setFirtsSearchValue("");
         setIsFirstPageLoad(false);
         // props.deleteEmptySearchResult();
         handleChange(e);
