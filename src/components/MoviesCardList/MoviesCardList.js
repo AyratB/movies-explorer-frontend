@@ -28,6 +28,7 @@ const MoviesCardList = React.memo((props) => {
                             isNeedToShowSavedIcon={isNeedToShowSavedIcon}
                             isSavedMovies={isSavedMovies}
                             movieId={movieId}
+                            cardClick={props.cardClick}
                         />
                     );
                 })}

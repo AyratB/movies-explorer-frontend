@@ -27,6 +27,8 @@ import {
 import * as mainApi from "./../../utils/MainApi";
 import * as moviesApi from "./../../utils/MoviesApi";
 
+const validUrl = require('valid-url');
+
 function App() {
 
   const history = useHistory();
@@ -514,6 +516,15 @@ function App() {
     return token;
   }
 
+  const cardClick = (trailerLink) => {
+
+    if (validUrl.isUri(trailerLink)){
+      window.open(trailerLink, '_blank');
+    } else {
+      handleTooltipPopup(true, "Некорректная ссылка трейлера фильма", true);
+    }
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="app__page">
@@ -548,6 +559,7 @@ function App() {
               savedMovies={savedMoviesArray}
               isNeedToHideAddButton={fullFilteredMovies.length <= totalCardToShowNumber}
               isSavedMovie={false}
+              cardClickHandler={cardClick}
             />
 
             <ProtectedRoute
@@ -564,9 +576,7 @@ function App() {
                   ? savedFilteredMovies
                   : []
                 : savedMoviesArray}
-
-              fullSavedData={savedMoviesArray}
-              filteredSavedData={savedFilteredMovies}
+              cardClickHandler={cardClick}
             />
 
             <ProtectedRoute

@@ -20,18 +20,24 @@ const MoviesCard = React.memo((props) => {
     const setIconVisible = () => setIsIconVisible(true);
     const setIconUnvisible = () => setIsIconVisible(false);
 
+    const cardOnClickHandler = (e) =>props.cardClick(e.currentTarget.dataset.href);
+   
+    let youtubeLink = isMovieSaved 
+        ? props.cardData.trailer
+        : props.cardData.trailerLink;
+
     return (
         <li className="card">
-            <div className="card__image-wrapper" onMouseEnter={setIconVisible} onMouseLeave={setIconUnvisible}>
+            <div className="card__image-wrapper" onMouseEnter={setIconVisible} onMouseLeave={setIconUnvisible}>                
 
-                <ExternalLink href={props.cardData.trailer} className="" target="_blank">
-                    <div style={ {
+                <div style={ {
                         backgroundImage: imageUrl,
                         backgroundSize: 'contain', 
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center' } }
-                    className="card__image"/>
-                </ExternalLink>
+                    className="card__image"
+                    onClick={cardOnClickHandler}
+                    data-href={youtubeLink}/>
 
                 <div className="card__saving-choice">
 

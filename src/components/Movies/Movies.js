@@ -62,7 +62,8 @@ const Movies = React.memo((props) => {
                             movieObject ={props.movieObject}
                             isNeedToHideAddButton={props.isNeedToHideAddButton}
                             savedMovies={props.savedMovies}
-                            isSavedMovie={props.isSavedMovie}                            
+                            isSavedMovie={props.isSavedMovie}
+                            cardClick={props.cardClickHandler}
                             />
 
                         : <div style={emptyMessageStyle}>{props.connectionErrorMessage || emptySearchWords}</div>
