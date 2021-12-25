@@ -1,17 +1,19 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import Main from "./../Main/Main.js";
 
 const ProtectedRoute = ({ component: Component, ...props }) => {
+
+  let igHasToken = props.isLoggedIn || localStorage.getItem("token");  
+ 
   return (
     <Route>
       {() =>
-        props.isLoggedIn ? (
+        igHasToken ? (
           <>
-            <Component {...props} />            
+            <Component {...props} />
           </>
         ) : (
-          <Redirect to="./main" />
+          <Redirect to="./" />
         )
       }
     </Route>

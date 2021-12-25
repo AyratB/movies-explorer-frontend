@@ -18,6 +18,12 @@
     padding-bottom: 50px;
 }
 
+@media screen and (max-width: 1900px){
+    .movies-cards__list{
+        grid-template-columns: repeat(3, minmax(335px, 1fr));
+    }
+}
+
 @media screen and (max-width: 1023px){
     .movies-cards__list{
         grid-template-rows: repeat(auto-fit, minmax(190, 1fr));

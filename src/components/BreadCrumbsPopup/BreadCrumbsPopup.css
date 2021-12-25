@@ -10,8 +10,7 @@
     transition: visibility 0.5s, opacity 0.5s linear;
     display: flex;
     justify-content: flex-end;
-    align-items: center;
-    
+    align-items: center;    
 }
 
 .popup_opened{

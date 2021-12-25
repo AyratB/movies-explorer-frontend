@@ -1,52 +1,89 @@
 import React from "react";
 import Button from "./../Button/Button";
-import Form from "./../Form/Form";
 import FilterCheckbox from "./../FilterCheckbox/FilterCheckbox";
 import './SearchForm.css';
 
-import { useForm } from "./../../hooks/useForm";
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
-const SearchForm = (props) => { 
+const SearchForm = (props) => {
     
-    const { values, handleChange, setValues } = useForm();
+    const { values, handleChange, errors, resetForm, setErrors } = useFormWithValidation();
 
-    function handleSubmit(e) {
-        alert("!");
+    const [isFirstPageLoad, setIsFirstPageLoad] = React.useState(true);
 
-        props.onSubmit();
+    const searchMovie = (isChecked) => {
 
-        // if (formValidator) {
-        //     formValidator.clearAllFormErrors();
-        //     formValidator.makeButtonDisable();
-        //   }
+        let searchValue = isFirstPageLoad 
+            ? props.movieObject.previousSearchValue 
+            : typeof values["search-form-search-value"] !== 'undefined' 
+                ? values["search-form-search-value"] 
+                : props.movieObject.previousSearchValue || '';        
+        
+        if(!props.movieObject.isSavedMovies && (typeof searchValue === "undefined" || searchValue === "" || searchValue.trim() === "")){
+            setErrors({...errors, "search-form-search-value": "Нужно ввести ключевое слово" });
+            return;
+        }
 
-        //   clearInputValues();
+        props.onSubmit({
+            searchValue: searchValue,
+            isChecked: isChecked
+        });
+    } 
+    
+    React.useEffect(() => {        
+        return () => resetForm();
+    }, [props.movieObject]);
+
+    const handleFormChange = (e) => {
+        
+        setIsFirstPageLoad(false);
+        // props.deleteEmptySearchResult();
+        handleChange(e);
     }
-    
+
+    const searchFormHandleSubmit = (e) => {
+        e.preventDefault();
+        searchMovie(props.movieObject.shortChecked);
+    }
+
+    let searchValue = (isFirstPageLoad 
+        ? props.movieObject.previousSearchValue 
+        : typeof values["search-form-search-value"] !== 'undefined' 
+            ? values["search-form-search-value"] 
+            : props.movieObject.previousSearchValue) || '';
+        
+    //отдельный поиск по клику по Короткометражке
+    const checked = (e) => searchMovie(e);
+
     return (
         <section className="search-form">
-            <Form formName="search-form"onSubmit={handleSubmit}>
-
+            <form name="search-form" onSubmit={searchFormHandleSubmit} noValidate>
                 <div className="search-form__wrapper">
-                    <section className="form__section">
+                    <section className="search-form__section">
+
                         <input
                             type="text"
-                            className="form__input search-form__input"
-                            name="search-form-name"
-                            id="search-form-name"
-                            placeholder="Фильм" 
-                            required                 
-                            minLength="2"
-                            maxLength="40"
-                            onChange={handleChange}/>
-                        <span className="form__span-error" id="search-form-name-error"></span>
-                    </section>
+                            className={`search-form__input ${errors["search-form-search-value"] ? "search-form__input_type_error" : ""}`}
+                            name="search-form-search-value"
+                            id="search-form-search-value"
+                            placeholder="Фильм"
+                            onChange={handleFormChange}
+                            value={ searchValue }
+                            disabled={props.isMoviesSearchGoing}/>
 
-                    <Button type="submit" className="button button_type_save-form search-form_save-form">Поиск</Button>
-                </div>            
-            </Form>
-            <FilterCheckbox/>
-        </section>               
+                        <span className={`search-form__span-error ${errors["search-form-search-value"] ? "search-form__span-error_active" : ""}`}>
+                            {errors["search-form-search-value"]}
+                        </span>
+
+                    </section>
+                    <Button 
+                        type="submit" 
+                        className="button button_type_search-movie"
+                        disabled={props.isMoviesSearchGoing}>Поиск</Button>
+                </div>
+            </form>
+            <FilterCheckbox checked={checked} movieObject ={props.movieObject}/>
+        </section>
     );
 };
 

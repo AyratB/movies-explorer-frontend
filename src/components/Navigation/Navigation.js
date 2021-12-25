@@ -7,12 +7,12 @@ import breadCrumbsLogo from "./../../images/header_logo_bread-crumbs.svg";
 
 function Navigation(props) {
 
-    return props.isLoggedIn
+    return !props.isLoggedIn
         ?   (
                 <nav> 
                     <ul className = "navigation__links">
                         <li>
-                            <Link to="/signup" className="navigation__link">
+                            <Link to="/signup" className="navigation__link_type_register">
                                 Регистрация
                             </Link>
                         </li>

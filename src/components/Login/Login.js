@@ -1,28 +1,18 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, NavLink } from "react-router-dom";
 import Button from "./../Button/Button";
 import './Login.css';
-import { NavLink } from "react-router-dom";
-
 import SiteLogo from "./../SiteLogo/SiteLogo";
 
-function Login(props) {
-  const [userEmail, setuserName] = React.useState("");
-  const [userPassword, setUserPassword] = React.useState("");
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
-  const handleChange = (e) => {
-    const input = e.target;
-    if (input.name === "userName") {
-      setuserName(input.value);
-    } else if (input.name === "password") {
-      setUserPassword(input.value);
-    }
-  };
+function Login(props) {
+
+  const { values, handleChange, errors, isValid } = useFormWithValidation();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // props.autorize(userEmail, userPassword);    
+    props.autorize(values["login-form-user-email"], values["login-form-user-password"]);
   };
 
   return (
@@ -30,34 +20,42 @@ function Login(props) {
       <SiteLogo className="login__logo"/>
       <p className="login__welcome">Рады видеть!</p>
 
-      <form onSubmit={handleSubmit} className="login__form" name="login">
+      <form onSubmit={handleSubmit} className="login__form" name="login" noValidate>
         <section className="login__section">
-          <label className="login__label" htmlFor="userEmail">Email</label>
+          <label className="login__label" htmlFor="login-form-user-email">Email</label>
           <input
-            className="login__input"
-            id="userEmail"
-            name="userEmail"
-            value={userEmail}
+            className={`login__input ${errors["login-form-user-email"] ? "login-form__input_type_error" : ""}`}
+            id="login-form-user-email"
+            name="login-form-user-email"
+            value={values["login-form-user-email"] || ""}
             onChange={handleChange}
-          />
+            required
+            minLength="4"
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"/>
+          <span className={`login-form__span-error ${errors["login-form-user-email"] ? "login-form__span-error_active" : ""}`}>{errors["login-form-user-email"]}</span>
         </section>
 
         <section className="login__section">
-          <label className="login__label" htmlFor="password">Password</label>
+          <label className="login__label" htmlFor="login-form-user-password">Password</label>
           <input
-            className="login__input"
-            id="password"
-            name="password"
-            value={userPassword}
+            className={`login__input ${errors["login-form-user-password"] ? "login-form__input_type_error" : ""}`}
+            id="login-form-user-password"
+            name="login-form-user-password"
+            value={values["login-form-user-password"] || ""}
             onChange={handleChange}
             type="password"
-          />
-        </section>  
+            required
+            minLength="2"/>
+          <span className={`login-form__span-error ${errors["login-form-user-password"] ? "login-form__span-error_active" : ""}`}>
+            {errors["login-form-user-password"]}
+          </span>
+        </section>
 
         <Button
           type="submit"
-          className="button button_type_save-form button_type_login"
+          className={`button button_type_save-form button_type_login ${isValid ? "" : "button_inactive"}`}
           buttonText="Войти"
+          disabled={!isValid}
         >Войти</Button>
 
         <div className="login__register">

@@ -108,6 +108,14 @@
     transition: 0.01s;
 }
 
+.button_type_search-movie{
+    width: 100px;
+    height: 52px;
+    background: #4285F4;
+    border-radius: 5px;
+    color: white;
+}
+
 .button_type_login{
     width: 396px;
     height: 45px;
@@ -181,6 +189,7 @@
     margin-top: 184px;
     text-decoration: none;
     color: #4285F4;
+    background: transparent;
 }
 
 @media screen and (max-width: 1023px){

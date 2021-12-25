@@ -3,23 +3,21 @@ import React from "react";
 import './FilterCheckbox.css';
 import checkboxCircle from "./../../images/checkbox-circle.svg";
 
-const FilterCheckbox = (props) => { 
-    
-    const [checkedCounter, increaseCheckedCounter] = React.useState(0);
+const FilterCheckbox = React.memo((props) => {
 
     const handleClick = () => {
-        let counter = checkedCounter + 1;
-        increaseCheckedCounter(counter);
+        //отдельный поиск по клику по Короткометражке
+        props.checked(!props.movieObject["shortChecked"]);
     }
 
     return (
-        <div className="checkbox__wrapper" onClick={handleClick}>
-            <div className={`checkbox__body ${checkedCounter%2 === 0 ? "" : "checkbox__body_type_reverse"}`}>            
+        <div className="checkbox__wrapper">
+            <div className={`checkbox__body ${props.movieObject["shortChecked"] ? "checkbox__body_type_reverse" : ""}`} onClick={handleClick}>
                 <img className="checkbox__checker" alt="Переключатель" src={checkboxCircle}/>
             </div>
             <p className="checkbox__text">Короткометражки</p>
-        </div>               
+        </div>
     );
-};
+});
 
 export default FilterCheckbox;

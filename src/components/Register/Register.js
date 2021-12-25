@@ -1,78 +1,85 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
-import Button from "./../Button/Button";
-import './Register.css';
-import { NavLink } from "react-router-dom";
+import { withRouter, NavLink } from "react-router-dom";
 
 import SiteLogo from "./../SiteLogo/SiteLogo";
+import Button from "./../Button/Button";
+import './Register.css';
+
+import { useFormWithValidation } from "../../hooks/useFormWithValidation";
 
 function Register(props) {
-  const [userName, setuserName] = React.useState("");
-  const [userEmail, setUserEmail] = React.useState("");
-  const [userPassword, setUserPassword] = React.useState("");
 
-  const handleChange = (e) => {
-    const input = e.target;
-    if (input.name === "userName") {
-      setuserName(input.value);
-    } else if (input.name === "userEmail") {
-      setUserEmail(input.value);
-    } else if (input.name === "password") {
-      setUserPassword(input.value);
-    }
-  };
-
+  const { values, handleChange, errors, isValid } = useFormWithValidation();
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // props.register(userEmail, userPassword);    
+    props.register(values["register-form-user-email"], values["register-form-user-password"], values["register-form-user-name"]);
   };
+
+  const handleChangeForm = (e) => {    
+    handleChange(e);
+  }
 
   return (
     <div className="register">
       <SiteLogo className="register__logo"/>
       <p className="register__welcome">Добро пожаловать!</p>
 
-      <form onSubmit={handleSubmit} className="register__form" name="register">
-        <section className="register__section">
-          <label className="register__label" htmlFor="userName">Имя</label>
+      <form onSubmit={handleSubmit} className="register__form" name="register" noValidate>
+        
+        <section className="register-form__section">
+          <label className="register__label" htmlFor="register-form-user-name">Имя</label>
           <input
-            className="register__input"
-            id="userName"
-            name="userName"
-            value={userEmail}
-            onChange={handleChange}
+            className={`register__input ${errors["register-form-user-name"] ? "register-form__input_type_error" : ""}`}
+            id="register-form-user-name"
+            name="register-form-user-name"
+            value={values["register-form-user-name"] || ""}
+            onChange={handleChangeForm}
+            required
+            minLength="2"
+            maxLength="30"
+            type="text"
+            pattern="^[A-Za-zА-Яа-яЁё\s\-]+$"            
           />
+          <span className={`register-form__span-error ${errors["register-form-user-name"] ? "register-form__span-error_active" : ""}`}>{errors["register-form-user-name"]}</span>
         </section>
         
-        <section className="register__section">
-          <label className="register__label" htmlFor="userEmail">Email</label>
+        <section className="register-form__section">
+          <label className="register__label" htmlFor="register-form-user-email">Email</label>
           <input
-            className="register__input"
-            id="userEmail"
-            name="userEmail"
-            value={userEmail}
-            onChange={handleChange}
+            className={`register__input ${errors["register-form-user-email"] ? "register-form__input_type_error" : ""}`}
+            id="register-form-user-email"
+            name="register-form-user-email"
+            value={values["register-form-user-email"] || ""}
+            onChange={handleChangeForm}
+            required
+            minLength="4"
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"      
           />
+          <span className={`register-form__span-error ${errors["register-form-user-email"] ? "register-form__span-error_active" : ""}`}>{errors["register-form-user-email"]}</span>
         </section>
 
-        <section className="register__section">
-          <label className="register__label" htmlFor="password">Password</label>
+        <section className="register-form__section">
+          <label className="register__label" htmlFor="register-form-user-password">Password</label>
           <input
-            className="register__input"
-            id="password"
-            name="password"
-            value={userPassword}
-            onChange={handleChange}
+            className={`register__input ${errors["register-form-user-password"] ? "register-form__input_type_error" : ""}`}
+            id="register-form-user-password"
+            name="register-form-user-password"
+            value={values["register-form-user-password"] || ""}
+            onChange={handleChangeForm}
             type="password"
-          />
-        </section>  
+            required
+            minLength="2"/>
+          <span className={`register-form__span-error ${errors["register-form-user-password"] ? "register-form__span-error_active" : ""}`}>{errors["register-form-user-password"]}</span>
+        </section>
 
         <Button
           type="submit"
-          className="button button_type_save-form button_type_register"
+          className={`button button_type_save-form button_type_register ${isValid ? "" : "button_inactive"}`}
           buttonText="Войти"
-        >Зарегистрироваться</Button>
+          disabled={!isValid}>
+            Зарегистрироваться
+        </Button>
 
         <div className="register__register">
           <p className="register__not-register">
@@ -81,9 +88,10 @@ function Register(props) {
           <p className="register__link-paragraph">
             <NavLink to="/signin" className="register__link" activeClassName="active_common-link">
               Войти
-            </NavLink> 
+            </NavLink>
           </p>
         </div>
+
       </form>
     </div>
   );
