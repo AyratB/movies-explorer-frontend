@@ -479,7 +479,7 @@ function App() {
     mainApi
       .saveMovie(movie, token)
       .then((savedMovie) => setSavedMoviesArray([savedMovie.data, ...savedMoviesArray]))
-      .catch((err) => { console.log(err); });
+      .catch((err) => handleTooltipPopup(true, "Ошибка сохранения фильма", true));
   }
 
   const deleteMovieHandler = (movieId) => {
@@ -501,7 +501,7 @@ function App() {
           localStorage.setItem('SM_filteredMovies', JSON.stringify(savedMoviesAfterDelete));
         }
       })
-      .catch((err) => { console.log(err); });
+      .catch((err) => handleTooltipPopup(true, "Ошибка удаления фильма из коллекции", true));
   }
 
   const getToken = () => {
