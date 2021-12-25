@@ -249,12 +249,14 @@ function App() {
       
       if(SM_shortChecked !== null &&typeof SM_shortChecked !== 'undefined' && SM_shortChecked !== 'undefined'){
 
-        setSearchSavedWithShortCheck(true);
+        let checkedValue = JSON.parse(SM_shortChecked);
+
+        setSearchSavedWithShortCheck(checkedValue);
 
         setMovieObjectProperty(
           true,
           "shortChecked",
-          JSON.parse(SM_shortChecked));
+          checkedValue);
       }
     }    
     // SAVED MOVIES
@@ -510,7 +512,7 @@ function App() {
     }
 
     return token;
-  } 
+  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
